@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CDFE3F9B21E8420800CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F8221E8420700CF931B /* RxCBCentral.h */; };
+		CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */; };
+		CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8621E8420700CF931B /* ReadRssi.swift */; };
+		CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8721E8420700CF931B /* RegisterNotification.swift */; };
+		CDFE3F9F21E8420800CF931B /* Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8821E8420700CF931B /* Write.swift */; };
+		CDFE3FA021E8420800CF931B /* Read.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8921E8420700CF931B /* Read.swift */; };
+		CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */; };
+		CDFE3FA221E8420800CF931B /* CoreGattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */; };
+		CDFE3FA321E8420800CF931B /* CoreParsedAdvertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */; };
+		CDFE3FA421E8420800CF931B /* CoreBluetoothDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */; };
+		CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8F21E8420700CF931B /* CentralScanner.swift */; };
+		CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9021E8420700CF931B /* CoreGattIO.swift */; };
+		CDFE3FA721E8420800CF931B /* ScanData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9121E8420700CF931B /* ScanData.swift */; };
+		CDFE3FA821E8420800CF931B /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9221E8420700CF931B /* ConnectionManager.swift */; };
+		CDFE3FA921E8420800CF931B /* GattOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9321E8420700CF931B /* GattOperation.swift */; };
+		CDFE3FAA21E8420800CF931B /* BluetoothDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */; };
+		CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9521E8420700CF931B /* GattIO.swift */; };
+		CDFE3FAC21E8420800CF931B /* ScanMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9621E8420700CF931B /* ScanMatcher.swift */; };
+		CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9721E8420700CF931B /* Scanner.swift */; };
+		CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9821E8420700CF931B /* Utils.swift */; };
+		CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9921E8420700CF931B /* GattManager.swift */; };
+		CDFE3FB021E8420800CF931B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CDFE3F9A21E8420700CF931B /* Info.plist */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
+		CDFE3F4921E83EFA00CF931B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDFE3F8221E8420700CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
+		CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreConnectionManager.swift; sourceTree = "<group>"; };
+		CDFE3F8621E8420700CF931B /* ReadRssi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadRssi.swift; sourceTree = "<group>"; };
+		CDFE3F8721E8420700CF931B /* RegisterNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterNotification.swift; sourceTree = "<group>"; };
+		CDFE3F8821E8420700CF931B /* Write.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Write.swift; sourceTree = "<group>"; };
+		CDFE3F8921E8420700CF931B /* Read.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Read.swift; sourceTree = "<group>"; };
+		CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractWrite.swift; sourceTree = "<group>"; };
+		CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGattManager.swift; sourceTree = "<group>"; };
+		CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreParsedAdvertisement.swift; sourceTree = "<group>"; };
+		CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreBluetoothDetector.swift; sourceTree = "<group>"; };
+		CDFE3F8F21E8420700CF931B /* CentralScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralScanner.swift; sourceTree = "<group>"; };
+		CDFE3F9021E8420700CF931B /* CoreGattIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGattIO.swift; sourceTree = "<group>"; };
+		CDFE3F9121E8420700CF931B /* ScanData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanData.swift; sourceTree = "<group>"; };
+		CDFE3F9221E8420700CF931B /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
+		CDFE3F9321E8420700CF931B /* GattOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattOperation.swift; sourceTree = "<group>"; };
+		CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothDetector.swift; sourceTree = "<group>"; };
+		CDFE3F9521E8420700CF931B /* GattIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattIO.swift; sourceTree = "<group>"; };
+		CDFE3F9621E8420700CF931B /* ScanMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanMatcher.swift; sourceTree = "<group>"; };
+		CDFE3F9721E8420700CF931B /* Scanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
+		CDFE3F9821E8420700CF931B /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		CDFE3F9921E8420700CF931B /* GattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattManager.swift; sourceTree = "<group>"; };
+		CDFE3F9A21E8420700CF931B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CDFE3F4221E83EFA00CF931B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CDFE3F3B21E83EF900CF931B = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F8121E8420700CF931B /* Source */,
+				CDFE3F4721E83EFA00CF931B /* RxCBCentral */,
+				CDFE3F4621E83EFA00CF931B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CDFE3F4621E83EFA00CF931B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CDFE3F4721E83EFA00CF931B /* RxCBCentral */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */,
+				CDFE3F4921E83EFA00CF931B /* Info.plist */,
+			);
+			path = RxCBCentral;
+			sourceTree = "<group>";
+		};
+		CDFE3F8121E8420700CF931B /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F8221E8420700CF931B /* RxCBCentral.h */,
+				CDFE3F8321E8420700CF931B /* core */,
+				CDFE3F9121E8420700CF931B /* ScanData.swift */,
+				CDFE3F9221E8420700CF931B /* ConnectionManager.swift */,
+				CDFE3F9321E8420700CF931B /* GattOperation.swift */,
+				CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */,
+				CDFE3F9521E8420700CF931B /* GattIO.swift */,
+				CDFE3F9621E8420700CF931B /* ScanMatcher.swift */,
+				CDFE3F9721E8420700CF931B /* Scanner.swift */,
+				CDFE3F9821E8420700CF931B /* Utils.swift */,
+				CDFE3F9921E8420700CF931B /* GattManager.swift */,
+				CDFE3F9A21E8420700CF931B /* Info.plist */,
+			);
+			name = Source;
+			path = ../Source;
+			sourceTree = "<group>";
+		};
+		CDFE3F8321E8420700CF931B /* core */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */,
+				CDFE3F8521E8420700CF931B /* Operations */,
+				CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */,
+				CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */,
+				CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */,
+				CDFE3F8E21E8420700CF931B /* Helper */,
+				CDFE3F9021E8420700CF931B /* CoreGattIO.swift */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		CDFE3F8521E8420700CF931B /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F8621E8420700CF931B /* ReadRssi.swift */,
+				CDFE3F8721E8420700CF931B /* RegisterNotification.swift */,
+				CDFE3F8821E8420700CF931B /* Write.swift */,
+				CDFE3F8921E8420700CF931B /* Read.swift */,
+				CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */,
+			);
+			path = Operations;
+			sourceTree = "<group>";
+		};
+		CDFE3F8E21E8420700CF931B /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3F8F21E8420700CF931B /* CentralScanner.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CDFE3F4021E83EFA00CF931B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */,
+				CDFE3F9B21E8420800CF931B /* RxCBCentral.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CDFE3F4421E83EFA00CF931B /* RxCBCentral */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDFE3F4D21E83EFA00CF931B /* Build configuration list for PBXNativeTarget "RxCBCentral" */;
+			buildPhases = (
+				CDFE3F4021E83EFA00CF931B /* Headers */,
+				CDFE3F4121E83EFA00CF931B /* Sources */,
+				CDFE3F4221E83EFA00CF931B /* Frameworks */,
+				CDFE3F4321E83EFA00CF931B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RxCBCentral;
+			productName = RxCBCentral;
+			productReference = CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CDFE3F3C21E83EF900CF931B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Joseph Soultanis";
+				TargetAttributes = {
+					CDFE3F4421E83EFA00CF931B = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = CDFE3F3F21E83EF900CF931B /* Build configuration list for PBXProject "RxCBCentral" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CDFE3F3B21E83EF900CF931B;
+			productRefGroup = CDFE3F4621E83EFA00CF931B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CDFE3F4421E83EFA00CF931B /* RxCBCentral */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDFE3F4321E83EFA00CF931B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDFE3FB021E8420800CF931B /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CDFE3F4121E83EFA00CF931B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */,
+				CDFE3FAC21E8420800CF931B /* ScanMatcher.swift in Sources */,
+				CDFE3FAA21E8420800CF931B /* BluetoothDetector.swift in Sources */,
+				CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */,
+				CDFE3F9F21E8420800CF931B /* Write.swift in Sources */,
+				CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */,
+				CDFE3FA821E8420800CF931B /* ConnectionManager.swift in Sources */,
+				CDFE3FA221E8420800CF931B /* CoreGattManager.swift in Sources */,
+				CDFE3FA321E8420800CF931B /* CoreParsedAdvertisement.swift in Sources */,
+				CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */,
+				CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */,
+				CDFE3FA921E8420800CF931B /* GattOperation.swift in Sources */,
+				CDFE3FA421E8420800CF931B /* CoreBluetoothDetector.swift in Sources */,
+				CDFE3FA021E8420800CF931B /* Read.swift in Sources */,
+				CDFE3FA721E8420800CF931B /* ScanData.swift in Sources */,
+				CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */,
+				CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */,
+				CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */,
+				CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */,
+				CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CDFE3F4B21E83EFA00CF931B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CDFE3F4C21E83EFA00CF931B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CDFE3F4E21E83EFA00CF931B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5F83KRY2FH;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = RxCBCentral/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.Uber.RxCBCentral;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CDFE3F4F21E83EFA00CF931B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5F83KRY2FH;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = RxCBCentral/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.Uber.RxCBCentral;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CDFE3F3F21E83EF900CF931B /* Build configuration list for PBXProject "RxCBCentral" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDFE3F4B21E83EFA00CF931B /* Debug */,
+				CDFE3F4C21E83EFA00CF931B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDFE3F4D21E83EFA00CF931B /* Build configuration list for PBXNativeTarget "RxCBCentral" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDFE3F4E21E83EFA00CF931B /* Debug */,
+				CDFE3F4F21E83EFA00CF931B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CDFE3F3C21E83EF900CF931B /* Project object */;
+}
