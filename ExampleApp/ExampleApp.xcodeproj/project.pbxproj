@@ -13,8 +13,8 @@
 		CDFE3F6421E83F4000CF931B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDFE3F6321E83F4000CF931B /* Assets.xcassets */; };
 		CDFE3F6721E83F4000CF931B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDFE3F6521E83F4000CF931B /* LaunchScreen.storyboard */; };
 		CDFE3F7C21E840E400CF931B /* RxCBCentral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3F7B21E840E400CF931B /* RxCBCentral.framework */; };
-		CDFE3F7E21E8410B00CF931B /* RxCBCentral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3F7D21E8410B00CF931B /* RxCBCentral.framework */; };
 		CDFE3F7F21E8410B00CF931B /* RxCBCentral.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3F7D21E8410B00CF931B /* RxCBCentral.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CDFE3FB221E846FF00CF931B /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3FB121E846FF00CF931B /* RxSwift.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +41,7 @@
 		CDFE3F6821E83F4000CF931B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDFE3F7B21E840E400CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFE3F7D21E8410B00CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDFE3FB121E846FF00CF931B /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,8 +49,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDFE3FB221E846FF00CF931B /* RxSwift.framework in Frameworks */,
 				CDFE3F7C21E840E400CF931B /* RxCBCentral.framework in Frameworks */,
-				CDFE3F7E21E8410B00CF931B /* RxCBCentral.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +91,7 @@
 		CDFE3F7A21E840E400CF931B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CDFE3FB121E846FF00CF931B /* RxSwift.framework */,
 				CDFE3F7B21E840E400CF931B /* RxCBCentral.framework */,
 			);
 			name = Frameworks;
@@ -106,6 +108,7 @@
 				CDFE3F5621E83F4000CF931B /* Frameworks */,
 				CDFE3F5721E83F4000CF931B /* Resources */,
 				CDFE3F8021E8410B00CF931B /* Embed Frameworks */,
+				CDFE3FB721E8484300CF931B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -161,6 +164,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CDFE3FB721E8484300CF931B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/usr/local/Cellar/carthage/\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CDFE3F5521E83F4000CF931B /* Sources */ = {
@@ -316,6 +340,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5F83KRY2FH;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -334,6 +359,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5F83KRY2FH;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

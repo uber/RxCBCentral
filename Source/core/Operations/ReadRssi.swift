@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import RxSwift
+
 
 public struct ReadRssi: GattOperation {
     public typealias T = Int

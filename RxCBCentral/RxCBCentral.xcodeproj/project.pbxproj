@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDFE3F9B21E8420800CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F8221E8420700CF931B /* RxCBCentral.h */; };
 		CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */; };
 		CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8621E8420700CF931B /* ReadRssi.swift */; };
 		CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8721E8420700CF931B /* RegisterNotification.swift */; };
@@ -29,14 +28,13 @@
 		CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9721E8420700CF931B /* Scanner.swift */; };
 		CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9821E8420700CF931B /* Utils.swift */; };
 		CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9921E8420700CF931B /* GattManager.swift */; };
-		CDFE3FB021E8420800CF931B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CDFE3F9A21E8420700CF931B /* Info.plist */; };
+		CDFE3FB521E8473300CF931B /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3FB421E8473300CF931B /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
 		CDFE3F4921E83EFA00CF931B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDFE3F8221E8420700CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
 		CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreConnectionManager.swift; sourceTree = "<group>"; };
 		CDFE3F8621E8420700CF931B /* ReadRssi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadRssi.swift; sourceTree = "<group>"; };
 		CDFE3F8721E8420700CF931B /* RegisterNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterNotification.swift; sourceTree = "<group>"; };
@@ -57,7 +55,7 @@
 		CDFE3F9721E8420700CF931B /* Scanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
 		CDFE3F9821E8420700CF931B /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CDFE3F9921E8420700CF931B /* GattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattManager.swift; sourceTree = "<group>"; };
-		CDFE3F9A21E8420700CF931B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDFE3FB421E8473300CF931B /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDFE3FB521E8473300CF931B /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +76,7 @@
 				CDFE3F8121E8420700CF931B /* Source */,
 				CDFE3F4721E83EFA00CF931B /* RxCBCentral */,
 				CDFE3F4621E83EFA00CF931B /* Products */,
+				CDFE3FB321E8473200CF931B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,7 +100,6 @@
 		CDFE3F8121E8420700CF931B /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				CDFE3F8221E8420700CF931B /* RxCBCentral.h */,
 				CDFE3F8321E8420700CF931B /* core */,
 				CDFE3F9121E8420700CF931B /* ScanData.swift */,
 				CDFE3F9221E8420700CF931B /* ConnectionManager.swift */,
@@ -111,7 +110,6 @@
 				CDFE3F9721E8420700CF931B /* Scanner.swift */,
 				CDFE3F9821E8420700CF931B /* Utils.swift */,
 				CDFE3F9921E8420700CF931B /* GattManager.swift */,
-				CDFE3F9A21E8420700CF931B /* Info.plist */,
 			);
 			name = Source;
 			path = ../Source;
@@ -151,6 +149,14 @@
 			path = Helper;
 			sourceTree = "<group>";
 		};
+		CDFE3FB321E8473200CF931B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CDFE3FB421E8473300CF931B /* RxSwift.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -159,7 +165,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */,
-				CDFE3F9B21E8420800CF931B /* RxCBCentral.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +179,7 @@
 				CDFE3F4121E83EFA00CF931B /* Sources */,
 				CDFE3F4221E83EFA00CF931B /* Frameworks */,
 				CDFE3F4321E83EFA00CF931B /* Resources */,
+				CDFE3FB621E8474500CF931B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -220,11 +226,31 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDFE3FB021E8420800CF931B /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CDFE3FB621E8474500CF931B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/Cellar/carthage/ copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CDFE3F4121E83EFA00CF931B /* Sources */ = {
@@ -389,6 +415,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
 				INFOPLIST_FILE = RxCBCentral/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -414,6 +441,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
 				INFOPLIST_FILE = RxCBCentral/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
