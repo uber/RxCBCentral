@@ -28,7 +28,6 @@
 		CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9721E8420700CF931B /* Scanner.swift */; };
 		CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9821E8420700CF931B /* Utils.swift */; };
 		CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9921E8420700CF931B /* GattManager.swift */; };
-		CDFE3FB521E8473300CF931B /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3FB421E8473300CF931B /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDFE3FB521E8473300CF931B /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +239,11 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxAtomic.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxBlocking.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxCocoa.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxTest.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxOptional.framework",
 			);
 			outputFileListPaths = (
 			);
@@ -248,7 +251,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/Cellar/carthage/ copy-frameworks\n";
+			shellScript = "/usr/local/bin/carthage\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -415,7 +418,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/Build/iOS/**";
 				INFOPLIST_FILE = RxCBCentral/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -441,7 +444,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/../Carthage/Build/iOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/Build/iOS/**";
 				INFOPLIST_FILE = RxCBCentral/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (

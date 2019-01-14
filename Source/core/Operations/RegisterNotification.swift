@@ -17,8 +17,8 @@
 
 import RxSwift
 
-public struct RegisterNotification: GattOperation {
-
-    public init(svc: UUID, chr: UUID, preprocessor: Preprocessor? = nil, timeoutSeconds: RxTimeInterval)
-
-}
+//public struct RegisterNotification: GattOperation {
+//
+//    public init(svc: UUID, chr: UUID, preprocessor: Preprocessor? = nil, timeoutSeconds: RxTimeInterval)
+//
+//}

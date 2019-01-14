@@ -17,7 +17,6 @@
 
 import CoreBluetooth
 import Foundation
-import RxOptional
 import RxSwift
 
 /// Read data from a GATT characteristic

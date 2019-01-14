@@ -16,6 +16,7 @@
  */
 
 import CoreBluetooth
+import RxOptional
 import RxSwift
 
 public enum GattIOError: Error {
