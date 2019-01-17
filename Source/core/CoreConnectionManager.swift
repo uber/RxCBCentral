@@ -50,7 +50,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         return centralManager.isScanning
     }
     
-    public init(queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
+    public required init(queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
         self.dispatchQueue = queue
         self.options = options
         super.init()
