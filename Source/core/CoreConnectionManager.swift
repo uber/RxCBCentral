@@ -20,12 +20,7 @@ import Foundation
 import RxSwift
 
 public struct ConnectionManagerOptions {
-    /// A Bool indicating that the system should, if Bluetooth is powered off when `CBCentralManager` is instantiated, display
-    /// a warning dialog to the user.
-    let showPowerAlert: Bool
-
     let notifyOnConnection: Bool
-    
     let notifyOnDisconnection: Bool
     
     /// A String containing a unique identifier (UID) for the `CBCentralManager` that is being instantiated. This UID is used
@@ -36,7 +31,6 @@ public struct ConnectionManagerOptions {
     var asDictionary: [String: Any] {
         var dict: [String: Any] = [:]
         
-        dict[CBCentralManagerOptionShowPowerAlertKey] = NSNumber(booleanLiteral: showPowerAlert)
         dict[CBCentralManagerOptionRestoreIdentifierKey] = restoreIdentifier
         dict[CBConnectPeripheralOptionNotifyOnConnectionKey] = NSNumber(booleanLiteral: notifyOnConnection)
         dict[CBConnectPeripheralOptionNotifyOnDisconnectionKey] = NSNumber(booleanLiteral: notifyOnDisconnection)
@@ -105,7 +99,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     // MARK: - CBCentralManagerDelegate
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // BluetoothDetector handles these state changes
+        // CoreBluetoothDetector handles these state changes
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -137,7 +131,6 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private let didDiscoverPeripheralSubject: PublishSubject<CBPeripheral> = PublishSubject()
     private let didConnectToPeripheralSubject: PublishSubject<CBPeripheral> = PublishSubject()
     private let didUpdateStateSubject = BehaviorSubject<ConnectionManagerState>(value: ConnectionManagerState.disconnected(nil))
-    
     
     private func connect(_ peripheral: CBPeripheral, options: ConnectionManagerOptions? = nil) {
         centralManager.connect(peripheral, options: options?.asDictionary)
