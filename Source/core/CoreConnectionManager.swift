@@ -51,15 +51,24 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     }
     
     public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO> {
-        let state = try? didUpdateStateSubject.value()
-        let unwrappedState = state ?? .disconnected(ConnectionManagerError.invalidState)
-        
-        switch unwrappedState {
-        case .connected, .connecting, .scanning:
-            return Observable.error(ConnectionManagerError.notDisconnected)
-        default:
-            break
+        // check that bluetooth is powered on
+        guard centralManager.state == .poweredOn else {
+            if centralManager.state == .poweredOff || centralManager.state == .resetting {
+                return Observable.error(BluetoothError.disabled)
+            } else {
+                return Observable.error(BluetoothError.unsupported)
+            }
         }
+        
+//        let state = try? didUpdateStateSubject.value()
+//        let unwrappedState = state ?? .disconnected(ConnectionManagerError.invalidState)
+//        // check
+//        switch unwrappedState {
+//        case .connected, .connecting, .scanning:
+//            return Observable.error(ConnectionManagerError.notDisconnected)
+//        default:
+//            break
+//        }
         
         let sharedPeripheralObservable: Observable<CBPeripheral>
         
@@ -86,7 +95,6 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
                 .take(1)
                 .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<GattIO> in
                     let gattIO: GattIO = CoreGattIO(peripheral: peripheral, connectionState: self.didUpdateStateSubject.asObservable())
-                    
                     return Observable.just(gattIO)
                 })
                 .do(onSubscribe: {

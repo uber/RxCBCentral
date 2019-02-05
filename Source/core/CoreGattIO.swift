@@ -116,7 +116,72 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     }
     
     public func write(service: UUID, characteristic: UUID, data: Data) -> Completable {
-        return Observable.empty().asCompletable()
+        let serviceCBUUID = CBUUID(nsuuid: service)
+        let charCBUUID = CBUUID(nsuuid: characteristic)
+        
+        let sharedWriteCompletable: Completable =
+            didDiscoverServicesSubject
+                .do(onNext: { (services: [CBService], _) in
+                    print(services.description)
+                })
+                .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
+                    let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
+                    return (matchingService, error)
+                }
+                .take(1)
+                .do(onNext: { (matchingService: CBService?, error: Error?) in
+                    if let matchingService = matchingService, error == nil {
+                        self.peripheral.discoverCharacteristics([charCBUUID], for: matchingService)
+                    }
+                })
+                .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
+                    guard let _ = matchingService else {
+                        return Observable.error(GattIOError.serviceNotFound)
+                    }
+                    
+                    if let error = error {
+                        return Observable.error(error)
+                    }
+                    
+                    return self.didDiscoverCharacteristicsSubject.asObservable()
+                })
+                .take(1)
+                .map { (characteristics: [CBCharacteristic], error: Error?) -> (CBCharacteristic?, Error?) in
+                    let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
+                    return (characteristic, error)
+                }
+                .do(onNext: { (matchingCharacteristic: CBCharacteristic?, error: Error?) in
+                    if let matchingCharacteristic = matchingCharacteristic, error == nil {
+                        // TODO: ASK KEVIN ABOUT THIS. with or without response?
+                        self.peripheral.writeValue(data, for: matchingCharacteristic, type: CBCharacteristicWriteType.withResponse)
+                    }
+                })
+                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
+                    guard let _ = matchingCharacteristic else {
+                        return Observable.error(GattIOError.characteristicNotFound)
+                    }
+                    
+                    if let error = error {
+                        return Observable.error(error)
+                    }
+                    
+                    return self.didWriteToCharacteristicSubject.asObservable()
+                }
+                .take(1)
+                .flatMapLatest { (error: Error?) -> Completable in
+                    if let error = error {
+                        return Observable.error(error).asCompletable()
+                    }
+                    return Observable.empty().asCompletable()
+                }
+                .take(1)
+                .asCompletable()
+                .do(onSubscribe: {
+                    self.peripheral.discoverServices([serviceCBUUID])
+                })
+        
+        
+        return sharedWriteCompletable
     }
 
     public func registerForNotification(service: UUID, characteristic: UUID) -> Completable {
@@ -148,6 +213,10 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         didReadFromCharacteristicSubject.onNext(readData)
     }
     
+    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        didWriteToCharacteristicSubject.onNext(error)
+    }
+    
     // MARK: - Private
     
     private let peripheral: CBPeripheral
@@ -159,4 +228,5 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     private let didDiscoverServicesSubject = PublishSubject<([CBService], Error?)>()
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
     private let didReadFromCharacteristicSubject = PublishSubject<(Data?, Error?)>()
+    private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
