@@ -44,10 +44,15 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         return centralManager.isScanning
     }
     
-    public required init(queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
+    public init(bluetoothDetector: BluetoothDetector, queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
+        self.bluetoothDetector = bluetoothDetector
         self.dispatchQueue = queue
         self.options = options
+        
+        centralManager = CBCentralManager(delegate: nil, queue: dispatchQueue, options: options?.asDictionary)
         super.init()
+    
+        centralManager.delegate = self
     }
     
     public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO> {
@@ -59,16 +64,6 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
                 return Observable.error(BluetoothError.unsupported)
             }
         }
-        
-//        let state = try? didUpdateStateSubject.value()
-//        let unwrappedState = state ?? .disconnected(ConnectionManagerError.invalidState)
-//        // check
-//        switch unwrappedState {
-//        case .connected, .connecting, .scanning:
-//            return Observable.error(ConnectionManagerError.notDisconnected)
-//        default:
-//            break
-//        }
         
         let sharedPeripheralObservable: Observable<CBPeripheral>
         
@@ -85,7 +80,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         let sharedGattIOObservable =
             sharedPeripheralObservable
                 .do(onNext: { (peripheral: CBPeripheral) in
-                    print(peripheral.name ?? "peripheral discovered")
+                    self.centralManager.stopScan()
                     self.centralManager.connect(peripheral, options: self.options?.asDictionary)
                     self.didUpdateStateSubject.onNext(.connecting)
                 })
@@ -110,13 +105,15 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         // CoreBluetoothDetector handles these state changes
     }
     
+    public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
+        didDiscoverPeripheralSubject.onNext(peripheral)
+        print(peripheral)
+        self.discoveredPeripherals.insert(peripheral)
+    }
+    
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         didConnectToPeripheralSubject.onNext(peripheral)
         didUpdateStateSubject.onNext(.connected)
-    }
-    
-    public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
-        didDiscoverPeripheralSubject.onNext(peripheral)
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -129,9 +126,10 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     
     // MARK: - Private
     
-    private lazy var centralManager: CBCentralManager = {
-        return CBCentralManager(delegate: self, queue: dispatchQueue, options: options?.asDictionary)
-    }()
+    private let centralManager: CBCentralManager
+    private var discoveredPeripherals: Set<CBPeripheral> = []
+
+    private let bluetoothDetector: BluetoothDetector
     
     private let dispatchQueue: DispatchQueue?
     private let options: ConnectionManagerOptions?

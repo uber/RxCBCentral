@@ -21,10 +21,10 @@ import RxSwift
 
 /// Read data from a GATT characteristic
 public struct Read: GattOperation {
-    public typealias T = Data
-    public var result: Single<Data>
+    public typealias T = Data?
+    public var result: Single<Data?>
 
-    public init(service: UUID, characteristic: UUID, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
+    public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
         result =
             _gattSubject
             .take(1)

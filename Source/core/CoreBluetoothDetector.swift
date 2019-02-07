@@ -76,7 +76,7 @@ public class CoreBluetoothDetector: NSObject, BluetoothDetector, CBCentralManage
     
     private let _options: BluetoothDetectorOptions?
     
-    private var _centralManager: CBCentralManager?
+    private var _centralManager: CBCentralManager!
     
     private let _capabilitySubject = ReplaySubject<Capability>.create(bufferSize: 1)
     private let _enabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)

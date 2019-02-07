@@ -32,6 +32,5 @@ enum ConnectionManagerError: Error {
 }
 
 public protocol ConnectionManager: class {
-    init(queue: DispatchQueue?, options: ConnectionManagerOptions?)
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO>
 }

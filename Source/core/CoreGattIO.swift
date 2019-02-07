@@ -29,10 +29,16 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     public init(peripheral: CBPeripheral, connectionState: Observable<ConnectionManagerState>) {
         self.connectionState = connectionState
         self.peripheral = peripheral
+        super.init()
+        self.peripheral.delegate = self
     }
     
     public var isConnected: Bool {
         return peripheral.state == .connected
+    }
+    
+    public var deviceName: String? {
+        return self.peripheral.name
     }
     
     // MARK: - GattIO
@@ -50,11 +56,9 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
             })
     }
     
-    public func read(service: UUID, characteristic: UUID) -> Single<Data> {
-        let serviceCBUUID = CBUUID(nsuuid: service)
-        let charCBUUID = CBUUID(nsuuid: characteristic)
-        
-        let sharedReadDataObservable: Single<Data> =
+    public func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?> {
+
+        let sharedReadDataObservable: Single<Data?> =
             didDiscoverServicesSubject
                 .do(onNext: { (services: [CBService], _) in
                     print(services.description)
@@ -66,7 +70,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .take(1)
                 .do(onNext: { (matchingService: CBService?, error: Error?) in
                     if let matchingService = matchingService, error == nil {
-                        self.peripheral.discoverCharacteristics([charCBUUID], for: matchingService)
+                        self.peripheral.discoverCharacteristics([characteristic], for: matchingService)
                     }
                 })
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
@@ -102,22 +106,20 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     return self.didReadFromCharacteristicSubject.asObservable()
                 }
                 .map { (readData: Data?, error: Error?) -> Data? in
-                    // how to handle Read error? Necessary?
+                    // how to handle Read error? Filter nil or no?
                     return readData
                 }
-                .filterNil()
                 .take(1)
                 .asSingle()
                 .do(onSubscribe: {
-                    self.peripheral.discoverServices([serviceCBUUID])
+                    // add a check if we've already discovered valid services / charac
+                    self.peripheral.discoverServices([service])
                 })
         
         return sharedReadDataObservable
     }
     
-    public func write(service: UUID, characteristic: UUID, data: Data) -> Completable {
-        let serviceCBUUID = CBUUID(nsuuid: service)
-        let charCBUUID = CBUUID(nsuuid: characteristic)
+    public func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
         
         let sharedWriteCompletable: Completable =
             didDiscoverServicesSubject
@@ -131,7 +133,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .take(1)
                 .do(onNext: { (matchingService: CBService?, error: Error?) in
                     if let matchingService = matchingService, error == nil {
-                        self.peripheral.discoverCharacteristics([charCBUUID], for: matchingService)
+                        self.peripheral.discoverCharacteristics([characteristic], for: matchingService)
                     }
                 })
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
@@ -152,8 +154,11 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 }
                 .do(onNext: { (matchingCharacteristic: CBCharacteristic?, error: Error?) in
                     if let matchingCharacteristic = matchingCharacteristic, error == nil {
-                        // TODO: ASK KEVIN ABOUT THIS. with or without response?
-                        self.peripheral.writeValue(data, for: matchingCharacteristic, type: CBCharacteristicWriteType.withResponse)
+                        let CBCharacteristicPropertyWrite: UInt = 0x08
+                        let writeType = (matchingCharacteristic.properties.rawValue & CBCharacteristicPropertyWrite) == CBCharacteristicPropertyWrite ? CBCharacteristicWriteType.withResponse : CBCharacteristicWriteType.withoutResponse
+                        
+                        // let CB give an error if property isn't writable
+                        self.peripheral.writeValue(data, for: matchingCharacteristic, type: writeType)
                     }
                 })
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
@@ -177,14 +182,14 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .take(1)
                 .asCompletable()
                 .do(onSubscribe: {
-                    self.peripheral.discoverServices([serviceCBUUID])
+                    self.peripheral.discoverServices([service])
                 })
         
         
         return sharedWriteCompletable
     }
 
-    public func registerForNotification(service: UUID, characteristic: UUID) -> Completable {
+    public func registerForNotification(service: CBUUID, characteristic: CBUUID) -> Completable {
         return Observable.empty().asCompletable()
     }
 

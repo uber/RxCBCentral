@@ -28,14 +28,15 @@ import RxSwift
 /// @CreateMocks
 public protocol GattIO: Preprocessor {
     var isConnected: Bool { get }
+    var deviceName: String? { get }
+    
     func maxWriteLength(for type: CBCharacteristicWriteType) -> Int
-
     func readRSSI() -> Single<Int>
 
-    func read(service: Foundation.UUID, characteristic: Foundation.UUID) -> Single<Data>
-    func write(service: Foundation.UUID, characteristic: Foundation.UUID, data: Data) -> Completable
+    func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?>
+    func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable
 
-    func registerForNotification(service: Foundation.UUID, characteristic: Foundation.UUID) -> Completable
+    func registerForNotification(service: CBUUID, characteristic: CBUUID) -> Completable
 }
 
 public protocol Preprocessor {
