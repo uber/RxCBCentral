@@ -18,7 +18,9 @@
 import RxSwift
 
 public struct ReadRssi: GattOperation {
-    public typealias T = Int
+    
+    public typealias Element = Int
+    public typealias TraitType = SingleTrait
     public var result: Single<Int>
 
     public init(timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
@@ -35,6 +37,13 @@ public struct ReadRssi: GattOperation {
 
     public func execute(gattIO: GattIO) {
         _gattSubject.onNext(gattIO)
+    }
+    
+    public func execute(gattIO: GattIO) -> Single<Int> {
+        return result
+            .do(onSubscribe: {
+                return self.execute(gattIO: gattIO)
+            })
     }
 
     private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)

@@ -16,6 +16,9 @@ class ViewController: UIViewController {
     private var bluetoothDetector: BluetoothDetector!
     private var connectionManager: ConnectionManager!
     private let disposeBag = DisposeBag()
+    
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var consoleTextView: UITextView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,8 +27,6 @@ class ViewController: UIViewController {
         connectionManager = CoreConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
     }
 
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var consoleTextView: UITextView!
     
     @IBAction func didTapConnect(_ sender: Any) {
         nameTextField.resignFirstResponder()
@@ -118,7 +119,6 @@ fileprivate class DeviceNameScanMatcher: ScanMatcher {
     private let deviceName: String
     private var peripherals: Set<CBPeripheral> = []
 }
-
 
 extension Data {
     func hexEncodedString() -> String {

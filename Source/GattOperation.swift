@@ -21,18 +21,10 @@ import RxSwift
 
 /// @CreateMocks
 public protocol GattOperation {
-    associatedtype T
+    associatedtype TraitType
+    associatedtype Element
 
-    var result: Single<T> { get }
+    var result: PrimitiveSequence<TraitType, Element> { get }
     func execute(gattIO: GattIO)
-    func execute(gattIO: GattIO) -> Single<T>
-}
-
-extension GattOperation {
-    public func execute(gattIO: GattIO) -> Single<T> {
-        return result
-            .do(onSubscribe: {
-                return self.execute(gattIO: gattIO)
-            })
-    }
+    func execute(gattIO: GattIO) -> PrimitiveSequence<TraitType, Element>
 }

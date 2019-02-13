@@ -19,11 +19,35 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-//public struct Write: GattOperation {
-//
-//    public typealias T = Data
-//
-//
-//
-//
-//}
+/// Write data to a GATT characteristic
+public struct Write: GattOperation {
+    
+    public typealias TraitType = CompletableTrait
+    public typealias Element = Never
+    public var result: Completable
+    
+    public init(service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
+        result =
+            _gattSubject
+                .take(1)
+                .flatMapLatest { gattIO in
+                    gattIO.write(service: service, characteristic: characteristic, data: data)
+                }
+                .share()
+                .asCompletable()
+                .timeout(timeoutSeconds, scheduler: scheduler)
+    }
+    
+    public func execute(gattIO: GattIO) {
+        _gattSubject.onNext(gattIO)
+    }
+    
+    public func execute(gattIO: GattIO) -> Completable {
+        return result
+            .do(onSubscribe: {
+                return self.execute(gattIO: gattIO)
+            })
+    }
+    
+    private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
+}

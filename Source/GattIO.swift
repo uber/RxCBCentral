@@ -18,11 +18,6 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-
-//public enum GattConnectionState {
-//    case connecting, connected
-//}
-
 // Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
 //
 /// @CreateMocks
