@@ -43,8 +43,9 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     // MARK: - GattIO
     
-    public func maxWriteLength(for type: CBCharacteristicWriteType) -> Int {
-        return peripheral.maximumWriteValueLength(for: type)
+    // TODO: assumes all writes are without response for now to calculate MTU
+    public var maxWriteLength: Int {
+       return peripheral.maximumWriteValueLength(for: CBCharacteristicWriteType.withoutResponse)
     }
     
     public func readRSSI() -> Single<Int> {        

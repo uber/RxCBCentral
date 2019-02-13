@@ -40,9 +40,6 @@ public struct ConnectionManagerOptions {
 }
 
 public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManagerDelegate {
-    public var isScanning: Bool {
-        return centralManager.isScanning
-    }
     
     public init(bluetoothDetector: BluetoothDetector, queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
         self.bluetoothDetector = bluetoothDetector
@@ -53,6 +50,10 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         super.init()
     
         centralManager.delegate = self
+    }
+    
+    public var isScanning: Bool {
+        return centralManager.isScanning
     }
     
     public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO> {

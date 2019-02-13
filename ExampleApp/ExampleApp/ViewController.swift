@@ -45,9 +45,6 @@ class ViewController: UIViewController {
         let serviceUUID = CBUUID(string: "0x180A")
         let characteristicUUID = CBUUID(string: "0x2A29")
         
-        let disposeBag = DisposeBag()
-        
-        
         // Two ways to connect to and read from a peripheral:
         
         // 1. Connect to a peripheral and immediately read

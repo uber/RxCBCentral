@@ -24,8 +24,8 @@ import RxSwift
 public protocol GattIO: Preprocessor {
     var isConnected: Bool { get }
     var deviceName: String? { get }
+    var maxWriteLength: Int { get }
     
-    func maxWriteLength(for type: CBCharacteristicWriteType) -> Int
     func readRSSI() -> Single<Int>
 
     func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?>
