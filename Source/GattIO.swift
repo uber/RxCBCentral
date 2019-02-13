@@ -44,4 +44,10 @@ public extension ObservableType where E == GattIO {
             element.read(service: service, characteristic: characteristic)
         }
     }
+    
+    func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
+        return flatMap { (element: E) -> Completable in
+            element.write(service: service, characteristic: characteristic, data: data)
+        }.asCompletable()
+    }
 }
