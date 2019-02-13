@@ -22,6 +22,7 @@ import RxSwift
 public enum GattIOError: Error {
     case serviceNotFound
     case characteristicNotFound
+    case notConnected
 }
 
 public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
@@ -58,9 +59,13 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     }
     
     public func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?> {
-
+        
         let sharedReadDataObservable: Single<Data?> =
-            didDiscoverServicesSubject
+            connectionState
+                .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
+                    guard state == .connected else { return Observable.error(GattIOError.notConnected) }
+                    return self.didDiscoverServicesSubject.asObservable()
+                }
                 .do(onNext: { (services: [CBService], _) in
                     print(services.description)
                 })
@@ -122,7 +127,11 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     public func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
         
         let sharedWriteCompletable: Completable =
-            didDiscoverServicesSubject
+            connectionState
+                .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
+                    guard state == .connected else { return Observable.error(GattIOError.notConnected) }
+                    return self.didDiscoverServicesSubject.asObservable()
+                }
                 .do(onNext: { (services: [CBService], _) in
                     print(services.description)
                 })

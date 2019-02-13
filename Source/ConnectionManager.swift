@@ -26,6 +26,23 @@ public enum ConnectionManagerState {
     case scanning
 }
 
+extension ConnectionManagerState: Equatable {
+    public static func == (lhs: ConnectionManagerState, rhs: ConnectionManagerState) -> Bool {
+        switch (lhs, rhs) {
+        case (.connected, .connected):
+            return true
+        case (.connecting, .connecting):
+            return true
+        case (.scanning, .scanning):
+            return true
+        case (.disconnected(_), .disconnected(_)):
+            return true
+        default:
+            return false
+        }
+    }
+}
+
 public struct ConnectionConstants {
     // seconds
     static let defaultScanTimeout: Double = 30
