@@ -31,6 +31,7 @@ public struct Write: GattOperation {
             _gattSubject
                 .take(1)
                 .flatMapLatest { gattIO in
+                    // TODO: support chunking by checking maxWriteLength
                     gattIO.write(service: service, characteristic: characteristic, data: data)
                 }
                 .share()

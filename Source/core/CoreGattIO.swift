@@ -103,16 +103,15 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                         return Observable.error(error)
                     }
                     
-                    return self.didReadFromCharacteristicSubject.asObservable()
+                    return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
                 .map { (readData: Data?, error: Error?) -> Data? in
-                    // how to handle Read error? Filter nil or no?
                     return readData
                 }
                 .take(1)
                 .asSingle()
                 .do(onSubscribe: {
-                    // add a check if we've already discovered valid services / charac
+                    // add a check if we've already discovered valid services / charac  - update: seems CB caches this, test performance
                     self.peripheral.discoverServices([service])
                 })
         
@@ -190,7 +189,68 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     }
 
     public func registerForNotification(service: CBUUID, characteristic: CBUUID) -> Completable {
-        return Observable.empty().asCompletable()
+        let sharedNotifyCompletable: Completable =
+            didDiscoverServicesSubject
+                .do(onNext: { (services: [CBService], _) in
+                    print(services.description)
+                })
+                .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
+                    let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
+                    return (matchingService, error)
+                }
+                .take(1)
+                .do(onNext: { (matchingService: CBService?, error: Error?) in
+                    if let matchingService = matchingService, error == nil {
+                        self.peripheral.discoverCharacteristics([characteristic], for: matchingService)
+                    }
+                })
+                .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
+                    guard let _ = matchingService else {
+                        return Observable.error(GattIOError.serviceNotFound)
+                    }
+                    
+                    if let error = error {
+                        return Observable.error(error)
+                    }
+                    
+                    return self.didDiscoverCharacteristicsSubject.asObservable()
+                })
+                .take(1)
+                .map { (characteristics: [CBCharacteristic], error: Error?) -> (CBCharacteristic?, Error?) in
+                    let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
+                    return (characteristic, error)
+                }
+                .do(onNext: { (matchingCharacteristic: CBCharacteristic?, error: Error?) in
+                    if let matchingCharacteristic = matchingCharacteristic, error == nil {
+                        
+                        // let CB give an error if property isn't writable
+                        self.peripheral.setNotifyValue(true, for: matchingCharacteristic)
+                    }
+                })
+                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(Data?, Error?)> in
+                    guard let _ = matchingCharacteristic else {
+                        return Observable.error(GattIOError.characteristicNotFound)
+                    }
+                    
+                    if let error = error {
+                        return Observable.error(error)
+                    }
+                    
+                    return self.didUpdateValueForCharacteristicSubject.asObservable()
+                }
+                .flatMapLatest { (_, error: Error?) -> Completable in
+                    if let error = error {
+                        return Observable.error(error).asCompletable()
+                    }
+                    return Observable.empty().asCompletable()
+                }
+                .take(1)
+                .asCompletable()
+                .do(onSubscribe: {
+                    self.peripheral.discoverServices([service])
+                })
+        
+        return sharedNotifyCompletable
     }
 
     public func process(data: Data) -> Data {
@@ -213,9 +273,10 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         didDiscoverCharacteristicsSubject.onNext(characteristicsData)
     }
     
+    /// Invoked when you retrieve a characteristic’s value, or when the peripheral notifies you the value has changed
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        let readData = (characteristic.value, error)
-        didReadFromCharacteristicSubject.onNext(readData)
+        let valueData = (characteristic.value, error)
+        didUpdateValueForCharacteristicSubject.onNext(valueData)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -232,6 +293,6 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     private let didReadRSSISubject = PublishSubject<Int>()
     private let didDiscoverServicesSubject = PublishSubject<([CBService], Error?)>()
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
-    private let didReadFromCharacteristicSubject = PublishSubject<(Data?, Error?)>()
+    private let didUpdateValueForCharacteristicSubject = PublishSubject<(Data?, Error?)>()
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
