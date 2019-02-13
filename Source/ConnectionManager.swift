@@ -26,9 +26,16 @@ public enum ConnectionManagerState {
     case scanning
 }
 
+public struct ConnectionConstants {
+    // seconds
+    static let defaultScanTimeout: Double = 30
+    // seconds
+    static let defaultConnectionTimeout: Double = 45
+}
+
 enum ConnectionManagerError: Error {
-    case invalidState
-    case notDisconnected
+    case alreadyScanning
+    case scanTimeout
 }
 
 public protocol ConnectionManager: class {

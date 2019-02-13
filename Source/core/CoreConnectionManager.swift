@@ -65,37 +65,22 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
             }
         }
         
-        let sharedPeripheralObservable: Observable<CBPeripheral>
+        guard !isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
         
-        if let scanMatcher = scanMatcher {
-            sharedPeripheralObservable =
-                didDiscoverPeripheralSubject
-                    .flatMapLatest { (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
-                        return scanMatcher.accept(peripheral)
-                    }
-        } else {
-            sharedPeripheralObservable = didDiscoverPeripheralSubject
-        }
+        let peripheralObservable = generateMatchingPeripheralSequence(with: scanMatcher)
         
         let sharedGattIOObservable =
-            sharedPeripheralObservable
-                .do(onNext: { (peripheral: CBPeripheral) in
-                    self.centralManager.stopScan()
-                    self.centralManager.connect(peripheral, options: self.options?.asDictionary)
-                    self.didUpdateStateSubject.onNext(.connecting)
-                })
-                .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
-                    return self.didConnectToPeripheralSubject.asObservable()
-                })
-                .take(1)
-                .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<GattIO> in
-                    let gattIO: GattIO = CoreGattIO(peripheral: peripheral, connectionState: self.didUpdateStateSubject.asObservable())
-                    return Observable.just(gattIO)
-                })
-                .do(onSubscribe: {
-                    self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
-                })
+            generateGattIOSequence(with: peripheralObservable)
+            .do(onSubscribe: {
+                self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
+            })
+            .timeout(ConnectionConstants.defaultScanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
+            .do(onError: { _ in
+                self.centralManager.stopScan()
+            })
         
+        
+
         return sharedGattIOObservable
     }
     
@@ -107,7 +92,6 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         didDiscoverPeripheralSubject.onNext(peripheral)
-        print(peripheral)
         self.discoveredPeripherals.insert(peripheral)
     }
     
@@ -130,7 +114,6 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private var discoveredPeripherals: Set<CBPeripheral> = []
 
     private let bluetoothDetector: BluetoothDetector
-    
     private let dispatchQueue: DispatchQueue?
     private let options: ConnectionManagerOptions?
     
@@ -147,4 +130,32 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         centralManager.scanForPeripherals(withServices: serviceUUIDs, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.scanning)
     }
+    
+    private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatcher?) -> Observable<CBPeripheral> {
+        guard let scanMatcher = scanMatcher else { return didDiscoverPeripheralSubject }
+        
+        return didDiscoverPeripheralSubject
+            .flatMapLatest { (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
+                return scanMatcher.accept(peripheral)
+            }
+    }
+    
+    private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheral>) -> Observable<GattIO> {
+        
+        return matchingPeripheralSequence
+            .do(onNext: { (peripheral: CBPeripheral) in
+                self.centralManager.stopScan()
+                self.centralManager.connect(peripheral, options: self.options?.asDictionary)
+                self.didUpdateStateSubject.onNext(.connecting)
+            })
+            .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
+                return self.didConnectToPeripheralSubject.asObservable()
+            })
+            .take(1)
+            .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<GattIO> in
+                let gattIO: GattIO = CoreGattIO(peripheral: peripheral, connectionState: self.didUpdateStateSubject.asObservable())
+                return Observable.just(gattIO)
+            })
+    }
 }
+

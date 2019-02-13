@@ -15,10 +15,11 @@ class ViewController: UIViewController {
     
     private var bluetoothDetector: BluetoothDetector!
     private var connectionManager: ConnectionManager!
+    private let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
         bluetoothDetector = CoreBluetoothDetector(options: nil)
         connectionManager = CoreConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
     }
@@ -43,47 +44,53 @@ class ViewController: UIViewController {
         let serviceUUID = CBUUID(string: "0x180A")
         let characteristicUUID = CBUUID(string: "0x2A29")
         
-        disposable =
-            connectionManager
-                .connectToPeripheral(with: nil, scanMatcher: scanMatcher)
-                .flatMap { (gattIO) -> Single<Data?> in
-                    let deviceName = gattIO.deviceName ?? "no device name"
-                    self.consoleLog(text: "Connected to \(deviceName)!")
-                    
-                    return gattIO.read(service: serviceUUID, characteristic: characteristicUUID)
+        let disposeBag = DisposeBag()
+        
+        
+        // Two ways to connect to and read from a peripheral:
+        
+        // 1. Connect to a peripheral and immediately read
+        connectionManager
+            .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
+            .read(service: serviceUUID, characteristic: characteristicUUID)
+            .subscribe(onNext: { (data: Data?) in
+                if let data = data {
+                    let dataString = data.hexEncodedString()
+                    self.consoleLog(text: "Read: \(dataString)")
+                } else {
+                    self.consoleLog(text: "Read: No data found")
                 }
-                .subscribe(onNext: { (data: Data?) in
-                    if let data = data {
-                        let dataString = data.hexEncodedString()
-                        self.consoleLog(text: "Read: \(dataString)")
-                    } else {
-                        self.consoleLog(text: "Read: No data found")
-                    }
-                }, onError: { (error) in
-                    self.consoleLog(text: "Error: \(error.localizedDescription)")
-                })
+            }, onError: { (error) in
+                self.consoleLog(text: "Error: \(error.localizedDescription)")
+            })
+            .disposed(by: disposeBag)
         
         
-        
+        // 2. Connect to a peripheral and perform custom logic before reading
+//        connectionManager
+//            .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
+//            .flatMap { (gattIO) -> Single<Data?> in
+//                let deviceName = gattIO.deviceName ?? "no device name"
+//                self.consoleLog(text: "Connected to \(deviceName)!")
+//
+//                return gattIO.read(service: serviceUUID, characteristic: characteristicUUID)
+//            }
+//            .subscribe(onNext: { (data: Data?) in
+//                if let data = data {
+//                    let dataString = data.hexEncodedString()
+//                    self.consoleLog(text: "Read: \(dataString)")
+//                } else {
+//                    self.consoleLog(text: "Read: No data found")
+//                }
+//            }, onError: { (error) in
+//                self.consoleLog(text: "Error: \(error.localizedDescription)")
+//            })
+//            .disposed(by: disposeBag)
     }
     
     private func consoleLog(text: String) {
         consoleTextView.text.append(contentsOf: "\n" + text)
     }
-    
-    private func showConnectionAlert() {
-        // create the alert
-        let alert = UIAlertController(title: "Invalid Name", message: "No peripheral matches that name. Please enter a valid name.", preferredStyle: UIAlertController.Style.alert)
-        
-        // add an action (button)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        
-        // show the alert
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    private var disposable: Disposable? = nil
-    
 }
 
 fileprivate class DeviceNameScanMatcher: ScanMatcher {

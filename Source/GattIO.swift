@@ -42,3 +42,11 @@ public protocol GattIO: Preprocessor {
 public protocol Preprocessor {
     func process(data: Data) -> Data
 }
+
+public extension ObservableType where E == GattIO {
+    func read(service: CBUUID, characteristic: CBUUID) -> Observable<Data?> {
+        return flatMap { (element: E) -> Single<Data?> in
+            element.read(service: service, characteristic: characteristic)
+        }
+    }
+}
