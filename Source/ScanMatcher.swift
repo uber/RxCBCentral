@@ -19,10 +19,7 @@ import RxSwift
 
 // Provides the capability to specify means to identify discovered peripheral matches.
 public protocol ScanMatcher {
-    // Pass a peripheral into the ScanMatcher.
+    /// Pass a peripheral into the ScanMatcher. This function is used to determine if this discovered peripheral
+    /// is a match against parameters and logic needed for your use case. If so, return a sequence with that peripheral.
     func accept(_ peripheral: CBPeripheral) -> Observable<CBPeripheral>
-
-    // Determines if the ScanData for a discovered peripheral is a match against parameters and logic
-    // specified by this ScanMatcher.
-//    func findMatchingPeripheral(using scanData: ScanData) -> Observable<CBPeripheral>
 }

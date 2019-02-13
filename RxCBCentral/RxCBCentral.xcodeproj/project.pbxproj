@@ -15,17 +15,14 @@
 		CDFE3FA021E8420800CF931B /* Read.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8921E8420700CF931B /* Read.swift */; };
 		CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */; };
 		CDFE3FA221E8420800CF931B /* CoreGattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */; };
-		CDFE3FA321E8420800CF931B /* CoreParsedAdvertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */; };
 		CDFE3FA421E8420800CF931B /* CoreBluetoothDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */; };
 		CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8F21E8420700CF931B /* CentralScanner.swift */; };
 		CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9021E8420700CF931B /* CoreGattIO.swift */; };
-		CDFE3FA721E8420800CF931B /* ScanData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9121E8420700CF931B /* ScanData.swift */; };
 		CDFE3FA821E8420800CF931B /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9221E8420700CF931B /* ConnectionManager.swift */; };
 		CDFE3FA921E8420800CF931B /* GattOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9321E8420700CF931B /* GattOperation.swift */; };
 		CDFE3FAA21E8420800CF931B /* BluetoothDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */; };
 		CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9521E8420700CF931B /* GattIO.swift */; };
 		CDFE3FAC21E8420800CF931B /* ScanMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9621E8420700CF931B /* ScanMatcher.swift */; };
-		CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9721E8420700CF931B /* Scanner.swift */; };
 		CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9821E8420700CF931B /* Utils.swift */; };
 		CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9921E8420700CF931B /* GattManager.swift */; };
 /* End PBXBuildFile section */
@@ -41,17 +38,14 @@
 		CDFE3F8921E8420700CF931B /* Read.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Read.swift; sourceTree = "<group>"; };
 		CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractWrite.swift; sourceTree = "<group>"; };
 		CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGattManager.swift; sourceTree = "<group>"; };
-		CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreParsedAdvertisement.swift; sourceTree = "<group>"; };
 		CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreBluetoothDetector.swift; sourceTree = "<group>"; };
 		CDFE3F8F21E8420700CF931B /* CentralScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralScanner.swift; sourceTree = "<group>"; };
 		CDFE3F9021E8420700CF931B /* CoreGattIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGattIO.swift; sourceTree = "<group>"; };
-		CDFE3F9121E8420700CF931B /* ScanData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanData.swift; sourceTree = "<group>"; };
 		CDFE3F9221E8420700CF931B /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		CDFE3F9321E8420700CF931B /* GattOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattOperation.swift; sourceTree = "<group>"; };
 		CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothDetector.swift; sourceTree = "<group>"; };
 		CDFE3F9521E8420700CF931B /* GattIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattIO.swift; sourceTree = "<group>"; };
 		CDFE3F9621E8420700CF931B /* ScanMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanMatcher.swift; sourceTree = "<group>"; };
-		CDFE3F9721E8420700CF931B /* Scanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
 		CDFE3F9821E8420700CF931B /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CDFE3F9921E8420700CF931B /* GattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattManager.swift; sourceTree = "<group>"; };
 		CDFE3FB421E8473300CF931B /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
@@ -99,13 +93,11 @@
 			isa = PBXGroup;
 			children = (
 				CDFE3F8321E8420700CF931B /* core */,
-				CDFE3F9121E8420700CF931B /* ScanData.swift */,
 				CDFE3F9221E8420700CF931B /* ConnectionManager.swift */,
 				CDFE3F9321E8420700CF931B /* GattOperation.swift */,
 				CDFE3F9421E8420700CF931B /* BluetoothDetector.swift */,
 				CDFE3F9521E8420700CF931B /* GattIO.swift */,
 				CDFE3F9621E8420700CF931B /* ScanMatcher.swift */,
-				CDFE3F9721E8420700CF931B /* Scanner.swift */,
 				CDFE3F9821E8420700CF931B /* Utils.swift */,
 				CDFE3F9921E8420700CF931B /* GattManager.swift */,
 			);
@@ -119,7 +111,6 @@
 				CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */,
 				CDFE3F8521E8420700CF931B /* Operations */,
 				CDFE3F8B21E8420700CF931B /* CoreGattManager.swift */,
-				CDFE3F8C21E8420700CF931B /* CoreParsedAdvertisement.swift */,
 				CDFE3F8D21E8420700CF931B /* CoreBluetoothDetector.swift */,
 				CDFE3F8E21E8420700CF931B /* Helper */,
 				CDFE3F9021E8420700CF931B /* CoreGattIO.swift */,
@@ -265,16 +256,13 @@
 				CDFE3FAA21E8420800CF931B /* BluetoothDetector.swift in Sources */,
 				CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */,
 				CDFE3F9F21E8420800CF931B /* Write.swift in Sources */,
-				CDFE3FAD21E8420800CF931B /* Scanner.swift in Sources */,
 				CDFE3FA821E8420800CF931B /* ConnectionManager.swift in Sources */,
 				CDFE3FA221E8420800CF931B /* CoreGattManager.swift in Sources */,
-				CDFE3FA321E8420800CF931B /* CoreParsedAdvertisement.swift in Sources */,
 				CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */,
 				CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */,
 				CDFE3FA921E8420800CF931B /* GattOperation.swift in Sources */,
 				CDFE3FA421E8420800CF931B /* CoreBluetoothDetector.swift in Sources */,
 				CDFE3FA021E8420800CF931B /* Read.swift in Sources */,
-				CDFE3FA721E8420800CF931B /* ScanData.swift in Sources */,
 				CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */,
 				CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */,
 				CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */,
