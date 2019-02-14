@@ -51,9 +51,11 @@ public class CoreBluetoothDetector: NSObject, BluetoothDetector, CBCentralManage
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOff:
+            RxCBLogger.sharedInstance.log("Bluetooth powered off.")
             _enabledSubject.onNext(false)
             _capabilitySubject.onNext(.disabled)
         case .poweredOn:
+            RxCBLogger.sharedInstance.log("Bluetooth powered on.")
             _enabledSubject.onNext(true)
             _capabilitySubject.onNext(.enabled)
         case .resetting:

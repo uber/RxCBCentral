@@ -60,8 +60,10 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         // check that bluetooth is powered on
         guard centralManager.state == .poweredOn else {
             if centralManager.state == .poweredOff || centralManager.state == .resetting {
+                RxCBLogger.sharedInstance.log("Error: bluetooth disabled")
                 return Observable.error(BluetoothError.disabled)
             } else {
+                RxCBLogger.sharedInstance.log("Error: bluetooth unsupported")
                 return Observable.error(BluetoothError.unsupported)
             }
         }
@@ -76,12 +78,11 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
                 self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
             })
             .timeout(ConnectionConstants.defaultScanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
-            .do(onError: { _ in
+            .do(onError: { error in
                 self.centralManager.stopScan()
+                RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
             })
-        
-        
-
+    
         return sharedGattIOObservable
     }
     
@@ -94,19 +95,23 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         didDiscoverPeripheralSubject.onNext(peripheral)
         self.discoveredPeripherals.insert(peripheral)
+        RxCBLogger.sharedInstance.log("Discovered peripheral: \(peripheral.description), RSSI: \(RSSI)")
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         didConnectToPeripheralSubject.onNext(peripheral)
         didUpdateStateSubject.onNext(.connected)
+        RxCBLogger.sharedInstance.log("Connected to: \(peripheral.description)")
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         didUpdateStateSubject.onNext(.disconnected(error))
+        RxCBLogger.sharedInstance.log("Disconnected from: \(peripheral.description)\nError: \(error?.localizedDescription ?? "none")")
     }
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         didUpdateStateSubject.onNext(.disconnected(error))
+        RxCBLogger.sharedInstance.log("Failed to connect: \(peripheral.description)\nError: \(error?.localizedDescription ?? "none")")
     }
     
     // MARK: - Private
@@ -123,11 +128,13 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private let didUpdateStateSubject = BehaviorSubject<ConnectionManagerState>(value: ConnectionManagerState.disconnected(nil))
     
     private func connect(_ peripheral: CBPeripheral, options: ConnectionManagerOptions? = nil) {
+        RxCBLogger.sharedInstance.log("Connecting to \(peripheral.description).")
         centralManager.connect(peripheral, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.connecting)
     }
     
     private func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: ConnectionManagerOptions? = nil) {
+        RxCBLogger.sharedInstance.log("Scanning for services.")
         centralManager.scanForPeripherals(withServices: serviceUUIDs, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.scanning)
     }

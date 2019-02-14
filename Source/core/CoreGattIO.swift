@@ -66,9 +66,6 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     guard state == .connected else { return Observable.error(GattIOError.notConnected) }
                     return self.didDiscoverServicesSubject.asObservable()
                 }
-                .do(onNext: { (services: [CBService], _) in
-                    print(services.description)
-                })
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                     let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
                     return (matchingService, error)
@@ -81,10 +78,12 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
                     guard let _ = matchingService else {
+                        RxCBLogger.sharedInstance.log("Error: service not found")
                         return Observable.error(GattIOError.serviceNotFound)
                     }
                     
                     if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.error(error)
                     }
                     
@@ -102,16 +101,19 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(Data?, Error?)> in
                     guard let _ = matchingCharacteristic else {
+                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
                         return Observable.error(GattIOError.characteristicNotFound)
                     }
                     
                     if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.error(error)
                     }
                     
                     return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
                 .map { (readData: Data?, error: Error?) -> Data? in
+                    RxCBLogger.sharedInstance.log("Read data: \(readData?.description ?? "")")
                     return readData
                 }
                 .take(1)
@@ -132,9 +134,6 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     guard state == .connected else { return Observable.error(GattIOError.notConnected) }
                     return self.didDiscoverServicesSubject.asObservable()
                 }
-                .do(onNext: { (services: [CBService], _) in
-                    print(services.description)
-                })
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                     let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
                     return (matchingService, error)
@@ -147,10 +146,12 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
                     guard let _ = matchingService else {
+                        RxCBLogger.sharedInstance.log("Error: service not found")
                         return Observable.error(GattIOError.serviceNotFound)
                     }
                     
                     if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.error(error)
                     }
                     
@@ -172,10 +173,12 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
                     guard let _ = matchingCharacteristic else {
+                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
                         return Observable.error(GattIOError.characteristicNotFound)
                     }
                     
                     if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.error(error)
                     }
                     
@@ -184,8 +187,10 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .take(1)
                 .flatMapLatest { (error: Error?) -> Completable in
                     if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.error(error).asCompletable()
                     }
+                    RxCBLogger.sharedInstance.log("Write successful.")
                     return Observable.empty().asCompletable()
                 }
                 .take(1)

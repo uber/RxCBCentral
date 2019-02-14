@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD3309C22214E4500041EE49 /* RxCBLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3309C12214E4500041EE49 /* RxCBLogger.swift */; };
 		CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8421E8420700CF931B /* CoreConnectionManager.swift */; };
 		CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8621E8420700CF931B /* ReadRssi.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CD3309C12214E4500041EE49 /* RxCBLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxCBLogger.swift; sourceTree = "<group>"; };
 		CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
 		CDFE3F4921E83EFA00CF931B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,6 +64,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CD3309C02214E4200041EE49 /* debug */ = {
+			isa = PBXGroup;
+			children = (
+				CD3309C12214E4500041EE49 /* RxCBLogger.swift */,
+			);
+			path = debug;
+			sourceTree = "<group>";
+		};
 		CDFE3F3B21E83EF900CF931B = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +102,7 @@
 		CDFE3F8121E8420700CF931B /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				CD3309C02214E4200041EE49 /* debug */,
 				CDFE3F8321E8420700CF931B /* core */,
 				CDFE3F9221E8420700CF931B /* ConnectionManager.swift */,
 				CDFE3F9321E8420700CF931B /* GattOperation.swift */,
@@ -257,6 +268,7 @@
 				CDFE3FAF21E8420800CF931B /* GattManager.swift in Sources */,
 				CDFE3F9F21E8420800CF931B /* Write.swift in Sources */,
 				CDFE3FA821E8420800CF931B /* ConnectionManager.swift in Sources */,
+				CD3309C22214E4500041EE49 /* RxCBLogger.swift in Sources */,
 				CDFE3FA221E8420800CF931B /* CoreGattManager.swift in Sources */,
 				CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */,
 				CDFE3F9C21E8420800CF931B /* CoreConnectionManager.swift in Sources */,

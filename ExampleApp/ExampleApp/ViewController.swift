@@ -25,8 +25,9 @@ class ViewController: UIViewController {
         
         bluetoothDetector = CoreBluetoothDetector(options: nil)
         connectionManager = CoreConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
+        
+        subscribeToRxCBLogger()
     }
-
     
     @IBAction func didTapConnect(_ sender: Any) {
         nameTextField.resignFirstResponder()
@@ -52,14 +53,7 @@ class ViewController: UIViewController {
             .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
             .read(service: serviceUUID, characteristic: characteristicUUID)
             .subscribe(onNext: { (data: Data?) in
-                if let data = data {
-                    let dataString = data.hexEncodedString()
-                    self.consoleLog(text: "Read: \(dataString)")
-                } else {
-                    self.consoleLog(text: "Read: No data found")
-                }
-            }, onError: { (error) in
-                self.consoleLog(text: "Error: \(error.localizedDescription)")
+                
             })
             .disposed(by: disposeBag)
         
@@ -86,8 +80,17 @@ class ViewController: UIViewController {
 //            .disposed(by: disposeBag)
     }
     
-    private func consoleLog(text: String) {
-        consoleTextView.text.append(contentsOf: "\n" + text)
+    private func consoleLog(_ text: String) {
+        consoleTextView.text.append(contentsOf: "\n\n" + text)
+    }
+    
+    private func subscribeToRxCBLogger() {
+        RxCBLogger.sharedInstance
+            .read()
+            .subscribe(onNext: { (log: String) in
+                self.consoleLog(log)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -115,11 +118,5 @@ fileprivate class DeviceNameScanMatcher: ScanMatcher {
     
     private let deviceName: String
     private var peripherals: Set<CBPeripheral> = []
-}
-
-extension Data {
-    func hexEncodedString() -> String {
-        return "0x" + map { String(format: "%02hhx", $0) }.joined()
-    }
 }
 
