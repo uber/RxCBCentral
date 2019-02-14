@@ -75,6 +75,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         let sharedGattIOObservable =
             generateGattIOSequence(with: peripheralObservable)
             .do(onSubscribe: {
+                RxCBLogger.sharedInstance.log("Scanning...")
                 self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
             })
             .timeout(ConnectionConstants.defaultScanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
@@ -128,13 +129,12 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private let didUpdateStateSubject = BehaviorSubject<ConnectionManagerState>(value: ConnectionManagerState.disconnected(nil))
     
     private func connect(_ peripheral: CBPeripheral, options: ConnectionManagerOptions? = nil) {
-        RxCBLogger.sharedInstance.log("Connecting to \(peripheral.description).")
         centralManager.connect(peripheral, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.connecting)
     }
     
     private func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: ConnectionManagerOptions? = nil) {
-        RxCBLogger.sharedInstance.log("Scanning for services.")
+        
         centralManager.scanForPeripherals(withServices: serviceUUIDs, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.scanning)
     }
@@ -164,6 +164,17 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
                 let gattIO: GattIO = CoreGattIO(peripheral: peripheral, connectionState: self.didUpdateStateSubject.asObservable())
                 return Observable.just(gattIO)
             })
+    }
+}
+
+extension ConnectionManagerError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .alreadyScanning:
+            return NSLocalizedString("Central is already scanning.", comment: "Connection manager error")
+        case .scanTimeout:
+            return NSLocalizedString("Scanning for peripheral timed out.", comment: "Connection manager error")
+        }
     }
 }
 

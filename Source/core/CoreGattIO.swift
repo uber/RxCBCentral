@@ -19,12 +19,6 @@ import CoreBluetooth
 import RxOptional
 import RxSwift
 
-public enum GattIOError: Error {
-    case serviceNotFound
-    case characteristicNotFound
-    case notConnected
-}
-
 public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     public init(peripheral: CBPeripheral, connectionState: Observable<ConnectionManagerState>) {
@@ -310,4 +304,17 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
     private let didUpdateValueForCharacteristicSubject = PublishSubject<(Data?, Error?)>()
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
+}
+
+extension GattIOError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .serviceNotFound:
+            return NSLocalizedString("No matching service found for connected peripheral.", comment: "GattIO error")
+        case .characteristicNotFound:
+            return NSLocalizedString("No matching characteristic found for connected peripheral.", comment: "GattIO error")
+        case .notConnected:
+            return NSLocalizedString("Not connected: cannot perform Gatt operations", comment: "GattIO error")
+        }
+    }
 }

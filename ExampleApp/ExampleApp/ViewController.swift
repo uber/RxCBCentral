@@ -53,7 +53,8 @@ class ViewController: UIViewController {
             .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
             .read(service: serviceUUID, characteristic: characteristicUUID)
             .subscribe(onNext: { (data: Data?) in
-                
+                // do something with data
+                print(data?.description ?? "no data")
             })
             .disposed(by: disposeBag)
         

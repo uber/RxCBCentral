@@ -82,3 +82,14 @@ public class CoreBluetoothDetector: NSObject, BluetoothDetector, CBCentralManage
     private let _capabilitySubject = ReplaySubject<Capability>.create(bufferSize: 1)
     private let _enabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)
 }
+
+extension BluetoothError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .disabled:
+            return NSLocalizedString("Bluetooth is disabled.", comment: "Bluetooth error")
+        case .unsupported:
+            return NSLocalizedString("Bluetooth is unsupported by this device.", comment: "Bluetooth error")
+        }
+    }
+}

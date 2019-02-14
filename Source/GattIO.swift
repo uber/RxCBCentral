@@ -18,6 +18,12 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
+public enum GattIOError: Error {
+    case serviceNotFound
+    case characteristicNotFound
+    case notConnected
+}
+
 // Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
 //
 /// @CreateMocks
