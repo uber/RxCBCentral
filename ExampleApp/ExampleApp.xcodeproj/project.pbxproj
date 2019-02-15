@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD3309C422174DEF0041EE49 /* GattUUIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3309C322174DEF0041EE49 /* GattUUIDs.swift */; };
 		CD45988F220CB09100F09AD6 /* RxOptional.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD45988D220CB06F00F09AD6 /* RxOptional.framework */; };
 		CD459890220CB09100F09AD6 /* RxOptional.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD45988D220CB06F00F09AD6 /* RxOptional.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CD716F31220B8BF500DF40F8 /* RxCBCentral.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDFE3F7B21E840E400CF931B /* RxCBCentral.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -35,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CD3309C322174DEF0041EE49 /* GattUUIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GattUUIDs.swift; sourceTree = "<group>"; };
 		CD45988D220CB06F00F09AD6 /* RxOptional.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxOptional.framework; path = ../Carthage/Build/iOS/RxOptional.framework; sourceTree = "<group>"; };
 		CDFE3F5921E83F4000CF931B /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFE3F5C21E83F4000CF931B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			children = (
 				CDFE3F5C21E83F4000CF931B /* AppDelegate.swift */,
 				CDFE3F5E21E83F4000CF931B /* ViewController.swift */,
+				CD3309C322174DEF0041EE49 /* GattUUIDs.swift */,
 				CDFE3F6021E83F4000CF931B /* Main.storyboard */,
 				CDFE3F6321E83F4000CF931B /* Assets.xcassets */,
 				CDFE3F6521E83F4000CF931B /* LaunchScreen.storyboard */,
@@ -199,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDFE3F5F21E83F4000CF931B /* ViewController.swift in Sources */,
+				CD3309C422174DEF0041EE49 /* GattUUIDs.swift in Sources */,
 				CDFE3F5D21E83F4000CF931B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

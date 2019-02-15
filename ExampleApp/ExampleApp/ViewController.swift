@@ -32,26 +32,20 @@ class ViewController: UIViewController {
     @IBAction func didTapConnect(_ sender: Any) {
         nameTextField.resignFirstResponder()
         
-//        let batteryService = CBUUID(string: "0x180F")
-//        let currentTimeService = CBUUID(string: "0x1805")
-//        let deviceInformationService = CBUUID(string: "0x180A")
-//        let beaconServices = [batteryService, currentTimeService, deviceInformationService]
-        
         var scanMatcher: ScanMatcher? = nil
         
         if let deviceName = nameTextField.text, deviceName.isNotEmpty {
             scanMatcher = DeviceNameScanMatcher(deviceName: deviceName)
         }
         
-        let serviceUUID = CBUUID(string: "0x180A")
-        let characteristicUUID = CBUUID(string: "0x2A29")
+        let servicesToFind = [GattUUIDs.BATTERY_SVC_UUID, GattUUIDs.DIS_SVC_UUID, GattUUIDs.GAP_SVC_UUID]
         
         // Two ways to connect to and read from a peripheral:
         
         // 1. Connect to a peripheral and immediately read
         connectionManager
-            .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
-            .read(service: serviceUUID, characteristic: characteristicUUID)
+            .connectToPeripheral(with: servicesToFind, scanMatcher: scanMatcher)
+            .read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID)
             .subscribe(onNext: { (data: Data?) in
                 // do something with data
                 print(data?.description ?? "no data")
