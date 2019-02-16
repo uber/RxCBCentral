@@ -21,9 +21,6 @@ import RxSwift
 
 /// Read data from a GATT characteristic
 public struct Read: GattOperation {
-
-    public typealias TraitType = SingleTrait
-    public typealias Element = Data?
     
     public var result: Single<Data?>
 

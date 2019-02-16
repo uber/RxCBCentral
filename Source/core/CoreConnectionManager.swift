@@ -134,14 +134,15 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     }
     
     private func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: ConnectionManagerOptions? = nil) {
-        
         centralManager.scanForPeripherals(withServices: serviceUUIDs, options: options?.asDictionary)
         didUpdateStateSubject.onNext(.scanning)
     }
     
     private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatcher?) -> Observable<CBPeripheral> {
+        // if no scanMatcher provided, return the first peripheral discovered that meets our serviceUUID requirements
         guard let scanMatcher = scanMatcher else { return didDiscoverPeripheralSubject }
         
+        // use the provided scanMatcher to determine which peripherals to discover
         return didDiscoverPeripheralSubject
             .flatMapLatest { (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
                 return scanMatcher.accept(peripheral)
@@ -161,6 +162,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
             })
             .take(1)
             .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<GattIO> in
+                self.didUpdateStateSubject.onNext(.connected)
                 let gattIO: GattIO = CoreGattIO(peripheral: peripheral, connectionState: self.didUpdateStateSubject.asObservable())
                 return Observable.just(gattIO)
             })

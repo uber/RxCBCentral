@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Foundation
+import CoreBluetooth
 import RxSwift
 
 //  Set the underlying GattIO interface the GattManager will communicate with. May be set multiple
@@ -22,8 +22,12 @@ import RxSwift
 //
 /// @CreateMocks
 public protocol GattManager {
-    var gattIO: GattIO { get set }
+    func accept(gattIO: GattIO)
+    var isConnected: Observable<Bool> { get }
 
-    associatedtype T
-    func queue<Element: GattOperation>(operation: Element) -> T
+    func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data>
+    
+    func queue<O: GattOperation>(operation: O) -> Single<O.Element>
+    
+    
 }

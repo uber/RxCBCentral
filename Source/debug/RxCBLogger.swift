@@ -26,8 +26,7 @@ public protocol LoggingStream {
     func read() -> Observable<String>
 }
 
-
-/// A logger that exposes RxCBCentral state changes as a sequence of logs that a consumer can subscribe to to receive updates.
+/// A singleton logger that exposes RxCBCentral state changes as a sequence of logs that a consumer can subscribe to to receive updates.
 public class RxCBLogger: Logger, LoggingStream {
     
     public static let sharedInstance = RxCBLogger()

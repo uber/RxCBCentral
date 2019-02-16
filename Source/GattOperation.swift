@@ -16,15 +16,17 @@
 
 import RxSwift
 
-// An operation to perform against a peripheral. Meant to be queued on a GattManager implementation
-// for serial execution.
+/// An operation to perform against a peripheral. Meant to be queued on a GattManager implementation
+/// for serial execution.
+public protocol GattOperationExecutable {
+    /// Execute the operation. There must be an active subscription to the result stream for the
+    /// operation to execute..
+    /// - parameter gattIO: the GattIO to execute the operation against.
+    func execute(gattIO: GattIO)
+}
 
-/// @CreateMocks
-public protocol GattOperation {
-    associatedtype TraitType
+public protocol GattOperation: GattOperationExecutable {
     associatedtype Element
 
-    var result: PrimitiveSequence<TraitType, Element> { get }
-    func execute(gattIO: GattIO)
-    func execute(gattIO: GattIO) -> PrimitiveSequence<TraitType, Element>
+    var result: Single<Element> { get }
 }

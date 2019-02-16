@@ -218,22 +218,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Source/core/CoreConnectionManager.swift"
-            timestampString = "571799559.815099"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "scanForPeripherals(withServices:options:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Source/core/CoreConnectionManager.swift"
             timestampString = "571799559.815375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"

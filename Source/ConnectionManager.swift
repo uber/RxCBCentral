@@ -18,6 +18,11 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
+
+public protocol ConnectionManager: class {
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO>
+}
+
 // State of the ConnectionManager.
 public enum ConnectionManagerState {
     case connected
@@ -53,8 +58,4 @@ public struct ConnectionConstants {
 enum ConnectionManagerError: Error {
     case alreadyScanning
     case scanTimeout
-}
-
-public protocol ConnectionManager: class {
-    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO>
 }
