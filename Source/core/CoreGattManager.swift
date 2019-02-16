@@ -20,26 +20,36 @@ import RxCocoa
 import RxSwift
 
 public class CoreGattManager: GattManager {
-    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
-        return Observable.just(Data())
+    
+    public var isConnected: Observable<Bool> {
+        return _gattRelay
+            .flatMapLatest { Observable.just($0?.isConnected ?? false) }
+            .startWith(false)
     }
     
     public func queue<O: GattOperation>(operation: O) -> Single<O.Element> {
         return operation
             .result
             .do(onSubscribe: {
-                self.synchronized(self._queueSync, {
+                self.synchronized(self._queueSync) {
                     self._operationQueue.enqueue(operation)
                     self.executeNext()
-                })
+                }
             })
+            .asObservable()
+            .doFinally {
+                self.synchronized(self._queueSync) {
+                    self._currentOperation = nil
+                    self.executeNext()
+                }
+            }
+            .asSingle()
     }
     
     
-    public var isConnected: Observable<Bool> {
-        return _gattRelay
-            .flatMapLatest { Observable.just($0?.isConnected ?? false) }
-            .startWith(false)
+    // TODO: implement GattManager notifications
+    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
+        return Observable.just(Data())
     }
     
 //    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
@@ -48,12 +58,15 @@ public class CoreGattManager: GattManager {
 //            .flatMapLatest { $0.registerForNotification(service: service, characteristic: characteristic) }
 //    }
     
-
     public func accept(gattIO: GattIO) {
         _gattRelay.accept(gattIO)
         
+        synchronized(_queueSync) {
+            executeNext()
+        }
     }
     
+    /// If the queue isn't empty and we're not already running an operation, qequeues an operation and executes it
     private func executeNext() {
         guard let gattIO = _gattRelay.value, _currentOperation == nil else { return }
         
@@ -68,6 +81,8 @@ public class CoreGattManager: GattManager {
     
     private let _queueSync: NSObject = NSObject()
     
+    // TODO: add to a helper class
+    // Helper function for executing synchronous, threadsafe closures
     private func synchronized(_ object: Any, _ closure: () -> ()) {
         objc_sync_enter(object)
         defer { objc_sync_exit(object) }
@@ -76,7 +91,7 @@ public class CoreGattManager: GattManager {
     }
 }
 
-
+/// Queue for GattOperations. Simple wrapper arround Array
 fileprivate struct GattQueue {
     mutating func enqueue(_ operation: GattOperationExecutable) {
         _source.append(operation)
@@ -91,4 +106,12 @@ fileprivate struct GattQueue {
     }
     
     private var _source = [GattOperationExecutable]()
+}
+
+extension ObservableType {
+    func doFinally(_ finally: @escaping () -> ()) -> Observable<E> {
+        return `do`(onError: { _ in finally() },
+                    onCompleted: finally,
+                    onDispose: finally)
+    }
 }

@@ -22,12 +22,9 @@ import RxSwift
 //
 /// @CreateMocks
 public protocol GattManager {
-    func accept(gattIO: GattIO)
     var isConnected: Observable<Bool> { get }
 
-    func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data>
-    
+    func accept(gattIO: GattIO)
     func queue<O: GattOperation>(operation: O) -> Single<O.Element>
-    
-    
+    func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data>
 }
