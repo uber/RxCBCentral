@@ -16,7 +16,6 @@
  */
 
 import CoreBluetooth
-import RxCocoa
 import RxSwift
 
 /// Register for characteristic notifications.
@@ -25,19 +24,18 @@ public class RegisterNotification: GattOperation {
     public let result: Single<()>
     
     public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, preprocessor: Preprocessor? = nil, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
-        let gattRelay: BehaviorRelay<GattIO?> = BehaviorRelay(value: nil)
-        self._gattRelay = gattRelay
+        let gattSubject: BehaviorSubject<GattIO?> = BehaviorSubject(value: nil)
+        self._gattSubject = gattSubject
         
-        result = _gattRelay
+        result = _gattSubject
             .filterNil()
             .take(1)
             .asSingle()
             .do(onSuccess: { gattIO in
-                gattRelay.accept(nil)
+                gattSubject.onNext(nil)
             })
             .flatMap { (gattIO: GattIO) -> Single<()> in
-                gattIO
-                    .registerForNotification(service: service, characteristic: characteristic, preprocessor: preprocessor)
+                gattIO.registerForNotification(service: service, characteristic: characteristic, preprocessor: preprocessor)
                     .andThen(Single.just(()))
             }
             .asObservable()
@@ -48,8 +46,8 @@ public class RegisterNotification: GattOperation {
     }
     
     public func execute(gattIO: GattIO) {
-        _gattRelay.accept(gattIO)
+        _gattSubject.onNext(gattIO)
     }
     
-    private let _gattRelay: BehaviorRelay<GattIO?>
+    private let _gattSubject: BehaviorSubject<GattIO?>
 }
