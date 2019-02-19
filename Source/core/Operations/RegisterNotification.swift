@@ -15,10 +15,41 @@
  * limitations under the License.
  */
 
+import CoreBluetooth
+import RxCocoa
 import RxSwift
 
-//public struct RegisterNotification: GattOperation {
-//
-//    public init(svc: UUID, chr: UUID, preprocessor: Preprocessor? = nil, timeoutSeconds: RxTimeInterval)
-//
-//}
+/// Register for characteristic notifications.
+public class RegisterNotification: GattOperation {
+
+    public let result: Single<()>
+    
+    public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, preprocessor: Preprocessor? = nil, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
+        let gattRelay: BehaviorRelay<GattIO?> = BehaviorRelay(value: nil)
+        self._gattRelay = gattRelay
+        
+        result = _gattRelay
+            .filterNil()
+            .take(1)
+            .asSingle()
+            .do(onSuccess: { gattIO in
+                gattRelay.accept(nil)
+            })
+            .flatMap { (gattIO: GattIO) -> Single<()> in
+                gattIO
+                    .registerForNotification(service: service, characteristic: characteristic, preprocessor: preprocessor)
+                    .andThen(Single.just(()))
+            }
+            .asObservable()
+            .share()
+            .take(1)
+            .asSingle()
+            .timeout(timeoutSeconds, scheduler: scheduler)
+    }
+    
+    public func execute(gattIO: GattIO) {
+        _gattRelay.accept(gattIO)
+    }
+    
+    private let _gattRelay: BehaviorRelay<GattIO?>
+}

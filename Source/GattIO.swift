@@ -37,7 +37,8 @@ public protocol GattIO: Preprocessor {
     func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?>
     func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable
 
-    func registerForNotification(service: CBUUID, characteristic: CBUUID) -> Completable
+    func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor?) -> Completable
+    func notificationData(for characteristic: CBUUID) -> Observable<Data>
 }
 
 public protocol Preprocessor {

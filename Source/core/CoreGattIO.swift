@@ -93,7 +93,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                         self.peripheral.readValue(for: matchingCharacteristic)
                     }
                 })
-                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(Data?, Error?)> in
+                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<(CBCharacteristic, Error?)> in
                     guard let _ = matchingCharacteristic else {
                         RxCBLogger.sharedInstance.log("Error: characteristic not found")
                         return Observable.error(GattIOError.characteristicNotFound)
@@ -106,9 +106,9 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     
                     return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
-                .map { (readData: Data?, error: Error?) -> Data? in
-                    RxCBLogger.sharedInstance.log("Read data: \(readData?.description ?? "")")
-                    return readData
+                .map { (characteristic: CBCharacteristic, error: Error?) -> Data? in
+                    RxCBLogger.sharedInstance.log("Read data: \(characteristic.value?.description ?? "")")
+                    return characteristic.value
                 }
                 .take(1)
                 .asSingle()
@@ -158,8 +158,9 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 }
                 .do(onNext: { (matchingCharacteristic: CBCharacteristic?, error: Error?) in
                     if let matchingCharacteristic = matchingCharacteristic, error == nil {
-                        let CBCharacteristicPropertyWrite: UInt = 0x08
-                        let writeType = (matchingCharacteristic.properties.rawValue & CBCharacteristicPropertyWrite) == CBCharacteristicPropertyWrite ? CBCharacteristicWriteType.withResponse : CBCharacteristicWriteType.withoutResponse
+                        
+                        let properties: CBCharacteristicProperties = matchingCharacteristic.properties
+                        let writeType = properties.contains(CBCharacteristicProperties.write) ? CBCharacteristicWriteType.withResponse : CBCharacteristicWriteType.withoutResponse
                         
                         // let CB give an error if property isn't writable
                         self.peripheral.writeValue(data, for: matchingCharacteristic, type: writeType)
@@ -188,7 +189,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     return Observable.empty().asCompletable()
                 }
                 .take(1)
-                .asCompletable()
+                .ignoreElements()
                 .do(onSubscribe: {
                     self.peripheral.discoverServices([service])
                 })
@@ -197,7 +198,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         return sharedWriteCompletable
     }
 
-    public func registerForNotification(service: CBUUID, characteristic: CBUUID) -> Completable {
+    public func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor? = nil) -> Completable {
         let sharedNotifyCompletable: Completable =
             didDiscoverServicesSubject
                 .do(onNext: { (services: [CBService], _) in
@@ -229,14 +230,20 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
                     return (characteristic, error)
                 }
-                .do(onNext: { (matchingCharacteristic: CBCharacteristic?, error: Error?) in
-                    if let matchingCharacteristic = matchingCharacteristic, error == nil {
+                .do(onNext: { [weak self] (matchingCharacteristic: CBCharacteristic?, error: Error?) in
+                    if let self = self, let matchingCharacteristic = matchingCharacteristic, error == nil {
+                        // if given a preprocessor, track it with the char UUID
+                        if let preprocessor = preprocessor {
+                            self.synchronized(self.processSync) {
+                                self.preprocessorDict[characteristic] = preprocessor
+                            }
+                        }
                         
-                        // let CB give an error if property isn't writable
+                        // let CB give an error if property isn't notify-able
                         self.peripheral.setNotifyValue(true, for: matchingCharacteristic)
                     }
                 })
-                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(Data?, Error?)> in
+                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(CBCharacteristic, Error?)> in
                     guard let _ = matchingCharacteristic else {
                         return Observable.error(GattIOError.characteristicNotFound)
                     }
@@ -254,12 +261,34 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     return Observable.empty().asCompletable()
                 }
                 .take(1)
-                .asCompletable()
+                .ignoreElements()
                 .do(onSubscribe: {
                     self.peripheral.discoverServices([service])
                 })
         
         return sharedNotifyCompletable
+    }
+    
+    public func notificationData(for characteristic: CBUUID) -> Observable<Data> {
+        return didUpdateValueForCharacteristicSubject
+            .filter { (arg: (CBCharacteristic, Error?)) -> Bool in
+                let (notifyCharacteristic, error) = arg
+                return characteristic.uuidString == notifyCharacteristic.uuid.uuidString && error == nil
+            }
+            .flatMap { [weak self] (notifyCharacteristic: CBCharacteristic, _) -> Observable<Data?> in
+                var processedData: Data? = nil
+                
+                guard let `self` = self, let data = notifyCharacteristic.value else { return Observable.just(nil) }
+                
+                self.synchronized(self.processSync) {
+                    if let preprocessor = self.preprocessorDict[characteristic] {
+                        processedData = preprocessor.process(data: data)
+                    }
+                }
+                
+                return Observable.just(processedData)
+            }
+            .filterNil()
     }
 
     public func process(data: Data) -> Data {
@@ -284,7 +313,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     /// Invoked when you retrieve a characteristic’s value, or when the peripheral notifies you the value has changed
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        let valueData = (characteristic.value, error)
+        let valueData = (characteristic, error)
         didUpdateValueForCharacteristicSubject.onNext(valueData)
     }
     
@@ -294,15 +323,27 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     // MARK: - Private
     
+    // TODO: move to a helper class to share
+    private func synchronized(_ object: Any, _ closure: () -> ()) {
+        objc_sync_enter(object)
+        defer { objc_sync_exit(object) }
+        
+        closure()
+    }
+    
     private let peripheral: CBPeripheral
     private let connectionState: Observable<ConnectionManagerState>
+    private let processSync = NSObject()
+    
+    // Registered preprocessors mapped to their characteristic's CBUUID
+    private var preprocessorDict = [CBUUID: Preprocessor]()
     
     // MARK: - Delegate Subjects
     
     private let didReadRSSISubject = PublishSubject<Int>()
     private let didDiscoverServicesSubject = PublishSubject<([CBService], Error?)>()
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
-    private let didUpdateValueForCharacteristicSubject = PublishSubject<(Data?, Error?)>()
+    private let didUpdateValueForCharacteristicSubject = PublishSubject<(CBCharacteristic, Error?)>()
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
 
@@ -316,5 +357,32 @@ extension GattIOError: LocalizedError {
         case .notConnected:
             return NSLocalizedString("Not connected: cannot perform Gatt operations", comment: "GattIO error")
         }
+    }
+}
+
+extension CBCharacteristicProperties: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let map: [CBCharacteristicProperties.RawValue: String] = [
+            CBCharacteristicProperties.broadcast.rawValue: "broadcast",
+            CBCharacteristicProperties.read.rawValue: "read",
+            CBCharacteristicProperties.writeWithoutResponse.rawValue: "writeWithoutResponse",
+            CBCharacteristicProperties.write.rawValue: "write",
+            CBCharacteristicProperties.notify.rawValue: "notify",
+            CBCharacteristicProperties.indicate.rawValue: "indicate",
+            CBCharacteristicProperties.authenticatedSignedWrites.rawValue: "authenticatedSignedWrites",
+            CBCharacteristicProperties.extendedProperties.rawValue: "extendedProperties",
+            CBCharacteristicProperties.notifyEncryptionRequired.rawValue: "notifyEncryptionRequired",
+            CBCharacteristicProperties.indicateEncryptionRequired.rawValue: "indicateEncryptionRequired"
+        ]
+        
+        var toReturn = ""
+        
+        for (key, value) in map {
+            if self.contains(CBCharacteristicProperties(rawValue: key)) {
+                toReturn += value + ", "
+            }
+        }
+        
+        return toReturn
     }
 }

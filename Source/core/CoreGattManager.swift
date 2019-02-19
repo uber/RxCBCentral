@@ -49,6 +49,13 @@ public class CoreGattManager: GattManager {
     
     // TODO: implement GattManager notifications
     public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
+//        return _gattRelay
+//            .filterNil()
+//            .flatMapLatest { (gattIO: GattIO) -> Completable in
+//                return gattIO.registerForNotification(service: service, characteristic: characteristic, preprocessor: nil)
+//            }
+//            .asObservable()
+        
         return Observable.just(Data())
     }
     
@@ -74,13 +81,6 @@ public class CoreGattManager: GattManager {
         _currentOperation?.execute(gattIO: gattIO)
     }
     
-    private var _currentOperation: GattOperationExecutable?
-    private let _gattRelay = BehaviorRelay<GattIO?>(value: nil)
-    
-    private var _operationQueue = GattQueue()
-    
-    private let _queueSync: NSObject = NSObject()
-    
     // TODO: add to a helper class
     // Helper function for executing synchronous, threadsafe closures
     private func synchronized(_ object: Any, _ closure: () -> ()) {
@@ -89,9 +89,14 @@ public class CoreGattManager: GattManager {
         
         closure()
     }
+    
+    private let _gattRelay = BehaviorRelay<GattIO?>(value: nil)
+    private let _queueSync: NSObject = NSObject()
+    private var _currentOperation: GattOperationExecutable?
+    private var _operationQueue = GattQueue()
 }
 
-/// Queue for GattOperations. Simple wrapper arround Array
+/// Queue for GattOperations. Simple wrapper around Array
 fileprivate struct GattQueue {
     mutating func enqueue(_ operation: GattOperationExecutable) {
         _source.append(operation)
