@@ -48,15 +48,12 @@ public class CoreGattManager: GattManager {
     
     
     // TODO: implement GattManager notifications
-    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
-//        return _gattRelay
-//            .filterNil()
-//            .flatMapLatest { (gattIO: GattIO) -> Completable in
-//                return gattIO.registerForNotification(service: service, characteristic: characteristic, preprocessor: nil)
-//            }
-//            .asObservable()
-        
-        return Observable.just(Data())
+    public func receiveNotifications(for characteristic: CBUUID) -> Observable<Data> {
+        return _gattRelay
+            .filterNil()
+            .flatMapLatest { (gattIO: GattIO) -> Observable<Data> in
+                return gattIO.notificationData(for: characteristic)
+            }
     }
     
 //    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
@@ -73,7 +70,7 @@ public class CoreGattManager: GattManager {
         }
     }
     
-    /// If the queue isn't empty and we're not already running an operation, qequeues an operation and executes it
+    /// If the queue isn't empty and we're not already running an operation, queues an operation and executes it
     private func executeNext() {
         guard let gattIO = _gattRelay.value, _currentOperation == nil else { return }
         

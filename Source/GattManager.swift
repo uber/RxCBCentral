@@ -26,5 +26,5 @@ public protocol GattManager {
 
     func accept(gattIO: GattIO)
     func queue<O: GattOperation>(operation: O) -> Single<O.Element>
-    func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data>
+    func receiveNotifications(for characteristic: CBUUID) -> Observable<Data>
 }
