@@ -19,7 +19,7 @@ import Foundation
 import RxSwift
 
 public protocol ConnectionManagerType: class {
-    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO>
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval, connectionTimeout: RxTimeInterval) -> Observable<GattIO>
     func disconnectPeripheral()
 }
 
@@ -50,12 +50,13 @@ extension ConnectionManagerState: Equatable {
 
 public struct ConnectionConstants {
     // seconds
-    static let defaultScanTimeout: Double = 30
+    public static let defaultScanTimeout: RxTimeInterval = 30
     // seconds
-    static let defaultConnectionTimeout: Double = 45
+    public static let defaultConnectionTimeout: RxTimeInterval = 45
 }
 
 enum ConnectionManagerError: Error {
     case alreadyScanning
     case scanTimeout
+    case connectionTimeout
 }

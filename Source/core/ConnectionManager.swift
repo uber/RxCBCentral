@@ -56,7 +56,10 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
         return centralManager.isScanning
     }
     
-    public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO> {
+    public func connectToPeripheral(with services: [CBUUID]?,
+                                    scanMatcher: ScanMatching?,
+                                    scanTimeout: RxTimeInterval = ConnectionConstants.defaultScanTimeout,
+                                    connectionTimeout: RxTimeInterval = ConnectionConstants.defaultConnectionTimeout) -> Observable<GattIO> {
         // check that bluetooth is powered on
         guard centralManager.state == .poweredOn else {
             if centralManager.state == .poweredOff || centralManager.state == .resetting {
@@ -73,12 +76,12 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
         let peripheralObservable = generateMatchingPeripheralSequence(with: scanMatcher)
         
         let sharedGattIOObservable =
-            generateGattIOSequence(with: peripheralObservable)
+            generateGattIOSequence(with: peripheralObservable, connectionTimeout: connectionTimeout)
             .do(onSubscribe: {
                 RxCBLogger.sharedInstance.log("Scanning...")
                 self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
             })
-            .timeout(ConnectionConstants.defaultScanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
+            .timeout(scanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
             .do(onError: { error in
                 self.centralManager.stopScan()
                 RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
@@ -157,7 +160,7 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
             }
     }
     
-    private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheral>) -> Observable<GattIO> {
+    private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheral>, connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
         
         return matchingPeripheralSequence
             .take(1)
@@ -166,6 +169,7 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
                 self.centralManager.connect(peripheral, options: self.options?.asDictionary)
                 self.didUpdateStateSubject.onNext(.connecting)
             })
+            .timeout(connectionTimeout, other: Observable.error(ConnectionManagerError.connectionTimeout), scheduler: MainScheduler.instance)
             .flatMapLatest({ (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
                 return self.didConnectToPeripheralSubject.asObservable()
             })
@@ -185,6 +189,8 @@ extension ConnectionManagerError: LocalizedError {
             return NSLocalizedString("Central is already scanning.", comment: "Connection manager error")
         case .scanTimeout:
             return NSLocalizedString("Scanning for peripheral timed out.", comment: "Connection manager error")
+        case .connectionTimeout:
+            return NSLocalizedString("Connectiing to peripheral timed out.", comment: "Connection manager error")
         }
     }
 }

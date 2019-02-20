@@ -25,6 +25,7 @@ enum BluetoothError: Error {
     case disabled, unsupported
 }
 
+/// Provides the ability to observe Bluetooth LE capability and enabled states.
 public protocol BluetoothDetectorType: class {
     // Observe Bluetooth capability. If Bluetooth LE is unsupported, that will be the only emission.
     var capability: Observable<Capability> { get }
