@@ -291,8 +291,9 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
             .filterNil()
     }
 
-    public func process(data: Data) -> Data {
-        return Data()
+    // TODO: add processor functionality
+    public func process(data: Data) -> Data? {
+        return nil
     }
     
     // MARK: - CBPeripheralDelegate

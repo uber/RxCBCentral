@@ -19,7 +19,12 @@ import Foundation
 import RxSwift
 
 public protocol ConnectionManagerType: class {
+    /// Scan and connect to a peripheral with specified services.
+    /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval, connectionTimeout: RxTimeInterval) -> Observable<GattIO>
+    
+    /// Cancels an active or pending connection to <i>peripheral</i>. Note that this is non-blocking, and any `CBPeripheral`
+    /// commands that are still pending to <i>peripheral</i> may or may not complete. See {@link cancelPeripheralConnection} for more details.
     func disconnectPeripheral()
 }
 

@@ -17,11 +17,9 @@
 import CoreBluetooth
 import RxSwift
 
-//  Set the underlying GattIO interface the GattManager will communicate with. May be set multiple
-//  times as connection cycles occur.
-//
-/// @CreateMocks
+///  Responsible for queueing and handling GattOperations using the underlying GattIO for BLE communication.
 public protocol GattManagerType {
+    /// May be set multiple times as connection cycles occur.
     var gattIO: GattIO? { get set }
     var isConnected: Observable<Bool> { get }
     
