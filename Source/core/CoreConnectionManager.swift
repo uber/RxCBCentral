@@ -87,6 +87,11 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         return sharedGattIOObservable
     }
     
+    public func disconnectPeripheral() {
+        guard let peripheral = peripheral, centralManager.state == .poweredOn else  { return }
+        centralManager.cancelPeripheralConnection(peripheral)
+    }
+    
     // MARK: - CBCentralManagerDelegate
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -103,11 +108,13 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         didConnectToPeripheralSubject.onNext(peripheral)
         didUpdateStateSubject.onNext(.connected)
         RxCBLogger.sharedInstance.log("Connected to: \(peripheral.description)")
+        self.peripheral = peripheral
     }
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         didUpdateStateSubject.onNext(.disconnected(error))
         RxCBLogger.sharedInstance.log("Disconnected from: \(peripheral.description)\nError: \(error?.localizedDescription ?? "none")")
+        self.peripheral = nil
     }
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
@@ -118,6 +125,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     // MARK: - Private
     
     private let centralManager: CBCentralManager
+    private var peripheral: CBPeripheral?
     private var discoveredPeripherals: Set<CBPeripheral> = []
 
     private let bluetoothDetector: BluetoothDetector
@@ -152,6 +160,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheral>) -> Observable<GattIO> {
         
         return matchingPeripheralSequence
+            .take(1)
             .do(onNext: { (peripheral: CBPeripheral) in
                 self.centralManager.stopScan()
                 self.centralManager.connect(peripheral, options: self.options?.asDictionary)

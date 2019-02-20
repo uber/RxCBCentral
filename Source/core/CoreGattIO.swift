@@ -107,7 +107,7 @@ public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
                 .map { (characteristic: CBCharacteristic, error: Error?) -> Data? in
-                    RxCBLogger.sharedInstance.log("Read data: \(characteristic.value?.description ?? "")")
+                    RxCBLogger.sharedInstance.log(prefix: "Read data:", data: characteristic.value)
                     return characteristic.value
                 }
                 .take(1)

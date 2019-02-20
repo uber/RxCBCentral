@@ -21,6 +21,18 @@ import RxSwift
 
 public class CoreGattManager: GattManager {
     
+    public init() {}
+    
+    public var gattIO: GattIO? {
+        didSet {
+            _gattRelay.accept(gattIO)
+            
+            synchronized(_queueSync) {
+                executeNext()
+            }
+        }
+    }
+    
     public var isConnected: Observable<Bool> {
         return _gattRelay
             .flatMapLatest { Observable.just($0?.isConnected ?? false) }
@@ -46,8 +58,6 @@ public class CoreGattManager: GattManager {
             .asSingle()
     }
     
-    
-    // TODO: implement GattManager notifications
     public func receiveNotifications(for characteristic: CBUUID) -> Observable<Data> {
         return _gattRelay
             .filterNil()
@@ -56,21 +66,7 @@ public class CoreGattManager: GattManager {
             }
     }
     
-//    public func receiveNotifications(for service: CBUUID, characteristic: CBUUID) -> Observable<Data> {
-//
-//        return _gattIOSubject
-//            .flatMapLatest { $0.registerForNotification(service: service, characteristic: characteristic) }
-//    }
-    
-    public func accept(gattIO: GattIO) {
-        _gattRelay.accept(gattIO)
-        
-        synchronized(_queueSync) {
-            executeNext()
-        }
-    }
-    
-    /// If the queue isn't empty and we're not already running an operation, queues an operation and executes it
+    /// If the queue isn't empty and we're not already running an operation, queue an operation and execute it
     private func executeNext() {
         guard let gattIO = _gattRelay.value, _currentOperation == nil else { return }
         
@@ -100,6 +96,7 @@ fileprivate struct GattQueue {
     }
     
     mutating func dequeue() -> GattOperationExecutable? {
+        guard _source.count > 0 else { return nil }
         return _source.removeFirst()
     }
     

@@ -32,12 +32,25 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Waiting to connect..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Emn-lu-X9s">
-                                <rect key="frame" x="26" y="345" width="323" height="279"/>
+                                <rect key="frame" x="16" y="195" width="333" height="429"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="279" id="zIr-Ca-Rgg"/>
+                                    <constraint firstAttribute="height" constant="429" id="zIr-Ca-Rgg"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cb-c7-YIQ">
+                                <rect key="frame" x="16" y="97" width="57" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="TopLeft" editable="NO" text="none" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yzY-Uf-wRh" userLabel="DeviewNameTextView">
+                                <rect key="frame" x="87" y="90" width="205" height="28"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
@@ -45,18 +58,26 @@
                         <constraints>
                             <constraint firstItem="Gzm-x4-Yvb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="39" id="5aT-oo-j2N"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Gzm-x4-Yvb" secondAttribute="trailing" constant="16" id="6uG-kq-14v"/>
-                            <constraint firstItem="Emn-lu-X9s" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="26" id="7lA-hp-WO7"/>
-                            <constraint firstItem="Emn-lu-X9s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Cf9-FN-5ra"/>
+                            <constraint firstItem="Emn-lu-X9s" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="7lA-hp-WO7"/>
+                            <constraint firstItem="yzY-Uf-wRh" firstAttribute="top" secondItem="zmI-xy-oTx" secondAttribute="bottom" constant="1" id="9M9-31-ykO"/>
+                            <constraint firstItem="Emn-lu-X9s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" constant="-5" id="Cf9-FN-5ra"/>
                             <constraint firstItem="zmI-xy-oTx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="D9I-f0-Uu7"/>
                             <constraint firstItem="Gzm-x4-Yvb" firstAttribute="leading" secondItem="zmI-xy-oTx" secondAttribute="trailing" constant="8" symbolic="YES" id="Dpn-pP-KZu"/>
+                            <constraint firstItem="yzY-Uf-wRh" firstAttribute="leading" secondItem="3cb-c7-YIQ" secondAttribute="trailing" constant="14" id="JnM-fK-vGi"/>
                             <constraint firstItem="zmI-xy-oTx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="39" id="XtN-ev-z1G"/>
+                            <constraint firstItem="3cb-c7-YIQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Yro-XD-3x5"/>
+                            <constraint firstItem="yzY-Uf-wRh" firstAttribute="bottom" secondItem="3cb-c7-YIQ" secondAttribute="bottom" id="aew-OI-vx4"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Emn-lu-X9s" secondAttribute="bottom" constant="43" id="gTc-pn-LXb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yzY-Uf-wRh" secondAttribute="trailing" constant="83" id="ihr-eJ-art"/>
+                            <constraint firstItem="3cb-c7-YIQ" firstAttribute="top" secondItem="zmI-xy-oTx" secondAttribute="bottom" constant="8" id="lcu-gh-3pS"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Emn-lu-X9s" secondAttribute="trailing" constant="26" id="uZQ-3b-13d"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="connectionButton" destination="Gzm-x4-Yvb" id="MSM-ef-3CQ"/>
                         <outlet property="consoleTextView" destination="Emn-lu-X9s" id="h6q-vm-udr"/>
+                        <outlet property="deviceNameTextView" destination="yzY-Uf-wRh" id="x7T-ca-q9A"/>
                         <outlet property="nameTextField" destination="zmI-xy-oTx" id="59k-Ix-WqD"/>
                     </connections>
                 </viewController>

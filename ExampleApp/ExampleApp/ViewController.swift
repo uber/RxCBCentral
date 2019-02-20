@@ -15,21 +15,42 @@ class ViewController: UIViewController {
     
     private var bluetoothDetector: BluetoothDetector!
     private var connectionManager: ConnectionManager!
+    private var gattManager: GattManager!
     private let disposeBag = DisposeBag()
     
+    private var isConnected = false {
+        didSet {
+            let title = isConnected ? "Disconnect" : "Connect"
+            
+            DispatchQueue.main.async {
+                self.connectionButton.setTitle(title, for: .normal)
+            }
+        }
+    }
+    
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var connectionButton: UIButton!
     @IBOutlet weak var consoleTextView: UITextView!
-
+    @IBOutlet weak var deviceNameTextView: UITextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         bluetoothDetector = CoreBluetoothDetector(options: nil)
         connectionManager = CoreConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
+        gattManager = CoreGattManager()
         
         subscribeToRxCBLogger()
     }
     
     @IBAction func didTapConnect(_ sender: Any) {
+        guard !isConnected else {
+            connectionManager.disconnectPeripheral()
+            isConnected = false
+            return
+        }
+        
+        nameTextField.text = nameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         nameTextField.resignFirstResponder()
         
         var scanMatcher: ScanMatcher? = nil
@@ -38,45 +59,78 @@ class ViewController: UIViewController {
             scanMatcher = DeviceNameScanMatcher(deviceName: deviceName)
         }
         
-        let servicesToFind = [GattUUIDs.BATTERY_SVC_UUID, GattUUIDs.DIS_SVC_UUID, GattUUIDs.GAP_SVC_UUID]
+        //let servicesToFind = [GattUUIDs.BATTERY_SVC_UUID]
+        let beaconService = CBUUID(string: "C7971000-7942-4F36-8165-C71575A14A97")
+        let beaconCharacteristic = CBUUID(string: "C7971001-7942-4F36-8165-C71575A14A97")
+        let servicesToFind = [beaconService]
         
         // Two ways to connect to and read from a peripheral:
         
-        // 1. Connect to a peripheral and immediately read
+        // 1. Connect to a peripheral and immediately read. No queueing functionality - best for 1-time operations. Not ideal, but succinct.
+//        connectionManager
+//            .connectToPeripheral(with: servicesToFind, scanMatcher: scanMatcher)
+//            .read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID)
+//            .subscribe(onNext: { (data: Data?) in
+//                // do something with data
+//                print(data?.description ?? "no data")
+//            })
+//            .disposed(by: disposeBag)
+        
+        
+        // 2. Connect to a peripheral, optionally perform custom logic, and queue read operation (recommended)
+        
+        // Connect, inject gattIO into GattManager
         connectionManager
             .connectToPeripheral(with: servicesToFind, scanMatcher: scanMatcher)
-            .read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID)
-            .subscribe(onNext: { (data: Data?) in
-                // do something with data
-                print(data?.description ?? "no data")
+            .subscribe(onNext: { (gattIO: GattIO) in
+                // successfully connected, custom logic
+                self.isConnected = true
+                self.deviceNameTextView.text = gattIO.deviceName ?? "N/A"
+                // ...
+                
+                // give the gattManager a GattIO to queue operations
+                self.gattManager.gattIO = gattIO
+            }, onError: { (error: Error) in
+                // connection lost
+                self.isConnected = false
             })
             .disposed(by: disposeBag)
         
+        // create a read operation
+        //let readOp = Read(service: beaconService, characteristic: beaconCharacteristic, timeoutSeconds: 30)
+        let data = "0x0".data(using: .utf8)!
+        let writeOp = Write(service: beaconService, characteristic: beaconCharacteristic, data: data, timeoutSeconds: 30)
         
-        // 2. Connect to a peripheral and perform custom logic before reading
-//        connectionManager
-//            .connectToPeripheral(with: [serviceUUID, characteristicUUID], scanMatcher: scanMatcher)
-//            .flatMap { (gattIO) -> Single<Data?> in
-//                let deviceName = gattIO.deviceName ?? "no device name"
-//                self.consoleLog(text: "Connected to \(deviceName)!")
-//
-//                return gattIO.read(service: serviceUUID, characteristic: characteristicUUID)
-//            }
-//            .subscribe(onNext: { (data: Data?) in
+        // queue the read operation on the gattManager
+//        gattManager
+//            .queue(operation: writeOp)
+//            .subscribe(onSuccess: { (data: Data?) in
 //                if let data = data {
 //                    let dataString = data.hexEncodedString()
-//                    self.consoleLog(text: "Read: \(dataString)")
-//                } else {
-//                    self.consoleLog(text: "Read: No data found")
+//                    self.consoleLog("Read: \(dataString)")
 //                }
-//            }, onError: { (error) in
-//                self.consoleLog(text: "Error: \(error.localizedDescription)")
+//            }, onError: { (error: Error) in
+//                self.consoleLog("Error: \(error.localizedDescription)")
 //            })
 //            .disposed(by: disposeBag)
+        
+        gattManager
+            .queue(operation: writeOp)
+            .subscribe(onSuccess: { _ in
+                // write successful
+            }, onError: { (error) in
+                self.consoleLog("Error: \(error.localizedDescription)")
+            })
+            .disposed(by: disposeBag)
     }
     
     private func consoleLog(_ text: String) {
-        consoleTextView.text.append(contentsOf: "\n\n" + text)
+        DispatchQueue.main.async {
+            self.consoleTextView.text.append(contentsOf: "\n\n" + text)
+            
+            let range = NSRange(location: self.consoleTextView.text.count, length: 0)
+            self.consoleTextView.scrollRangeToVisible(range)
+        }
     }
     
     private func subscribeToRxCBLogger() {
@@ -102,7 +156,7 @@ fileprivate class DeviceNameScanMatcher: ScanMatcher {
             Observable.create { observer in
                 // if we find a substring name match, return that peripheral
                 for peripheral in self.peripherals {
-                    if let name = peripheral.name, name.contains(self.deviceName) {
+                    if let name = peripheral.name?.lowercased(), name.contains(self.deviceName.lowercased()) {
                         observer.onNext(peripheral)
                     }
                 }
@@ -115,3 +169,8 @@ fileprivate class DeviceNameScanMatcher: ScanMatcher {
     private var peripherals: Set<CBPeripheral> = []
 }
 
+extension Data {
+    func hexEncodedString() -> String {
+        return "0x" + map { String(format: "%02hhx", $0) }.joined()
+    }
+}

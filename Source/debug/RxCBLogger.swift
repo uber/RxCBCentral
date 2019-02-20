@@ -19,7 +19,7 @@ import RxSwift
 
 protocol Logger {
     func log(_ message: String)
-    func log(_ data: Data)
+    func log(prefix: String, data: Data?)
 }
 
 public protocol LoggingStream {
@@ -37,8 +37,12 @@ public class RxCBLogger: Logger, LoggingStream {
         _logSubject.onNext(message)
     }
     
-    func log(_ data: Data) {
-        log("Data: \(data.hexEncodedString())")
+    // A helper function to log Data in hex string form
+    func log(prefix: String = "Data:", data: Data?) {
+        guard let data = data else {
+            log(prefix + " none"); return
+        }
+        log(prefix + " " + data.hexEncodedString())
     }
     
     public func read() -> Observable<String> {

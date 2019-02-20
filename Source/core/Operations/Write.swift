@@ -32,10 +32,6 @@ public class Write: GattOperation {
             .asSingle()
             .timeout(timeoutSeconds, scheduler: scheduler)
     
-    private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
-    
-    private let service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType
-    
     public init(service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
         self.service = service
         self.characteristic = characteristic
@@ -53,6 +49,7 @@ public class Write: GattOperation {
             .flatMap({ (gattIO) -> Observable<GattIO> in
                 var chunkCompletables: [Completable] = []
                 let byteArray = [UInt8](data)
+                print(byteArray)
                 
                 byteArray.forEachChunk(by: gattIO.maxWriteLength) { chunk in
                     chunkCompletables.append(gattIO.write(service: service, characteristic: characteristic, data: Data(chunk)))
@@ -71,6 +68,10 @@ public class Write: GattOperation {
             }
         }
     }
+    
+    private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
+    
+    private let service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType
 }
 
 extension Array where Element == UInt8 {

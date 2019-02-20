@@ -21,6 +21,7 @@ import RxSwift
 
 public protocol ConnectionManager: class {
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO>
+    func disconnectPeripheral()
 }
 
 // State of the ConnectionManager.
