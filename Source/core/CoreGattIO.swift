@@ -19,7 +19,7 @@ import CoreBluetooth
 import RxOptional
 import RxSwift
 
-public class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
+class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     public init(peripheral: CBPeripheral, connectionState: Observable<ConnectionManagerState>) {
         self.connectionState = connectionState

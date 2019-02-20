@@ -36,9 +36,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bluetoothDetector = CoreBluetoothDetector(options: nil)
-        connectionManager = CoreConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
-        gattManager = CoreGattManager()
+        bluetoothDetector = BluetoothDetector(options: nil)
+        connectionManager = ConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
+        gattManager = GattManager()
         
         subscribeToRxCBLogger()
     }
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
         nameTextField.text = nameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         nameTextField.resignFirstResponder()
         
-        var scanMatcher: ScanMatcher? = nil
+        var scanMatcher: ScanMatching? = nil
         
         if let deviceName = nameTextField.text, deviceName.isNotEmpty {
             scanMatcher = DeviceNameScanMatcher(deviceName: deviceName)
@@ -97,25 +97,15 @@ class ViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // create a read operation
-        //let readOp = Read(service: beaconService, characteristic: beaconCharacteristic, timeoutSeconds: 30)
-        let data = "0x0".data(using: .utf8)!
-        let writeOp = Write(service: beaconService, characteristic: beaconCharacteristic, data: data, timeoutSeconds: 30)
+        let readOp = Read(service: beaconService, characteristic: beaconCharacteristic, timeoutSeconds: 30)
         
-        // queue the read operation on the gattManager
-//        gattManager
-//            .queue(operation: writeOp)
-//            .subscribe(onSuccess: { (data: Data?) in
-//                if let data = data {
-//                    let dataString = data.hexEncodedString()
-//                    self.consoleLog("Read: \(dataString)")
-//                }
-//            }, onError: { (error: Error) in
-//                self.consoleLog("Error: \(error.localizedDescription)")
-//            })
-//            .disposed(by: disposeBag)
+        // or write operation
+//        let data = "0x0".data(using: .utf8)!
+//        let writeOp = Write(service: beaconService, characteristic: beaconCharacteristic, data: data, timeoutSeconds: 30)
         
+        // queue the operation on the gattManager
         gattManager
-            .queue(operation: writeOp)
+            .queue(operation: readOp)
             .subscribe(onSuccess: { _ in
                 // write successful
             }, onError: { (error) in
@@ -143,7 +133,7 @@ class ViewController: UIViewController {
     }
 }
 
-fileprivate class DeviceNameScanMatcher: ScanMatcher {
+fileprivate class DeviceNameScanMatcher: ScanMatching {
     
     init(deviceName: String) {
         self.deviceName = deviceName

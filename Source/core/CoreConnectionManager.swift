@@ -39,9 +39,9 @@ public struct ConnectionManagerOptions {
     }
 }
 
-public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManagerDelegate {
+public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerDelegate {
     
-    public init(bluetoothDetector: BluetoothDetector, queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
+    public init(bluetoothDetector: BluetoothDetectorType, queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
         self.bluetoothDetector = bluetoothDetector
         self.dispatchQueue = queue
         self.options = options
@@ -56,7 +56,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         return centralManager.isScanning
     }
     
-    public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO> {
+    public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO> {
         // check that bluetooth is powered on
         guard centralManager.state == .poweredOn else {
             if centralManager.state == .poweredOff || centralManager.state == .resetting {
@@ -128,7 +128,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
     private var peripheral: CBPeripheral?
     private var discoveredPeripherals: Set<CBPeripheral> = []
 
-    private let bluetoothDetector: BluetoothDetector
+    private let bluetoothDetector: BluetoothDetectorType
     private let dispatchQueue: DispatchQueue?
     private let options: ConnectionManagerOptions?
     
@@ -146,7 +146,7 @@ public class CoreConnectionManager: NSObject, ConnectionManager, CBCentralManage
         didUpdateStateSubject.onNext(.scanning)
     }
     
-    private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatcher?) -> Observable<CBPeripheral> {
+    private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatching?) -> Observable<CBPeripheral> {
         // if no scanMatcher provided, return the first peripheral discovered that meets our serviceUUID requirements
         guard let scanMatcher = scanMatcher else { return didDiscoverPeripheralSubject }
         

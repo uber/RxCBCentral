@@ -18,9 +18,8 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-
-public protocol ConnectionManager: class {
-    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatcher?) -> Observable<GattIO>
+public protocol ConnectionManagerType: class {
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO>
     func disconnectPeripheral()
 }
 

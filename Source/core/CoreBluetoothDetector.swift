@@ -29,7 +29,7 @@ public struct BluetoothDetectorOptions {
     }
 }
 
-public class CoreBluetoothDetector: NSObject, BluetoothDetector, CBCentralManagerDelegate {
+public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManagerDelegate {
     
     public required init(options: BluetoothDetectorOptions?) {
         self._options = options

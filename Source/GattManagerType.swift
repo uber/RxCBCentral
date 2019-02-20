@@ -21,7 +21,7 @@ import RxSwift
 //  times as connection cycles occur.
 //
 /// @CreateMocks
-public protocol GattManager {
+public protocol GattManagerType {
     var gattIO: GattIO? { get set }
     var isConnected: Observable<Bool> { get }
     
