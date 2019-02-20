@@ -24,7 +24,6 @@
 		CDFE3FAA21E8420800CF931B /* BluetoothDetectorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9421E8420700CF931B /* BluetoothDetectorType.swift */; };
 		CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9521E8420700CF931B /* GattIO.swift */; };
 		CDFE3FAC21E8420800CF931B /* ScanMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9621E8420700CF931B /* ScanMatching.swift */; };
-		CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9821E8420700CF931B /* Utils.swift */; };
 		CDFE3FAF21E8420800CF931B /* GattManagerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F9921E8420700CF931B /* GattManagerType.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,7 +47,6 @@
 		CDFE3F9421E8420700CF931B /* BluetoothDetectorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothDetectorType.swift; sourceTree = "<group>"; };
 		CDFE3F9521E8420700CF931B /* GattIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattIO.swift; sourceTree = "<group>"; };
 		CDFE3F9621E8420700CF931B /* ScanMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanMatching.swift; sourceTree = "<group>"; };
-		CDFE3F9821E8420700CF931B /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CDFE3F9921E8420700CF931B /* GattManagerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattManagerType.swift; sourceTree = "<group>"; };
 		CDFE3FB421E8473300CF931B /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,7 +108,6 @@
 				CDFE3F9521E8420700CF931B /* GattIO.swift */,
 				CDFE3F9321E8420700CF931B /* GattOperation.swift */,
 				CDFE3F9621E8420700CF931B /* ScanMatching.swift */,
-				CDFE3F9821E8420700CF931B /* Utils.swift */,
 			);
 			name = Source;
 			path = ../Source;
@@ -278,7 +275,6 @@
 				CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */,
 				CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */,
 				CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */,
-				CDFE3FAE21E8420800CF931B /* Utils.swift in Sources */,
 				CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
