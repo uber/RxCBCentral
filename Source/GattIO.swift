@@ -18,7 +18,7 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public enum GattIOError: Error {
+public enum GattError: Error {
     case serviceNotFound
     case characteristicNotFound
     case notConnected

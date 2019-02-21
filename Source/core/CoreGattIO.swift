@@ -57,7 +57,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         let sharedReadDataObservable: Single<Data?> =
             connectionState
                 .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
-                    guard state == .connected else { return Observable.error(GattIOError.notConnected) }
+                    guard state == .connected else { return Observable.error(GattError.notConnected) }
                     return self.didDiscoverServicesSubject.asObservable()
                 }
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
@@ -73,7 +73,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
                     guard let _ = matchingService else {
                         RxCBLogger.sharedInstance.log("Error: service not found")
-                        return Observable.error(GattIOError.serviceNotFound)
+                        return Observable.error(GattError.serviceNotFound)
                     }
                     
                     if let error = error {
@@ -96,7 +96,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<(CBCharacteristic, Error?)> in
                     guard let _ = matchingCharacteristic else {
                         RxCBLogger.sharedInstance.log("Error: characteristic not found")
-                        return Observable.error(GattIOError.characteristicNotFound)
+                        return Observable.error(GattError.characteristicNotFound)
                     }
                     
                     if let error = error {
@@ -127,7 +127,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         let sharedWriteCompletable: Completable =
             connectionState
                 .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
-                    guard state == .connected else { return Observable.error(GattIOError.notConnected) }
+                    guard state == .connected else { return Observable.error(GattError.notConnected) }
                     return self.didDiscoverServicesSubject.asObservable()
                 }
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
@@ -143,7 +143,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
                     guard let _ = matchingService else {
                         RxCBLogger.sharedInstance.log("Error: service not found")
-                        return Observable.error(GattIOError.serviceNotFound)
+                        return Observable.error(GattError.serviceNotFound)
                     }
                     
                     if let error = error {
@@ -172,7 +172,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
 //                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
 //                    guard let _ = matchingCharacteristic else {
 //                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
-//                        return Observable.error(GattIOError.characteristicNotFound)
+//                        return Observable.error(GattError.characteristicNotFound)
 //                    }
 //
 //                    if let error = error {
@@ -219,7 +219,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest({ (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
                     guard let _ = matchingService else {
-                        return Observable.error(GattIOError.serviceNotFound)
+                        return Observable.error(GattError.serviceNotFound)
                     }
                     
                     if let error = error {
@@ -248,7 +248,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 })
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(CBCharacteristic, Error?)> in
                     guard let _ = matchingCharacteristic else {
-                        return Observable.error(GattIOError.characteristicNotFound)
+                        return Observable.error(GattError.characteristicNotFound)
                     }
                     
                     if let error = error {
@@ -351,7 +351,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
 
-extension GattIOError: LocalizedError {
+extension GattError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .serviceNotFound:
