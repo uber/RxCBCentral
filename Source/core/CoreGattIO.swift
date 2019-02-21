@@ -168,29 +168,30 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                         self.peripheral.writeValue(data, for: matchingCharacteristic, type: writeType)
                     }
                 })
-                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
-                    guard let _ = matchingCharacteristic else {
-                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
-                        return Observable.error(GattIOError.characteristicNotFound)
-                    }
-                    
-                    if let error = error {
-                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
-                        return Observable.error(error)
-                    }
-                    
-                    return self.didWriteToCharacteristicSubject.asObservable()
-                }
-                .take(1)
-                .flatMapLatest { (error: Error?) -> Completable in
-                    if let error = error {
-                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
-                        return Observable.error(error).asCompletable()
-                    }
-                    RxCBLogger.sharedInstance.log("Write successful.")
-                    return Observable.empty().asCompletable()
-                }
-                .take(1)
+                // TODO: this should only be called if we are writing with response. Assume without response for now.
+//                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
+//                    guard let _ = matchingCharacteristic else {
+//                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
+//                        return Observable.error(GattIOError.characteristicNotFound)
+//                    }
+//
+//                    if let error = error {
+//                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+//                        return Observable.error(error)
+//                    }
+//
+//                    return self.didWriteToCharacteristicSubject.asObservable()
+//                }
+//                .take(1)
+//                .flatMapLatest { (error: Error?) -> Completable in
+//                    if let error = error {
+//                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+//                        return Observable.error(error).asCompletable()
+//                    }
+//                    RxCBLogger.sharedInstance.log("Write successful.")
+//                    return Observable.empty().asCompletable()
+//                }
+//                .take(1)
                 .ignoreElements()
                 .do(onSubscribe: {
                     self.peripheral.discoverServices([service])
