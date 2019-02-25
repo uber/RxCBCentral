@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     private var connectionManager: ConnectionManager!
     private var gattManager: GattManager!
     private let disposeBag = DisposeBag()
+    private var gattIO: GattIO? = nil
     
     private var isConnected = false {
         didSet {
@@ -24,6 +25,14 @@ class ViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.connectionButton.setTitle(title, for: .normal)
+                self.gapButton.isEnabled = self.isConnected
+                self.batteryButton.isEnabled = self.isConnected
+                self.disButton.isEnabled = self.isConnected
+                self.mtuButton.isEnabled = self.isConnected
+                
+                if !self.isConnected {
+                    self.deviceNameTextView.text = "none"
+                }
             }
         }
     }
@@ -33,6 +42,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var consoleTextView: UITextView!
     @IBOutlet weak var deviceNameTextView: UITextView!
     
+    @IBOutlet weak var gapButton: UIButton!
+    @IBOutlet weak var batteryButton: UIButton!
+    @IBOutlet weak var disButton: UIButton!
+    @IBOutlet weak var mtuButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,6 +55,8 @@ class ViewController: UIViewController {
         gattManager = GattManager()
         
         subscribeToRxCBLogger()
+        
+        isConnected = false
     }
     
     @IBAction func didTapConnect(_ sender: Any) {
@@ -59,11 +75,6 @@ class ViewController: UIViewController {
             scanMatcher = DeviceNameScanMatcher(deviceName: deviceName)
         }
         
-        //let servicesToFind = [GattUUIDs.BATTERY_SVC_UUID]
-        let beaconService = CBUUID(string: "C7971000-7942-4F36-8165-C71575A14A97")
-        let beaconCharacteristic = CBUUID(string: "C7971001-7942-4F36-8165-C71575A14A97")
-        let servicesToFind = [beaconService]
-        
         // Two ways to connect to and read from a peripheral:
         
         // 1. Connect to a peripheral and immediately read. No queueing functionality - best for 1-time operations. Not ideal, but succinct.
@@ -81,11 +92,12 @@ class ViewController: UIViewController {
         
         // Connect, inject gattIO into GattManager
         connectionManager
-            .connectToPeripheral(with: servicesToFind, scanMatcher: scanMatcher)
+            .connectToPeripheral(with: nil, scanMatcher: scanMatcher)
             .subscribe(onNext: { (gattIO: GattIO) in
                 // successfully connected, custom logic
                 self.isConnected = true
                 self.deviceNameTextView.text = gattIO.deviceName ?? "N/A"
+                self.gattIO = gattIO
                 // ...
                 
                 // give the gattManager a GattIO to queue operations
@@ -95,23 +107,53 @@ class ViewController: UIViewController {
                 self.isConnected = false
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    @IBAction func didTapGAPButton(_ sender: Any) {
         // create a read operation
-        let readOp = Read(service: beaconService, characteristic: beaconCharacteristic, timeoutSeconds: 30)
-        
-        // or write operation
-//        let data = "0x0".data(using: .utf8)!
-//        let writeOp = Write(service: beaconService, characteristic: beaconCharacteristic, data: data, timeoutSeconds: 30)
+        let read = Read(service: GattUUIDs.GAP_SVC_UUID, characteristic: GattUUIDs.GAP_DEVICE_NAME_UUID, timeoutSeconds: 30)
         
         // queue the operation on the gattManager
         gattManager
-            .queue(operation: readOp)
+            .queue(operation: read)
             .subscribe(onSuccess: { _ in
-                // write successful
+                // read successful
             }, onError: { (error) in
                 self.consoleLog("Error: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
+    }
+    
+    @IBAction func didTapBatteryButton(_ sender: Any) {
+        let read = Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: 30)
+        gattManager
+            .queue(operation: read)
+            .subscribe(onSuccess: { _ in
+                // read successful
+            }, onError: { (error) in
+                self.consoleLog("Error: \(error.localizedDescription)")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    @IBAction func didTapDISButton(_ sender: Any) {
+        let read = Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: 30)
+        gattManager
+            .queue(operation: read)
+            .subscribe(onSuccess: { _ in
+                // read successful
+            }, onError: { (error) in
+                self.consoleLog("Error: \(error.localizedDescription)")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    @IBAction func didTapMTUButton(_ sender: Any) {
+        if let mtu = gattIO?.maxWriteLength {
+            consoleLog("MTU: \(mtu)")
+        } else {
+            consoleLog("MTU: none")
+        }
     }
     
     private func consoleLog(_ text: String) {
@@ -130,6 +172,12 @@ class ViewController: UIViewController {
                 self.consoleLog(log)
             })
             .disposed(by: disposeBag)
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get {
+            return .portrait
+        }
     }
 }
 

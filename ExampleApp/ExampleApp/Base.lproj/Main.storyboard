@@ -41,29 +41,66 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3cb-c7-YIQ">
-                                <rect key="frame" x="16" y="97" width="57" height="21"/>
+                                <rect key="frame" x="16" y="97" width="57" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="TopLeft" editable="NO" text="none" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yzY-Uf-wRh" userLabel="DeviewNameTextView">
-                                <rect key="frame" x="87" y="90" width="205" height="28"/>
+                                <rect key="frame" x="87" y="90" width="205" height="27.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="NBQ-iQ-Hjw">
+                                <rect key="frame" x="16" y="130.5" width="343" height="70.5"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="osb-qg-NvN">
+                                        <rect key="frame" x="0.0" y="20.5" width="80" height="30"/>
+                                        <state key="normal" title="GAP"/>
+                                        <connections>
+                                            <action selector="didTapGAPButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ldY-h1-iLe"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I8M-eW-nfK">
+                                        <rect key="frame" x="88" y="20.5" width="79.5" height="30"/>
+                                        <state key="normal" title="BATTERY"/>
+                                        <connections>
+                                            <action selector="didTapBatteryButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FUV-eF-N1O"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S14-rU-gep">
+                                        <rect key="frame" x="175.5" y="20.5" width="80" height="30"/>
+                                        <state key="normal" title="DIS"/>
+                                        <connections>
+                                            <action selector="didTapDISButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4fz-QQ-Hnl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L2R-UV-zM3" userLabel="MTU">
+                                        <rect key="frame" x="263.5" y="20.5" width="79.5" height="30"/>
+                                        <state key="normal" title="MTU"/>
+                                        <connections>
+                                            <action selector="didTapMTUButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dAT-S2-54w"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="NBQ-iQ-Hjw" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="0xk-Vo-5hn"/>
+                            <constraint firstItem="NBQ-iQ-Hjw" firstAttribute="leading" secondItem="3cb-c7-YIQ" secondAttribute="leading" id="1jH-5b-2h0"/>
                             <constraint firstItem="Gzm-x4-Yvb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="39" id="5aT-oo-j2N"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Gzm-x4-Yvb" secondAttribute="trailing" constant="16" id="6uG-kq-14v"/>
                             <constraint firstItem="Emn-lu-X9s" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="7lA-hp-WO7"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="NBQ-iQ-Hjw" secondAttribute="bottom" constant="466" id="8lQ-Uy-UIN"/>
                             <constraint firstItem="yzY-Uf-wRh" firstAttribute="top" secondItem="zmI-xy-oTx" secondAttribute="bottom" constant="1" id="9M9-31-ykO"/>
                             <constraint firstItem="Emn-lu-X9s" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" constant="-5" id="Cf9-FN-5ra"/>
                             <constraint firstItem="zmI-xy-oTx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="D9I-f0-Uu7"/>
                             <constraint firstItem="Gzm-x4-Yvb" firstAttribute="leading" secondItem="zmI-xy-oTx" secondAttribute="trailing" constant="8" symbolic="YES" id="Dpn-pP-KZu"/>
                             <constraint firstItem="yzY-Uf-wRh" firstAttribute="leading" secondItem="3cb-c7-YIQ" secondAttribute="trailing" constant="14" id="JnM-fK-vGi"/>
+                            <constraint firstItem="NBQ-iQ-Hjw" firstAttribute="top" secondItem="3cb-c7-YIQ" secondAttribute="bottom" constant="13" id="OXs-q8-q51"/>
                             <constraint firstItem="zmI-xy-oTx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="39" id="XtN-ev-z1G"/>
                             <constraint firstItem="3cb-c7-YIQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Yro-XD-3x5"/>
                             <constraint firstItem="yzY-Uf-wRh" firstAttribute="bottom" secondItem="3cb-c7-YIQ" secondAttribute="bottom" id="aew-OI-vx4"/>
@@ -75,9 +112,13 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="batteryButton" destination="I8M-eW-nfK" id="Pzx-oO-crg"/>
                         <outlet property="connectionButton" destination="Gzm-x4-Yvb" id="MSM-ef-3CQ"/>
                         <outlet property="consoleTextView" destination="Emn-lu-X9s" id="h6q-vm-udr"/>
                         <outlet property="deviceNameTextView" destination="yzY-Uf-wRh" id="x7T-ca-q9A"/>
+                        <outlet property="disButton" destination="S14-rU-gep" id="gzS-eR-TIy"/>
+                        <outlet property="gapButton" destination="osb-qg-NvN" id="ocU-gv-P9U"/>
+                        <outlet property="mtuButton" destination="L2R-UV-zM3" id="Dte-8W-9yD"/>
                         <outlet property="nameTextField" destination="zmI-xy-oTx" id="59k-Ix-WqD"/>
                     </connections>
                 </viewController>
