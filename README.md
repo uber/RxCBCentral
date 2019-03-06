@@ -1,6 +1,7 @@
 # RxCBCentral
 
 ## Overview
+WORK IN PROGRESS 
 
 RxCBCentral is a reactive, interface-driven library used to integrate with Bluetooth LE peripherals.
 
