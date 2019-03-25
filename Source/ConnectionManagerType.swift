@@ -19,6 +19,26 @@ import Foundation
 import RxSwift
 
 public protocol ConnectionManagerType: class {
+    /// Scan for peripherals with specified services.
+    /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
+    /// Uses the `defaultScanTimeout`
+    /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<CBPeripheral>
+    
+    /// Scan for peripherals with specified services.
+    /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
+    /// Uses the `scanTimeout` provided
+    /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval) -> Observable<CBPeripheral>
+    
+    /// Aborts the current scan for this ConnectionManager, if one is taking place.
+    func stopScan()
+    
+    /// Scan and connect to a peripheral with specified services.
+    /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
+    /// Uses the `defaultScanTimeout` and `defaultConnectionTimeout`
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO>
+    
     /// Scan and connect to a peripheral with specified services.
     /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval, connectionTimeout: RxTimeInterval) -> Observable<GattIO>
@@ -60,7 +80,7 @@ public struct ConnectionConstants {
     public static let defaultConnectionTimeout: RxTimeInterval = 45
 }
 
-enum ConnectionManagerError: Error {
+public enum ConnectionManagerError: Error {
     case alreadyScanning
     case scanTimeout
     case connectionTimeout

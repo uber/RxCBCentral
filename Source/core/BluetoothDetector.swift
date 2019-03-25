@@ -24,6 +24,10 @@ public struct BluetoothDetectorOptions {
     /// a warning dialog to the user.
     let showPowerAlert: Bool
     
+    public init(showPowerAlert: Bool) {
+        self.showPowerAlert = showPowerAlert
+    }
+    
     var asDictionary: [String: Any] {
         return [CBCentralManagerOptionShowPowerAlertKey : NSNumber(booleanLiteral: showPowerAlert)]
     }
@@ -31,7 +35,7 @@ public struct BluetoothDetectorOptions {
 
 public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManagerDelegate {
     
-    public required init(options: BluetoothDetectorOptions?) {
+    public init(options: BluetoothDetectorOptions?) {
         self._options = options
         super.init()
         

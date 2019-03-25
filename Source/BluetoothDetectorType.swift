@@ -21,7 +21,7 @@ public enum Capability: String {
     case unsupported, disabled, enabled
 }
 
-enum BluetoothError: Error {
+public enum BluetoothError: Error {
     case disabled, unsupported
 }
 

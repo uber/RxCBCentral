@@ -28,6 +28,12 @@ public struct ConnectionManagerOptions {
     /// subsequent application executions in order for the manager to be restored.
     let restoreIdentifier: String?
     
+    public init(notifyOnConnection: Bool, notifyOnDisconnection: Bool, restoreIdentifier: String?) {
+        self.notifyOnConnection = notifyOnConnection
+        self.notifyOnDisconnection = notifyOnDisconnection
+        self.restoreIdentifier = restoreIdentifier
+    }
+    
     var asDictionary: [String: Any] {
         var dict: [String: Any] = [:]
         
@@ -56,10 +62,50 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
         return centralManager.isScanning
     }
     
+    public func scan(for services: [CBUUID]?,
+                     scanMatcher: ScanMatching?) -> Observable<CBPeripheral> {
+        return scan(for: services, scanMatcher: scanMatcher, scanTimeout: ConnectionConstants.defaultScanTimeout)
+    }
+    
+    public func scan(for services: [CBUUID]?,
+                     scanMatcher: ScanMatching?,
+                     scanTimeout: RxTimeInterval) -> Observable<CBPeripheral> {
+        // check that bluetooth is powered on
+        guard centralManager.state == .poweredOn else {
+            if centralManager.state == .poweredOff || centralManager.state == .resetting {
+                RxCBLogger.sharedInstance.log("Error: bluetooth disabled")
+                return Observable.error(BluetoothError.disabled)
+            } else {
+                RxCBLogger.sharedInstance.log("Error: bluetooth unsupported")
+                return Observable.error(BluetoothError.unsupported)
+            }
+        }
+        
+        guard !isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
+        
+        return generateMatchingPeripheralSequence(with: scanMatcher)
+            .timeout(scanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
+            .do(onError: { _ in
+                self.centralManager.stopScan()
+            }, onSubscribe: {
+                self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
+            }, onDispose: {
+                self.centralManager.stopScan()
+            })
+    }
+    
+    public func stopScan() {
+        centralManager.stopScan()
+    }
+    
+    public func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO> {
+        return connectToPeripheral(with: services, scanMatcher: scanMatcher, scanTimeout: ConnectionConstants.defaultScanTimeout, connectionTimeout: ConnectionConstants.defaultConnectionTimeout)
+    }
+    
     public func connectToPeripheral(with services: [CBUUID]?,
                                     scanMatcher: ScanMatching?,
-                                    scanTimeout: RxTimeInterval = ConnectionConstants.defaultScanTimeout,
-                                    connectionTimeout: RxTimeInterval = ConnectionConstants.defaultConnectionTimeout) -> Observable<GattIO> {
+                                    scanTimeout: RxTimeInterval,
+                                    connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
         // check that bluetooth is powered on
         guard centralManager.state == .poweredOn else {
             if centralManager.state == .poweredOff || centralManager.state == .resetting {

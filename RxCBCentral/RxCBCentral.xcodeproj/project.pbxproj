@@ -14,7 +14,6 @@
 		CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8721E8420700CF931B /* RegisterNotification.swift */; };
 		CDFE3F9F21E8420800CF931B /* Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8821E8420700CF931B /* Write.swift */; };
 		CDFE3FA021E8420800CF931B /* Read.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8921E8420700CF931B /* Read.swift */; };
-		CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */; };
 		CDFE3FA221E8420800CF931B /* GattManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8B21E8420700CF931B /* GattManager.swift */; };
 		CDFE3FA421E8420800CF931B /* BluetoothDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8D21E8420700CF931B /* BluetoothDetector.swift */; };
 		CDFE3FA521E8420800CF931B /* CentralScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8F21E8420700CF931B /* CentralScanner.swift */; };
@@ -37,7 +36,6 @@
 		CDFE3F8721E8420700CF931B /* RegisterNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterNotification.swift; sourceTree = "<group>"; };
 		CDFE3F8821E8420700CF931B /* Write.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Write.swift; sourceTree = "<group>"; };
 		CDFE3F8921E8420700CF931B /* Read.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Read.swift; sourceTree = "<group>"; };
-		CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractWrite.swift; sourceTree = "<group>"; };
 		CDFE3F8B21E8420700CF931B /* GattManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GattManager.swift; sourceTree = "<group>"; };
 		CDFE3F8D21E8420700CF931B /* BluetoothDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothDetector.swift; sourceTree = "<group>"; };
 		CDFE3F8F21E8420700CF931B /* CentralScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralScanner.swift; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 				CDFE3F8721E8420700CF931B /* RegisterNotification.swift */,
 				CDFE3F8821E8420700CF931B /* Write.swift */,
 				CDFE3F8921E8420700CF931B /* Read.swift */,
-				CDFE3F8A21E8420700CF931B /* AbstractWrite.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -247,6 +244,12 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxAtomic.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxBlocking.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxTest.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxOptional.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -273,7 +276,6 @@
 				CDFE3FA421E8420800CF931B /* BluetoothDetector.swift in Sources */,
 				CDFE3FA021E8420800CF931B /* Read.swift in Sources */,
 				CDFE3F9E21E8420800CF931B /* RegisterNotification.swift in Sources */,
-				CDFE3FA121E8420800CF931B /* AbstractWrite.swift in Sources */,
 				CDFE3FA621E8420800CF931B /* CoreGattIO.swift in Sources */,
 				CDFE3FAB21E8420800CF931B /* GattIO.swift in Sources */,
 			);

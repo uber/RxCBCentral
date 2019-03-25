@@ -122,7 +122,6 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     public func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
         
-        
         // TODO: don't wait for didWriteToCharacteristicSubject when performing a .writeWithoutResponse to avoid Rx timeout
         let sharedWriteCompletable: Completable =
             connectionState
