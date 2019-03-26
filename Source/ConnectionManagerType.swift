@@ -19,30 +19,33 @@ import Foundation
 import RxSwift
 
 public protocol ConnectionManagerType: class {
-    /// Scan for peripherals with specified services.
+    /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
     /// Uses the `defaultScanTimeout`
     /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
     func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<CBPeripheral>
     
-    /// Scan for peripherals with specified services.
+    /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
     /// Uses the `scanTimeout` provided
     /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
     func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval) -> Observable<CBPeripheral>
     
-    /// Aborts the current scan for this ConnectionManager, if one is taking place.
+    /// Aborts the current scan for this `ConnectionManagerType`, if one is taking place.
     func stopScan()
     
-    /// Scan and connect to a peripheral with specified services.
+    /// Convenience function to scan and connect to a peripheral with specified services.
+    /// Note: only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
-    /// Uses the `defaultScanTimeout` and `defaultConnectionTimeout`
+    /// Uses `defaultScanTimeout` and `defaultConnectionTimeout` for scan and connection attempts.
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO>
     
-    /// Scan and connect to a peripheral with specified services.
+    /// Convenience function to scan and connect to a peripheral with specified services.
+    /// Note: only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
     func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval, connectionTimeout: RxTimeInterval) -> Observable<GattIO>
     
+    // TODO: add functionality to disconnect from a specific peripheral, since multiple connections are supported.
     /// Cancels an active or pending connection to <i>peripheral</i>. Note that this is non-blocking, and any `CBPeripheral`
     /// commands that are still pending to <i>peripheral</i> may or may not complete. See {@link cancelPeripheralConnection} for more details.
     func disconnectPeripheral()
