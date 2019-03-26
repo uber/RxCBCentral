@@ -74,9 +74,11 @@ extension ConnectionManagerState: Equatable {
 }
 
 public struct ConnectionConstants {
-    // seconds
+    /// Number of seconds to scan before throwing a ConnectionManagerError.scanTimeout error
     public static let defaultScanTimeout: RxTimeInterval = 30
-    // seconds
+    
+    /// Number of seconds to attempt Bluetooth connection with a discovered peripheral
+    /// before throwing a ConnectionManagerError.connectionTimeout error
     public static let defaultConnectionTimeout: RxTimeInterval = 45
 }
 
