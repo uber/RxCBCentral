@@ -48,7 +48,6 @@ public class Write: GattOperation {
             .flatMap({ (gattIO) -> Observable<GattIO> in
                 var chunkCompletables: [Completable] = []
                 let byteArray = [UInt8](data)
-                print(byteArray)
                 
                 byteArray.forEachChunk(by: gattIO.maxWriteLength) { chunk in
                     chunkCompletables.append(gattIO.write(service: service, characteristic: characteristic, data: Data(chunk)))

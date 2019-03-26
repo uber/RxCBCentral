@@ -202,9 +202,6 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     public func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor? = nil) -> Completable {
         let sharedNotifyCompletable: Completable =
             didDiscoverServicesSubject
-                .do(onNext: { (services: [CBService], _) in
-                    print(services.description)
-                })
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                     let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
                     return (matchingService, error)
