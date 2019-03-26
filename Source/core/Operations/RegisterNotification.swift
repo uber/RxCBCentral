@@ -22,6 +22,10 @@ public class RegisterNotification: GattOperation {
 
     public let result: Single<()>
     
+    public convenience init(service: CBUUID, characteristic: CBUUID) {
+        self.init(service: service, characteristic: characteristic, timeoutSeconds: GattConstants.defaultOperationTimeout, preprocessor: nil)
+    }
+    
     public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, preprocessor: Preprocessor? = nil, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
         let gattSubject: BehaviorSubject<GattIO?> = BehaviorSubject(value: nil)
         self._gattSubject = gattSubject

@@ -21,6 +21,10 @@ public struct ReadRssi: GattOperation {
     public typealias Element = Int
     public typealias TraitType = SingleTrait
     public var result: Single<Int>
+    
+    public init() {
+        self.init(timeoutSeconds: GattConstants.defaultOperationTimeout)
+    }
 
     public init(timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
         result =

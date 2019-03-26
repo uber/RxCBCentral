@@ -22,6 +22,10 @@ import RxSwift
 public struct Read: GattOperation {
     
     public var result: Single<Data?>
+    
+    public init(service: CBUUID, characteristic: CBUUID) {
+        self.init(service: service, characteristic: characteristic, timeoutSeconds: GattConstants.defaultOperationTimeout)
+    }
 
     public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
         result =
@@ -33,7 +37,6 @@ public struct Read: GattOperation {
             .share()
             .asSingle()
             .timeout(timeoutSeconds, scheduler: scheduler)
-
     }
 
     public func execute(gattIO: GattIO) {

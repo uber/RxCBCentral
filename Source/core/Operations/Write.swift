@@ -31,6 +31,10 @@ public class Write: GattOperation {
             .asSingle()
             .timeout(timeoutSeconds, scheduler: scheduler)
     
+    public convenience init(service: CBUUID, characteristic: CBUUID, data: Data) {
+        self.init(service: service, characteristic: characteristic, data: data, timeoutSeconds: GattConstants.defaultOperationTimeout)
+    }
+    
     public init(service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
         self.service = service
         self.characteristic = characteristic
