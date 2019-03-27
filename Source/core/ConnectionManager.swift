@@ -147,7 +147,8 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
     }
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
-        didDiscoverPeripheralSubject.onNext(peripheral)
+        let scanData = (peripheral, advertisementData, RSSI)
+        didDiscoverPeripheralSubject.onNext(scanData)
         self.discoveredPeripherals.insert(peripheral)
         RxCBLogger.sharedInstance.log("Discovered peripheral: \(peripheral.description), RSSI: \(RSSI)")
     }
@@ -180,7 +181,7 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
     private let dispatchQueue: DispatchQueue?
     private let options: ConnectionManagerOptions?
     
-    private let didDiscoverPeripheralSubject: PublishSubject<CBPeripheral> = PublishSubject()
+    private let didDiscoverPeripheralSubject: PublishSubject<ScanData> = PublishSubject()
     private let didConnectToPeripheralSubject: PublishSubject<CBPeripheral> = PublishSubject()
     private let didUpdateStateSubject = BehaviorSubject<ConnectionManagerState>(value: ConnectionManagerState.disconnected(nil))
     
@@ -196,12 +197,14 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
     
     private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatching?) -> Observable<CBPeripheral> {
         // if no scanMatcher provided, return the first peripheral discovered that meets our serviceUUID requirements
-        guard let scanMatcher = scanMatcher else { return didDiscoverPeripheralSubject }
+        guard let scanMatcher = scanMatcher else {
+            return didDiscoverPeripheralSubject.map { $0.peripheral }
+        }
         
         // use the provided scanMatcher to determine which peripherals to discover
         return didDiscoverPeripheralSubject
-            .flatMapLatest { (peripheral: CBPeripheral) -> Observable<CBPeripheral> in
-                return scanMatcher.accept(peripheral)
+            .flatMapLatest { (scanData: ScanData) -> Observable<CBPeripheral> in
+                return scanMatcher.accept(scanData)
             }
     }
     

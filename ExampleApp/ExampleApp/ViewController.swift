@@ -187,8 +187,8 @@ fileprivate class DeviceNameScanMatcher: ScanMatching {
         self.deviceName = deviceName
     }
     
-    func accept(_ peripheral: CBPeripheral) -> Observable<CBPeripheral> {
-        peripherals.insert(peripheral)
+    func accept(_ scanData: ScanData) -> Observable<CBPeripheral> {
+        peripherals.insert(scanData.peripheral)
         
         return
             Observable.create { observer in

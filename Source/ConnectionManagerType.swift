@@ -59,6 +59,8 @@ public enum ConnectionManagerState {
     case scanning
 }
 
+public typealias ScanData = (peripheral: CBPeripheral, advertisementData: [String: Any], RSSI: NSNumber)
+
 extension ConnectionManagerState: Equatable {
     public static func == (lhs: ConnectionManagerState, rhs: ConnectionManagerState) -> Bool {
         switch (lhs, rhs) {
