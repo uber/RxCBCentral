@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CD3309C22214E4500041EE49 /* RxCBLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3309C12214E4500041EE49 /* RxCBLogger.swift */; };
+		CD613101224C45EF00A1073A /* RSSIScanMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD613100224C45EF00A1073A /* RSSIScanMatcher.swift */; };
 		CDFE3F4A21E83EFA00CF931B /* RxCBCentral.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDFE3F9C21E8420800CF931B /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8421E8420700CF931B /* ConnectionManager.swift */; };
 		CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFE3F8621E8420700CF931B /* ReadRssi.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		CD3309C12214E4500041EE49 /* RxCBLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxCBLogger.swift; sourceTree = "<group>"; };
+		CD613100224C45EF00A1073A /* RSSIScanMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSIScanMatcher.swift; sourceTree = "<group>"; };
 		CDFE3F4521E83EFA00CF931B /* RxCBCentral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxCBCentral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFE3F4821E83EFA00CF931B /* RxCBCentral.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxCBCentral.h; sourceTree = "<group>"; };
 		CDFE3F4921E83EFA00CF931B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 		CDFE3F8E21E8420700CF931B /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				CD613100224C45EF00A1073A /* RSSIScanMatcher.swift */,
 				CDFE3F8F21E8420700CF931B /* CentralScanner.swift */,
 			);
 			path = Helper;
@@ -263,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDFE3F9D21E8420800CF931B /* ReadRssi.swift in Sources */,
+				CD613101224C45EF00A1073A /* RSSIScanMatcher.swift in Sources */,
 				CDFE3FAC21E8420800CF931B /* ScanMatching.swift in Sources */,
 				CDFE3FAA21E8420800CF931B /* BluetoothDetectorType.swift in Sources */,
 				CDFE3FAF21E8420800CF931B /* GattManagerType.swift in Sources */,
