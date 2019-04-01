@@ -183,28 +183,25 @@ class ViewController: UIViewController {
 
 fileprivate class DeviceNameScanMatcher: ScanMatching {
     
+    var matchedPeripheral: Observable<CBPeripheral> {
+        return peripheralSequence
+            .filter { (peripheral: CBPeripheral) -> Bool in
+                guard let name = peripheral.name?.lowercased() else { return false }
+              
+                return name.contains(self.deviceName.lowercased())
+            }
+    }
+    
     init(deviceName: String) {
         self.deviceName = deviceName
     }
     
-    func accept(_ scanData: ScanData) -> Observable<CBPeripheral> {
-        peripherals.insert(scanData.peripheral)
-        
-        return
-            Observable.create { observer in
-                // if we find a substring name match, return that peripheral
-                for peripheral in self.peripherals {
-                    if let name = peripheral.name?.lowercased(), name.contains(self.deviceName.lowercased()) {
-                        observer.onNext(peripheral)
-                    }
-                }
-                
-                return Disposables.create()
-            }
+    func accept(_ scanData: ScanData) {
+        peripheralSequence.onNext(scanData.peripheral)
     }
     
     private let deviceName: String
-    private var peripherals: Set<CBPeripheral> = []
+    private let peripheralSequence = ReplaySubject<CBPeripheral>.create(bufferSize: 1)
 }
 
 extension Data {

@@ -21,6 +21,9 @@ import RxSwift
 public protocol ScanMatching {
     /// Pass `ScanData` into the ScanMatcher, which includes a peripheral, advertisementData and RSSI.
     /// This function is used to determine if this discovered peripheral is a match against
-    /// parameters and logic needed for your use case. If so, return a sequence with that peripheral.
-    func accept(_ scanData: ScanData) -> Observable<CBPeripheral>
+    /// parameters and logic needed for your use case.
+    func accept(_ scanData: ScanData)
+    
+    /// A sequence of peripherals that match the requirements of our ScanMatcher implementation
+    var matchedPeripheral: Observable<CBPeripheral> { get }
 }

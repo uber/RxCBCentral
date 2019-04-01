@@ -203,9 +203,12 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
         
         // use the provided scanMatcher to determine which peripherals to discover
         return didDiscoverPeripheralSubject
-            .flatMapLatest { (scanData: ScanData) -> Observable<CBPeripheral> in
-                return scanMatcher.accept(scanData)
-            }
+            .do(onNext: { (scanData: ScanData) in
+                scanMatcher.accept(scanData)
+            })
+            .flatMapLatest { _ -> Observable<CBPeripheral> in
+                return scanMatcher.matchedPeripheral
+        }
     }
     
     private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheral>, connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
