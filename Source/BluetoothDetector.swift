@@ -16,21 +16,21 @@
 
 import RxSwift
 
-// Capability of the system to provide Bluetooth LE connectivity.
-public enum Capability: String {
-    case unsupported, disabled, enabled
-}
-
-public enum BluetoothError: Error {
-    case disabled, unsupported
-}
-
 /// Provides the ability to observe Bluetooth LE capability and enabled states.
-public protocol BluetoothDetectorType: class {
+public protocol BluetoothDetector: AnyObject {
     // Observe Bluetooth capability. If Bluetooth LE is unsupported, that will be the only emission.
     var capability: Observable<Capability> { get }
 
     // Observe Bluetooth enabled/disabled state.
     // If Bluetooth LE is unsupported, a false value will be the only emission.
     var enabled: Observable<Bool> { get }
+}
+
+// Capability of the system to provide Bluetooth LE connectivity.
+public enum Capability: String {
+    case unsupported, unknown, unauthorized, disabled, enabled
+}
+
+public enum BluetoothError: Error {
+    case disabled, unsupported
 }

@@ -13,8 +13,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private var bluetoothDetector: BluetoothDetector!
-    private var connectionManager: ConnectionManager!
+    private var bluetoothDetector: BluetoothDetector = ViewController.centralManager
+    private var connectionManager: ConnectionManager = ViewController.centralManager
+    
+    private static let centralManager = RxCentralManager(queue: nil, options: nil)
+    
     private var gattManager: GattManager!
     private let disposeBag = DisposeBag()
     private var gattIO: GattIO? = nil
@@ -50,8 +53,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bluetoothDetector = BluetoothDetector(options: nil)
-        connectionManager = ConnectionManager(bluetoothDetector: bluetoothDetector, queue: nil, options: nil)
         gattManager = GattManager()
         
         subscribeToRxCBLogger()

@@ -18,7 +18,7 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public protocol ConnectionManagerType: class {
+public protocol ConnectionManager: AnyObject {
     /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
     /// Uses the `defaultScanTimeout`
