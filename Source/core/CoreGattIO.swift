@@ -39,10 +39,10 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
     
     // TODO: assumes all writes are without response for now to calculate MTU
     public var maxWriteLength: Int {
-       return peripheral.maximumWriteValueLength(for: CBCharacteristicWriteType.withoutResponse)
+        return peripheral.maximumWriteValueLength(for: CBCharacteristicWriteType.withoutResponse)
     }
     
-    public func readRSSI() -> Single<Int> {        
+    public func readRSSI() -> Single<Int> {
         return didReadRSSISubject
             .take(1)
             .asSingle()
@@ -167,29 +167,29 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     }
                 })
                 // TODO: this should only be called if we are writing with response. Assume without response for now.
-//                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
-//                    guard let _ = matchingCharacteristic else {
-//                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
-//                        return Observable.error(GattError.characteristicNotFound)
-//                    }
-//
-//                    if let error = error {
-//                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
-//                        return Observable.error(error)
-//                    }
-//
-//                    return self.didWriteToCharacteristicSubject.asObservable()
-//                }
-//                .take(1)
-//                .flatMapLatest { (error: Error?) -> Completable in
-//                    if let error = error {
-//                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
-//                        return Observable.error(error).asCompletable()
-//                    }
-//                    RxCBLogger.sharedInstance.log("Write successful.")
-//                    return Observable.empty().asCompletable()
-//                }
-//                .take(1)
+                //                .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<Error?> in
+                //                    guard let _ = matchingCharacteristic else {
+                //                        RxCBLogger.sharedInstance.log("Error: characteristic not found")
+                //                        return Observable.error(GattError.characteristicNotFound)
+                //                    }
+                //
+                //                    if let error = error {
+                //                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                //                        return Observable.error(error)
+                //                    }
+                //
+                //                    return self.didWriteToCharacteristicSubject.asObservable()
+                //                }
+                //                .take(1)
+                //                .flatMapLatest { (error: Error?) -> Completable in
+                //                    if let error = error {
+                //                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                //                        return Observable.error(error).asCompletable()
+                //                    }
+                //                    RxCBLogger.sharedInstance.log("Write successful.")
+                //                    return Observable.empty().asCompletable()
+                //                }
+                //                .take(1)
                 .ignoreElements()
                 .do(onSubscribe: {
                     self.peripheral.discoverServices([service])
@@ -198,7 +198,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         
         return sharedWriteCompletable
     }
-
+    
     public func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor? = nil) -> Completable {
         let sharedNotifyCompletable: Completable =
             didDiscoverServicesSubject
@@ -252,6 +252,7 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                     
                     return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
+                .take(1)
                 .flatMapLatest { (_, error: Error?) -> Completable in
                     if let error = error {
                         return Observable.error(error).asCompletable()
@@ -287,11 +288,6 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
                 return Observable.just(processedData)
             }
             .filterNil()
-    }
-
-    // TODO: add processor functionality
-    public func process(data: Data) -> Data? {
-        return nil
     }
     
     // MARK: - CBPeripheralDelegate

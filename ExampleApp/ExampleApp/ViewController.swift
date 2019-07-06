@@ -58,6 +58,12 @@ class ViewController: UIViewController {
         subscribeToRxCBLogger()
         
         isConnected = false
+        
+        gattManager.isConnected
+            .subscribe(onNext: { (connected: Bool) in
+                print(connected)
+            })
+            .disposed(by: disposeBag)
     }
     
     @IBAction func didTapConnect(_ sender: Any) {

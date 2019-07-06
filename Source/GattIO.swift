@@ -25,7 +25,7 @@ public enum GattError: Error {
 }
 
 /// Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
-public protocol GattIO: Preprocessor {
+public protocol GattIO {
     var isConnected: Bool { get }
     var deviceName: String? { get }
     var maxWriteLength: Int { get }
@@ -36,7 +36,7 @@ public protocol GattIO: Preprocessor {
     /// - returns: Single of the RSSI to the peripheral, or else an error. Expect `GattError` for
     ///     errors that may be retried.
     func readRSSI() -> Single<Int>
-
+    
     /// Perform a GATT read operation upon subscription.
     ///
     /// Supports reactive Retry operators. Immediately returns an error if disconnected.
@@ -56,7 +56,7 @@ public protocol GattIO: Preprocessor {
     /// - returns: Completable of the operation success, or else an error. Expect `GattError` for
     ///     errors that may be retried.
     func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable
-
+    
     func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor?) -> Completable
     func notificationData(for characteristic: CBUUID) -> Observable<Data>
 }
@@ -82,6 +82,6 @@ public extension ObservableType where E == GattIO {
     func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
         return flatMap { (element: E) -> Completable in
             element.write(service: service, characteristic: characteristic, data: data)
-        }.asCompletable()
+            }.asCompletable()
     }
 }

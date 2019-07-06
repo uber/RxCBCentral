@@ -18,7 +18,7 @@ import CoreBluetooth
 import RxCocoa
 import RxSwift
 
-public class GattManager: GattManagerType {
+open class GattManager: GattManagerType {
     
     public init() {}
     
