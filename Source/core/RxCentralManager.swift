@@ -18,7 +18,9 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public class RxCentralManager: NSObject {
+public protocol RxCentralManagerType: BluetoothDetector, ConnectionManager {}
+
+public class RxCentralManager: NSObject, RxCentralManagerType {
     public init(queue: DispatchQueue? = nil, options: CentralManagerOptions? = nil) {
         self.options = options
         
