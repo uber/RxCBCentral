@@ -34,7 +34,7 @@ open class GattManager: GattManagerType {
     
     public var isConnected: Observable<Bool> {
         return _gattRelay
-            .flatMapLatest { Observable.just($0?.isConnected ?? false) }
+            .flatMapLatest { $0?.isConnected ?? Observable.just(false) }
             .startWith(false)
     }
     

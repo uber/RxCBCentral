@@ -159,8 +159,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "43"
             endingLineNumber = "43"
-            landmarkName = "ViewController"
-            landmarkType = "3">
+            landmarkName = "isConnected"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -223,7 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "169"
             endingLineNumber = "169"
-            landmarkName = "consoleLog(_:)"
+            landmarkName = "didTapMTUButton(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
             endingLineNumber = "171"
-            landmarkName = "consoleLog(_:)"
+            landmarkName = "didTapMTUButton(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -27,8 +27,11 @@ class CoreGattIO: NSObject, GattIO, CBPeripheralDelegate {
         self.peripheral.delegate = self
     }
     
-    public var isConnected: Bool {
-        return peripheral.state == .connected
+    public var isConnected: Observable<Bool> {
+        return connectionState
+            .map { (state: ConnectionManagerState) -> Bool in
+                return state == .connected
+        }
     }
     
     public var deviceName: String? {

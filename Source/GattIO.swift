@@ -26,7 +26,9 @@ public enum GattError: Error {
 
 /// Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
 public protocol GattIO {
-    var isConnected: Bool { get }
+    /// The connection state of the peripheral backing this GattIO.
+    var isConnected: Observable<Bool> { get }
+    
     var deviceName: String? { get }
     var maxWriteLength: Int { get }
     
