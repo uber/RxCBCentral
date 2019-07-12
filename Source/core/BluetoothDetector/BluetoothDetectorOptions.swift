@@ -15,15 +15,18 @@
 //
 
 import CoreBluetooth
-import RxSwift
 
-// Provides the capability to specify means to identify discovered peripheral matches.
-public protocol ScanMatching {
-    /// Pass `ScanData` into the ScanMatcher, which includes a peripheral, advertisementData and RSSI.
-    /// This function is used to determine if this discovered peripheral is a match against
-    /// parameters and logic needed for your use case.
-    func accept(_ scanData: ScanData)
+public struct BluetoothDetectorOptions {
     
-    /// A sequence of scan data, including a peripheral, that matches the requirements of our ScanMatcher implementation
-    var match: Observable<ScanData> { get }
+    /// A Bool indicating that the system should, if Bluetooth is powered off when `CBCentralManager` is instantiated, display
+    /// a warning dialog to the user.
+    let showPowerAlert: Bool
+    
+    public init(showPowerAlert: Bool) {
+        self.showPowerAlert = showPowerAlert
+    }
+    
+    var asDictionary: [String: Any] {
+        return [CBCentralManagerOptionShowPowerAlertKey : showPowerAlert]
+    }
 }

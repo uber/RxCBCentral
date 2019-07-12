@@ -16,39 +16,30 @@
 
 import CoreBluetooth
 
-public struct CentralManagerOptions {
-    /// A Bool indicating that the system should, if Bluetooth is powered off when `CBCentralManager` is instantiated, display
-    /// a warning dialog to the user.
-    let showPowerAlert: Bool
-    
-    /// A Bool indicating that the system should display a connection alert for a given peripheral, if the application is suspended
-    /// when a successful connection is made.
+public struct ConnectionManagerOptions {
     let notifyOnConnection: Bool
-    
-    /// A Bool indicating that the system should display a disconnection alert for a given peripheral, if the application
-    /// is suspended at the time of the disconnection.
     let notifyOnDisconnection: Bool
+    let allowDuplicates: Bool
     
     /// A String containing a unique identifier (UID) for the `CBCentralManager` that is being instantiated. This UID is used
     /// by the system to identify a specific `CBCentralManager` instance for restoration and, therefore, must remain the same for
     /// subsequent application executions in order for the manager to be restored.
     let restoreIdentifier: String?
     
-    public init(showPowerAlert: Bool, notifyOnConnection: Bool, notifyOnDisconnection: Bool, restoreIdentifier: String?) {
-        self.showPowerAlert = showPowerAlert
+    public init(notifyOnConnection: Bool, notifyOnDisconnection: Bool, allowDuplicates: Bool, restoreIdentifier: String?) {
         self.notifyOnConnection = notifyOnConnection
         self.notifyOnDisconnection = notifyOnDisconnection
+        self.allowDuplicates = allowDuplicates
         self.restoreIdentifier = restoreIdentifier
     }
     
     var asDictionary: [String: Any] {
-        var dict = [String: Any]()
+        var dict: [String: Any] = [:]
         
         dict[CBCentralManagerOptionRestoreIdentifierKey] = restoreIdentifier
         dict[CBConnectPeripheralOptionNotifyOnConnectionKey] = NSNumber(booleanLiteral: notifyOnConnection)
         dict[CBConnectPeripheralOptionNotifyOnDisconnectionKey] = NSNumber(booleanLiteral: notifyOnDisconnection)
-        dict[CBCentralManagerOptionShowPowerAlertKey] = NSNumber(booleanLiteral: showPowerAlert)
-        
+        dict[CBCentralManagerScanOptionAllowDuplicatesKey] = NSNumber(booleanLiteral: allowDuplicates)
         return dict
     }
 }

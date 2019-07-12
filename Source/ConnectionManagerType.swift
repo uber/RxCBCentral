@@ -18,18 +18,18 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public protocol ConnectionManager: AnyObject {
+public protocol ConnectionManagerType: AnyObject {
     /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
     /// Uses the `defaultScanTimeout`
-    /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
-    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<CBPeripheral>
+    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<ScanData>
     
     /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
     /// Uses the `scanTimeout` provided
-    /// Returns: A sequence of `CBPeripherals` that we've found while scanning that match the requested services and `scanMatcher` filtering
-    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval) -> Observable<CBPeripheral>
+    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval) -> Observable<ScanData>
     
     /// Aborts the current scan for this `ConnectionManagerType`, if one is taking place.
     func stopScan()
@@ -59,24 +59,11 @@ public enum ConnectionManagerState {
     case scanning
 }
 
-public typealias ScanData = (peripheral: CBPeripheral, advertisementData: [String: Any], RSSI: NSNumber)
+public protocol CBPeripheralType: class {}
+/// Wrap CBPeripheral in a protocol to be able to mock it for unit testing
+extension CBPeripheral: CBPeripheralType {}
 
-extension ConnectionManagerState: Equatable {
-    public static func == (lhs: ConnectionManagerState, rhs: ConnectionManagerState) -> Bool {
-        switch (lhs, rhs) {
-        case (.connected, .connected):
-            return true
-        case (.connecting, .connecting):
-            return true
-        case (.scanning, .scanning):
-            return true
-        case (.disconnected(_), .disconnected(_)):
-            return true
-        default:
-            return false
-        }
-    }
-}
+public typealias ScanData = (peripheral: CBPeripheralType, advertisementData: [String: Any], RSSI: NSNumber)
 
 public struct ConnectionConstants {
     /// Number of seconds to scan before throwing a ConnectionManagerError.scanTimeout error
