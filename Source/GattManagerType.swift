@@ -17,7 +17,7 @@
 import CoreBluetooth
 import RxSwift
 
-///  Responsible for queueing and handling GattOperations using the underlying GattIO for BLE communication.
+/// Responsible for queueing and handling GattOperations using the underlying GattIO for BLE communication.
 public protocol GattManagerType: AnyObject {
     /// May be set multiple times as connection cycles occur.
     var gattIO: GattIO? { get set }

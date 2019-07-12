@@ -42,13 +42,6 @@ public struct Read: GattOperation {
     public func execute(gattIO: GattIO) {
         _gattSubject.onNext(gattIO)
     }
-    
-    public func execute(gattIO: GattIO) -> PrimitiveSequence<SingleTrait, Data?> {
-        return result
-            .do(onSubscribe: {
-                return self.execute(gattIO: gattIO)
-            })
-    }
 
     private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
 }

@@ -20,7 +20,7 @@ import RxSwift
 /// for serial execution.
 public protocol GattOperationExecutable {
     /// Execute the operation. There must be an active subscription to the result stream for the
-    /// operation to execute..
+    /// operation to execute.
     /// - parameter gattIO: the GattIO to execute the operation against.
     func execute(gattIO: GattIO)
 }
