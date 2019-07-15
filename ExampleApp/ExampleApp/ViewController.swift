@@ -58,7 +58,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bluetoothDetector = BluetoothDetector(options: BluetoothDetectorOptions(showPowerAlert: false))
-        connectionManager = ConnectionManager(bluetoothDetector: bluetoothDetector)
+        connectionManager = ConnectionManager()
         gattManager = GattManager()
         
         subscribeToRxCBLogger()

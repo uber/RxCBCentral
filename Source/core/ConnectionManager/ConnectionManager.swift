@@ -20,18 +20,12 @@ import RxSwift
 
 open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerDelegate {
     
-    public init(bluetoothDetector: BluetoothDetectorType, queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
-        self.bluetoothDetector = bluetoothDetector
+    public init(queue: DispatchQueue? = nil, options: ConnectionManagerOptions? = nil) {
         self.options = options
-        
         centralManager = CBCentralManager(delegate: nil, queue: queue, options: options?.asDictionary)
         super.init()
         
         centralManager.delegate = self
-    }
-    
-    public var isScanning: Bool {
-        return centralManager.isScanning
     }
     
     public func scan(for services: [CBUUID]?,
@@ -42,20 +36,15 @@ open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerD
     public func scan(for services: [CBUUID]?,
                      scanMatcher: ScanMatching?,
                      scanTimeout: RxTimeInterval) -> Observable<ScanData> {
-        // check that bluetooth is powered on
-        guard centralManager.state == .poweredOn else {
-            if centralManager.state == .poweredOff || centralManager.state == .resetting {
-                RxCBLogger.sharedInstance.log("Error: bluetooth disabled")
-                return Observable.error(BluetoothError.disabled)
-            } else {
-                RxCBLogger.sharedInstance.log("Error: bluetooth unsupported")
-                return Observable.error(BluetoothError.unsupported)
+        
+        guard !centralManager.isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
+        
+        // wait for bluetooth state to be enabled before performing BLE operations
+        return bluetoothEnabledSubject
+            .filter { $0 }
+            .flatMapLatest { _ -> Observable<ScanData> in
+                return self.generateMatchingPeripheralSequence(with: scanMatcher)
             }
-        }
-        
-        guard !isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
-        
-        return generateMatchingPeripheralSequence(with: scanMatcher)
             .timeout(scanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
             .do(onError: { _ in
                 self.centralManager.stopScan()
@@ -78,48 +67,46 @@ open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerD
                                     scanMatcher: ScanMatching?,
                                     scanTimeout: RxTimeInterval,
                                     connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
-        // check that bluetooth is powered on
-        guard centralManager.state == .poweredOn else {
-            if centralManager.state == .poweredOff || centralManager.state == .resetting {
-                RxCBLogger.sharedInstance.log("Error: bluetooth disabled")
-                return Observable.error(BluetoothError.disabled)
-            } else {
-                RxCBLogger.sharedInstance.log("Error: bluetooth unsupported")
-                return Observable.error(BluetoothError.unsupported)
-            }
-        }
         
-        guard !isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
+        guard !centralManager.isScanning else { return Observable.error(ConnectionManagerError.alreadyScanning) }
         
         let peripheralObservable = generateMatchingPeripheralSequence(with: scanMatcher)
             .map { (scanData: ScanData) -> CBPeripheralType in
                 return scanData.peripheral
         }
         
-        let sharedGattIOObservable =
-            generateGattIOSequence(with: peripheralObservable, connectionTimeout: connectionTimeout)
-                .do(onSubscribe: {
-                    RxCBLogger.sharedInstance.log("Scanning...")
-                    self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
-                })
-                .timeout(scanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
-                .do(onError: { error in
-                    self.centralManager.stopScan()
-                    RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
-                })
-        
-        return sharedGattIOObservable
+        // wait for bluetooth state to be enabled before performing BLE operations
+        return bluetoothEnabledSubject
+            .filter { $0 }
+            .flatMapLatest { _ -> Observable<GattIO> in
+                return self.connectToPeripheral(with: peripheralObservable, connectionTimeout: connectionTimeout)
+            }
+            .do(onSubscribe: {
+                RxCBLogger.sharedInstance.log("Scanning...")
+                self.centralManager.scanForPeripherals(withServices: services, options: self.options?.asDictionary)
+            })
+            .timeout(scanTimeout, other: Observable.error(ConnectionManagerError.scanTimeout), scheduler: MainScheduler.instance)
+            .do(onError: { error in
+                self.centralManager.stopScan()
+                RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+            })
     }
     
     public func disconnectPeripheral() {
-        guard let peripheral = peripheral, centralManager.state == .poweredOn else  { return }
+        guard let peripheral = peripheral, centralManager.state == .poweredOn else { return }
         centralManager.cancelPeripheralConnection(peripheral)
     }
     
     // MARK: - CBCentralManagerDelegate
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // CoreBluetoothDetector handles these state changes
+        // BluetoothDetector exposes the rest of the states
+        switch central.state {
+        case .poweredOn:
+            bluetoothEnabledSubject.onNext(true)
+        default:
+            bluetoothEnabledSubject.onNext(false)
+        }
     }
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
@@ -154,8 +141,9 @@ open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerD
     private var peripheral: CBPeripheral?
     private var discoveredPeripherals: Set<CBPeripheral> = []
     
-    private let bluetoothDetector: BluetoothDetectorType
     private let options: ConnectionManagerOptions?
+    
+    private let bluetoothEnabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)
     
     private let didDiscoverPeripheralSubject: PublishSubject<ScanData> = PublishSubject()
     private let didConnectToPeripheralSubject: PublishSubject<CBPeripheral> = PublishSubject()
@@ -171,6 +159,8 @@ open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerD
         didUpdateStateSubject.onNext(.scanning)
     }
     
+    /// Generate a sequence of peripherals and their metadata that we've discovered while scanning
+    /// that match the requirements on the given scanMatcher
     private func generateMatchingPeripheralSequence(with scanMatcher: ScanMatching?) -> Observable<ScanData> {
         // if no scanMatcher provided, return the first peripheral discovered that meets our serviceUUID requirements
         guard let scanMatcher = scanMatcher else {
@@ -187,7 +177,7 @@ open class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManagerD
         }
     }
     
-    private func generateGattIOSequence(with matchingPeripheralSequence: Observable<CBPeripheralType>, connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
+    private func connectToPeripheral(with matchingPeripheralSequence: Observable<CBPeripheralType>, connectionTimeout: RxTimeInterval) -> Observable<GattIO> {
         
         return matchingPeripheralSequence
             .take(1)
