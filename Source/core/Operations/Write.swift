@@ -43,35 +43,35 @@ public class Write: GattOperation {
         self.scheduler = scheduler
     }
     
-    public func execute(gattIO: GattIO) {
-        _gattSubject.onNext(gattIO)
+    public func execute(with peripheral: RxPeripheral) {
+        _peripheralSubject.onNext(peripheral)
     }
     
-    func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Single<GattIO> {
-        return _gattSubject
-            .flatMap({ (gattIO) -> Observable<GattIO> in
+    func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Single<RxPeripheral> {
+        return _peripheralSubject
+            .flatMap({ (rxPeripheral) -> Observable<RxPeripheral> in
                 var chunkCompletables: [Completable] = []
                 let byteArray = [UInt8](data)
                 
-                byteArray.forEachChunk(by: gattIO.maxWriteLength) { chunk in
-                    chunkCompletables.append(gattIO.write(service: service, characteristic: characteristic, data: Data(chunk)))
+                byteArray.forEachChunk(by: rxPeripheral.maxWriteLength) { chunk in
+                    chunkCompletables.append(rxPeripheral.write(service: service, characteristic: characteristic, data: Data(chunk)))
                 }
                 
-                return Completable.concat(chunkCompletables).andThen(Observable.just(gattIO))
+                return Completable.concat(chunkCompletables).andThen(Observable.just(rxPeripheral))
             })
             .take(1)
             .asSingle()
     }
     
-    private var postWrite: SingleTransformer<GattIO, Element> {
+    private var postWrite: SingleTransformer<RxPeripheral, Element> {
         return { single in
             single.flatMap {
-                gattIO in Single.just(())
+                _ in Single.just(())
             }
         }
     }
     
-    private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
+    private let _peripheralSubject = ReplaySubject<RxPeripheral>.create(bufferSize: 1)
     
     private let service: CBUUID, characteristic: CBUUID, data: Data, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType
 }
@@ -89,4 +89,3 @@ extension Single where Trait == SingleTrait {
         return transformer(self)
     }
 }
-

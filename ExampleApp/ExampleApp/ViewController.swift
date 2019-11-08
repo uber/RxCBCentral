@@ -21,11 +21,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private var bluetoothDetector: BluetoothDetector!
+    private var bluetoothDetector: BluetoothDetectorType!
     private var connectionManager: ConnectionManager!
-    private var gattManager: GattManager!
+    private var peripheralManager: RxPeripheralManagerType!
     private let disposeBag = DisposeBag()
-    private var gattIO: GattIO? = nil
+    private var connectionDisposable: Disposable? = nil
     
     private var isConnected = false {
         didSet {
@@ -58,14 +58,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bluetoothDetector = BluetoothDetector(options: BluetoothDetectorOptions(showPowerAlert: false))
-        connectionManager = ConnectionManager()
-        gattManager = GattManager()
+        peripheralManager = RxPeripheralManager()
+        connectionManager = ConnectionManager(rxPeripheralManager: peripheralManager)
         
         subscribeToRxCBLogger()
         
         isConnected = false
         
-        gattManager.isConnected
+        peripheralManager.isConnected
             .subscribe(onNext: { (connected: Bool) in
                 print(connected)
             })
@@ -74,7 +74,7 @@ class ViewController: UIViewController {
     
     @IBAction func didTapConnect(_ sender: Any) {
         guard !isConnected else {
-            connectionManager.disconnectPeripheral()
+            connectionDisposable?.dispose()
             isConnected = false
             return
         }
@@ -88,38 +88,21 @@ class ViewController: UIViewController {
             scanMatcher = DeviceNameScanMatcher(deviceName: deviceName)
         }
         
-        // Two ways to connect to and read from a peripheral:
-        
-        // 1. Connect to a peripheral and immediately read. No queueing functionality - best for 1-time operations. Not ideal, but succinct.
-//        connectionManager
-//            .connectToPeripheral(with: servicesToFind, scanMatcher: scanMatcher)
-//            .read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID)
-//            .subscribe(onNext: { (data: Data?) in
-//                // do something with data
-//                print(data?.description ?? "no data")
-//            })
-//            .disposed(by: disposeBag)
-        
-        
-        // 2. Connect to a peripheral, optionally perform custom logic, and queue read operation (recommended)
-        
-        // Connect, inject gattIO into GattManager
-        connectionManager
-            .connectToPeripheral(with: nil, scanMatcher: scanMatcher)
-            .subscribe(onNext: { (gattIO: GattIO) in
+        // Connect to a peripheral, optionally perform custom logic, inject RxPeripheral into PeripheralManager
+        connectionDisposable =
+            connectionManager
+            .connectToPeripheral(with: nil, scanMatcher: scanMatcher, options: nil)
+            .subscribe(onNext: { (peripheral: RxPeripheral) in
                 // successfully connected, custom logic
                 self.isConnected = true
-                self.deviceNameTextView.text = gattIO.deviceName ?? "N/A"
-                self.gattIO = gattIO
-                // ...
+                self.deviceNameTextView.text = peripheral.deviceName ?? "N/A"
                 
-                // give the gattManager a GattIO to queue operations
-                self.gattManager.gattIO = gattIO
+                // IMPORTANT, MUST DO
+                self.peripheralManager.rxPeripheral = peripheral
             }, onError: { (error: Error) in
                 // connection lost
                 self.isConnected = false
             })
-            .disposed(by: disposeBag)
     }
     
     @IBAction func didTapGAPButton(_ sender: Any) {
@@ -127,7 +110,7 @@ class ViewController: UIViewController {
         let read = Read(service: GattUUIDs.GAP_SVC_UUID, characteristic: GattUUIDs.GAP_DEVICE_NAME_UUID, timeoutSeconds: 30)
         
         // queue the operation on the gattManager
-        gattManager
+        peripheralManager
             .queue(operation: read)
             .subscribe(onSuccess: { _ in
                 // read successful
@@ -138,9 +121,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didTapBatteryButton(_ sender: Any) {
-        let read = Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: 30)
-        gattManager
-            .queue(operation: read)
+        peripheralManager
+            .queue(operation: Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: 30))
             .subscribe(onSuccess: { _ in
                 // read successful
             }, onError: { (error) in
@@ -150,23 +132,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didTapDISButton(_ sender: Any) {
-        let read = Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: 30)
-        gattManager
-            .queue(operation: read)
+        peripheralManager
+            .queue(operation: Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: 30))
             .subscribe(onSuccess: { _ in
                 // read successful
             }, onError: { (error) in
                 self.consoleLog("Error: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
-    }
-    
-    @IBAction func didTapMTUButton(_ sender: Any) {
-        if let mtu = gattIO?.maxWriteLength {
-            consoleLog("MTU: \(mtu)")
-        } else {
-            consoleLog("MTU: none")
-        }
     }
     
     private func consoleLog(_ text: String) {
@@ -181,8 +154,8 @@ class ViewController: UIViewController {
     private func subscribeToRxCBLogger() {
         RxCBLogger.sharedInstance
             .read()
-            .subscribe(onNext: { (log: String) in
-                self.consoleLog(log)
+            .subscribe(onNext: { (log: RxCBLog) in
+                self.consoleLog(log.message)
             })
             .disposed(by: disposeBag)
     }

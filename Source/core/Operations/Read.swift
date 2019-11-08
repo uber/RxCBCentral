@@ -26,22 +26,22 @@ public struct Read: GattOperation {
     public init(service: CBUUID, characteristic: CBUUID) {
         self.init(service: service, characteristic: characteristic, timeoutSeconds: GattConstants.defaultOperationTimeout)
     }
-
+    
     public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, scheduler: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .default)) {
         result =
-            _gattSubject
-            .take(1)
-            .flatMapLatest { gattIO in
-                gattIO.read(service: service, characteristic: characteristic)
-            }
-            .share()
-            .asSingle()
-            .timeout(timeoutSeconds, scheduler: scheduler)
+            _peripheralSubject
+                .take(1)
+                .flatMapLatest { rxPeripheral in
+                    rxPeripheral.read(service: service, characteristic: characteristic)
+                }
+                .share()
+                .asSingle()
+                .timeout(timeoutSeconds, scheduler: scheduler)
     }
-
-    public func execute(gattIO: GattIO) {
-        _gattSubject.onNext(gattIO)
+    
+    public func execute(with peripheral: RxPeripheral) {
+        _peripheralSubject.onNext(peripheral)
     }
-
-    private let _gattSubject = ReplaySubject<GattIO>.create(bufferSize: 1)
+    
+    private let _peripheralSubject = ReplaySubject<RxPeripheral>.create(bufferSize: 1)
 }

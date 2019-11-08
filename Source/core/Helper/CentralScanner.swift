@@ -18,16 +18,42 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public struct ScanOptions {
-    /// A Bool indicating that the scan should run without duplicate filtering. By default, multiple discoveries of the
-    /// same peripheral are coalesced into a single discovery event. Specifying this option will cause a discovery event to be generated
-    /// every time the peripheral is seen, which may be many times per second. This can be useful in specific situations, such as making
-    /// a connection based on a peripheral's RSSI, but may have an adverse affect on battery-life and application performance.
-    public let allowDuplicates: Bool
+public protocol CentralScanner: AnyObject {
+    /// Scan for peripherals that have the specified `services`. Provide a `scanMatcher` to filter the `ScanData` returned here.
+    ///
+    /// - important: Only one scan operation per `CentralScanner` is supported at a time.
+    ///
+    /// This convenience function uses the `defaultScanTimeout`
+    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, options: ScanOptions?) -> Observable<ScanData>
+    
+    /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
+    /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
+    /// Uses the `scanTimeout` provided
+    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
+    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, options: ScanOptions?, scanTimeout: RxTimeInterval) -> Observable<ScanData>
+    
+    /// Aborts the current scan for this `CentralScanner`, if one is taking place.
+    func stopScan()
+}
 
-    /// An Array of `CBUUID` objects respresenting service UUIDs. Causes the scan to also look for peripherals soliciting
-    /// any of the services contained in the list.
-    public let solicitedServiceUUIDs: [CBUUID]?
+public struct ScanOptions {
+    /// A `Bool` indicating that the scan should run without duplicate filtering.
+    ///
+    /// By default, multiple discoveries of the same peripheral are coalesced into a single discovery event.
+    /// Specifying this option will cause a discovery event to be generated every time the peripheral is seen,
+    /// which may be many times per second. This can be useful in specific situations, such as making a connection
+    /// based on a peripheral's RSSI, but may have an adverse affect on battery-life and application performance.
+    ///
+    /// - seeAlso: `CBCentralManagerOptionRestoreIdentifierKey`
+    let allowDuplicates: Bool
+
+    /// An Array of `CBUUID` objects respresenting service UUIDs.
+    ///
+    /// Causes a scan to also look for peripherals soliciting any of the services contained in the list.
+    ///
+    /// - seeAlso: `CBCentralManagerScanOptionSolicitedServiceUUIDsKey`
+    let solicitedServiceUUIDs: [CBUUID]?
 
     public init(allowDuplicates: Bool = false, solicitedServiceUUIDs: [CBUUID]? = nil) {
         self.allowDuplicates = allowDuplicates
@@ -50,4 +76,9 @@ public struct ScanOptions {
         
         return dict
     }
+}
+
+public struct ScanDefaults {
+    /// Number of seconds to scan before throwing a ConnectionManagerError.scanTimeout error
+    public static let defaultScanTimeout: RxTimeInterval = 20
 }

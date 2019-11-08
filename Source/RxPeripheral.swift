@@ -25,11 +25,15 @@ public enum GattError: Error {
 }
 
 /// Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
-public protocol GattIO {
-    /// The connection state of the peripheral backing this GattIO.
+public protocol RxPeripheral: AnyObject {
+    /// The connection state of the peripheral. Emits wheven connection state changes.
     var isConnected: Observable<Bool> { get }
     
+    /// The name of the peripheral.
     var deviceName: String? { get }
+    
+    /// The max supported write length, in bytes.
+    /// Also called MTU (maximum transfer unit).
     var maxWriteLength: Int { get }
     
     /// Read the RSSI (relative signal strength) for the peripheral. Supports reactive Retry
@@ -59,7 +63,28 @@ public protocol GattIO {
     ///     errors that may be retried.
     func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable
     
+    /// Register for GATT notifications for a particular service and characteristic.
+    ///
+    /// GATT notifications are a mechanism for a peripheral to alert its central that values have changed.
+    ///
+    /// - parameter service: the CoreBluetooth UUID of the GATT Service containing the desired Characteristic.
+    /// - parameter characteristic: the CoreBluetooth UUID of the GATT Characteristic to receive updates about.
+    /// - parameter preprocessor: a data aggregator that can perform demarcation. Will process the notification data received
+    ///   to return data in the required format.
+    ///   Ex: collecting notification data until a complete message is formed, and then performing a COBS decode operation on the data.
+    /// - returns: Completable, indicating that we are done registering to receive notification updates for this characteristic.
+    /// - note: The preprocessor, if non-nil, will be used only for notifications for the specified `characteristic`.
+    /// - seeAlso: [Consistent Overhead Byte Stuffing - COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing)
     func registerForNotification(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor?) -> Completable
+    
+    /// Receive notification data for a specific GATT Characteristic.
+    ///
+    /// - parameter characteristic: the CoreBluetooth UUID of the GATT Characteristic you want to receive data for.
+    /// - returns: A sequence of `Data`.
+    ///
+    /// - important:
+    /// The data returned will be processed by the `Preprocessor` given when registering
+    /// for notifications for this `characteristic`, if one was provided.
     func notificationData(for characteristic: CBUUID) -> Observable<Data>
 }
 
@@ -72,7 +97,7 @@ public protocol Preprocessor {
     func process(data: Data) -> Data?
 }
 
-public extension ObservableType where E == GattIO {
+public extension ObservableType where E == RxPeripheral {
     /// Convenience function to provide a one-off read operation without queueing capabilities. Not recommended, but succient.
     func read(service: CBUUID, characteristic: CBUUID) -> Observable<Data?> {
         return flatMap { (element: E) -> Single<Data?> in
