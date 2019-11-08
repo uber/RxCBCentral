@@ -1,11 +1,12 @@
 # RxCBCentral
 
 ## Overview
-WORK IN PROGRESS 
 
-RxCBCentral is a reactive, interface-driven library used to integrate with Bluetooth LE peripherals.
+Since iOS 5 and Android 4.3 first introduced Bluetooth LE compatibility, the same challenges persist when integrating with peripherals: dealing with the implicit serial nature of BLE GATT, implementing retry logic to handle connection and GATT errors, using outdated development patterns (delegate pattern in 2019?)...the list goes on.
 
-For those tired of writing eerily similar, yet subtly different code for every Bluetooth LE peripheral integration, RxCBCentral provides a standardized, simple reactive paradigm for connecting to and communicating with peripherals from the central role.
+For those tired of writing eerily similar, yet subtly different code for every Bluetooth LE peripheral, RxCBCentral provides a standardized, simple paradigm for connecting to and communicating with peripherals from the central role in a completely reactive manner, leveraging RxSwift around Apple's CoreBluetooth.
+
+Similar to the RxSwift and RxJava, RxCBCentral and [Android's RxCentralBle](https://github.com/uber/RxCentralBle/) allow mobile engineers who work on different platforms to use similar protocols and speak the same language to accomplish a similar goal, enabling increased developer efficiency and simplifying the process of creaing BLE implementations with platform parity.
 
 Check out our detailed [Wiki](https://github.com/uber/RxCBCentral/wiki) for designs and examples for all the capabilities of RxCBCentral.
 
@@ -18,7 +19,7 @@ Check out our detailed [Wiki](https://github.com/uber/RxCBCentral/wiki) for desi
 RxCBCentral makes Bluetooth connection and communication simple.
 
 Scan, Connect and Disconnect:
-```
+```swift
 let peripheralManager = RxPeripheralManager()
 let connectionManager = ConnectionManager(rxPeripheralManager: peripheralManager, queue: nil, options: nil)
 
@@ -36,7 +37,7 @@ connectionDisposable.dispose()
 ```
 
 Scan, Connect, and Read:
-```
+```swift
 let scanMatcher = RssiScanMatcher()
 let peripheralManager = RxPeripheralManager()
 let connectionManager = ConnectionManager(rxPeripheralManager: peripheralManager, queue: nil, options: nil)
@@ -56,7 +57,7 @@ connectionManager
 ```
 
 Scan, Connect, and Write:
-```
+```swift
 guard let data = Data(base64Encoded: "A3V1") else { return }
 
 connectionManager
@@ -76,7 +77,7 @@ connectionManager
 After connecting, you can use the `RxPeripheralManager` to queue read and write BLE operatons, as well as setting up subscriptions to notifications for a particular characteristic.
 
 Subscribe for Notify Events:
-```
+```swift
 let peripheralManager = RxPeripheralManager()
 
 peripheralManager
