@@ -15,14 +15,8 @@
 //
 
 import CoreBluetooth
-import RxSwift
 
-/// Responsible for queueing and handling GattOperations using the underlying GattIO for BLE communication.
-public protocol GattManagerType: AnyObject {
-    /// May be set multiple times as connection cycles occur.
-    var gattIO: GattIO? { get set }
-    var isConnected: Observable<Bool> { get }
-    
-    func queue<O: GattOperation>(operation: O) -> Single<O.Element>
-    func receiveNotifications(for characteristic: CBUUID) -> Observable<Data>
-}
+/// Wrap CBPeripheral in a protocol to be able to mock it for unit testing
+extension CBPeripheral: CBPeripheralType {}
+
+public protocol CBPeripheralType: class {}

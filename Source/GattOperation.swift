@@ -21,13 +21,14 @@ import RxSwift
 public protocol GattOperationExecutable {
     /// Execute the operation. There must be an active subscription to the result stream for the
     /// operation to execute.
-    /// - parameter gattIO: the GattIO to execute the operation against.
-    func execute(gattIO: GattIO)
+    /// - parameter peripheral: the RxPeripheral to execute the operation against.
+    func execute(with peripheral: RxPeripheral)
 }
 
 public protocol GattOperation: GattOperationExecutable {
     associatedtype Element
-
+    /// The result of executing the operation. The type of result depends on the type of operation.
+    /// ex: `Read` operations will produce a `Single<Data>` result.
     var result: Single<Element> { get }
 }
 

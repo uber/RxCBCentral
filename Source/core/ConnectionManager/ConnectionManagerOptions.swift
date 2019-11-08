@@ -17,29 +17,48 @@
 import CoreBluetooth
 
 public struct ConnectionManagerOptions {
-    let notifyOnConnection: Bool
-    let notifyOnDisconnection: Bool
-    let allowDuplicates: Bool
+    /// A `Bool` value that specifies whether the system should display a warning dialog to the user
+    /// if Bluetooth is powered off when the central manager is instantiated.
+    ///
+    /// If the key is not specified, the default value is false.
+    ///
+    /// - seeAlso: `CBCentralManagerOptionShowPowerAlertKey`
+    let showPowerAlert: Bool
     
-    /// A String containing a unique identifier (UID) for the `CBCentralManager` that is being instantiated. This UID is used
-    /// by the system to identify a specific `CBCentralManager` instance for restoration and, therefore, must remain the same for
-    /// subsequent application executions in order for the manager to be restored.
+    /// A `Bool` value that specifies whether the system should display an alert for a given peripheral
+    /// if the app is suspended when a successful connection is made.
+    ///
+    /// - seeAlso: `CBConnectPeripheralOptionNotifyOnConnectionKey`
+    let notifyOnConnection: Bool
+    
+    /// A Boolean value that specifies whether the system should display a disconnection alert for
+    /// a given peripheral if the app is suspended at the time of the disconnection.
+    ///
+    /// - seeAlso: `CBConnectPeripheralOptionNotifyOnDisconnectionKey`
+    let notifyOnDisconnection: Bool
+    
+    /// A String containing a unique identifier (UID) for the `CBCentralManager` that is being instantiated.
+    ///
+    /// This UID is used by the system to identify a specific `CBCentralManager` instance for restoration
+    /// and, therefore, must remain the same for subsequent application executions in order for the
+    /// manager to be restored.
+    ///
+    /// - seeAlso: `CBCentralManagerOptionRestoreIdentifierKey`
     let restoreIdentifier: String?
     
-    public init(notifyOnConnection: Bool, notifyOnDisconnection: Bool, allowDuplicates: Bool, restoreIdentifier: String?) {
+    public init(showPowerAlert: Bool = false, notifyOnConnection: Bool = false, notifyOnDisconnection: Bool = false, restoreIdentifier: String? = nil) {
+        self.showPowerAlert = showPowerAlert
         self.notifyOnConnection = notifyOnConnection
         self.notifyOnDisconnection = notifyOnDisconnection
-        self.allowDuplicates = allowDuplicates
         self.restoreIdentifier = restoreIdentifier
     }
     
     var asDictionary: [String: Any] {
         var dict: [String: Any] = [:]
-        
+        dict[CBCentralManagerOptionShowPowerAlertKey] = showPowerAlert
         dict[CBCentralManagerOptionRestoreIdentifierKey] = restoreIdentifier
         dict[CBConnectPeripheralOptionNotifyOnConnectionKey] = NSNumber(booleanLiteral: notifyOnConnection)
         dict[CBConnectPeripheralOptionNotifyOnDisconnectionKey] = NSNumber(booleanLiteral: notifyOnDisconnection)
-        dict[CBCentralManagerScanOptionAllowDuplicatesKey] = NSNumber(booleanLiteral: allowDuplicates)
         return dict
     }
 }

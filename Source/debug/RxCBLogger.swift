@@ -17,39 +17,58 @@
 import Foundation
 import RxSwift
 
-protocol Logger {
-    func log(_ message: String)
-    func log(prefix: String, data: Data?)
+protocol RxCBLogging {
+    func log(_ message: String,
+             function: String,
+             file: String,
+             line: UInt)
+    
+    func log(prefix: String,
+             data: Data?,
+             function: String,
+             file: String,
+             line: UInt)
 }
 
-public protocol LoggingStream {
-    func read() -> Observable<String>
+public protocol RxCBLogStream {
+    func read() -> Observable<RxCBLog>
 }
 
 /// A singleton logger that exposes RxCBCentral state changes as a sequence of logs that a consumer can subscribe to to receive updates.
-public class RxCBLogger: Logger, LoggingStream {
+public class RxCBLogger: RxCBLogging, RxCBLogStream {
     
     public static let sharedInstance = RxCBLogger()
     
     private init() { }
     
-    func log(_ message: String) {
-        _logSubject.onNext(message)
+    /// Base logging func.
+    func log(_ message: String,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line) {
+        
+        _logSubject.onNext((message: message,
+                            function: function,
+                            file: file,
+                            line: line))
     }
     
-    // A helper function to log Data in hex string form
-    func log(prefix: String = "Data:", data: Data?) {
-        guard let data = data else {
-            log(prefix + " none"); return
-        }
-        log(prefix + " " + data.hexEncodedString())
+    /// A helper function to log Data in readable hex string form.
+    func log(prefix: String = "RxCBentral - Data: ",
+             data: Data?,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line) {
+        
+        let dataString = data?.hexEncodedString() ?? "none"
+        log(prefix + dataString, function: function, file: file, line: line)
     }
     
-    public func read() -> Observable<String> {
+    public func read() -> Observable<RxCBLog> {
         return _logSubject.asObservable()
     }
     
-    private let _logSubject = ReplaySubject<String>.create(bufferSize: 1)
+    private let _logSubject = ReplaySubject<RxCBLog>.create(bufferSize: 1)
 }
 
 extension Data {
@@ -57,3 +76,18 @@ extension Data {
         return "0x" + map { String(format: "%02hhx", $0) }.joined()
     }
 }
+
+extension RxCBLogging {
+    func log(_ message: String,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line) {}
+    
+    func log(prefix: String,
+             data: Data?,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line) {}
+}
+
+public typealias RxCBLog = (message: String, function: String, file: String, line: UInt)

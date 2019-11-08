@@ -18,64 +18,43 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public protocol ConnectionManagerType: AnyObject {
-    /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
-    /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
-    /// Uses the `defaultScanTimeout`
-    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
-    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<ScanData>
-    
-    /// Scan for peripherals with specified services. Note that only one scan operation per `ConnectionManagerType` is supported at a time.
-    /// Create a ScanMatching object to provide custom filtering logic for peripherals you scan for
-    /// Uses the `scanTimeout` provided
-    /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
-    func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval) -> Observable<ScanData>
-    
-    /// Aborts the current scan for this `ConnectionManagerType`, if one is taking place.
-    func stopScan()
+/// A protocol that allows you to conveniently scan and connect to a peripheral.
+public protocol ConnectionManagerType: CentralScanner {
+    /// An Observable that emits the current ConnectionManagerState of the manager
+    var connectionState: Observable<ConnectionManagerState> { get }
     
     /// Convenience function to scan and connect to a peripheral with specified services.
     /// Note: only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
     /// Uses `defaultScanTimeout` and `defaultConnectionTimeout` for scan and connection attempts.
-    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?) -> Observable<GattIO>
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, options: ScanOptions?) -> Observable<RxPeripheral>
     
     /// Convenience function to scan and connect to a peripheral with specified services.
     /// Note: only one scan operation per `ConnectionManagerType` is supported at a time.
     /// Create your own ScanMatching object to provide custom logic for selecting a peripheral to connect to (ex: device name)
-    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, scanTimeout: RxTimeInterval, connectionTimeout: RxTimeInterval) -> Observable<GattIO>
-    
-    // TODO: add functionality to disconnect from a specific peripheral, since multiple connections are supported.
-    /// Cancels an active or pending connection to <i>peripheral</i>. Note that this is non-blocking, and any `CBPeripheral`
-    /// commands that are still pending to <i>peripheral</i> may or may not complete. See {@link cancelPeripheralConnection} for more details.
-    func disconnectPeripheral()
+    func connectToPeripheral(with services: [CBUUID]?, scanMatcher: ScanMatching?, options: ScanOptions?, scanTimeout: RxTimeInterval) -> Observable<RxPeripheral>
 }
 
-// State of the ConnectionManager.
+/// State of the ConnectionManager.
 public enum ConnectionManagerState {
-    case connected
-    case connecting
-    case disconnected(Swift.Error?)
     case scanning
+    case connecting(CBPeripheralType)
+    case connected(CBPeripheralType)
+    case disconnected(ConnectionManagerError?)
 }
 
-public protocol CBPeripheralType: class {}
-/// Wrap CBPeripheral in a protocol to be able to mock it for unit testing
-extension CBPeripheral: CBPeripheralType {}
+public typealias ScanData = (peripheral: CBPeripheralType, advertisementData: AdvertisementData, RSSI: NSNumber)
 
-public typealias ScanData = (peripheral: CBPeripheralType, advertisementData: [String: Any], RSSI: NSNumber)
-
-public struct ConnectionConstants {
-    /// Number of seconds to scan before throwing a ConnectionManagerError.scanTimeout error
-    public static let defaultScanTimeout: RxTimeInterval = 30
-    
+public struct ConnectionDefaults {
     /// Number of seconds to attempt Bluetooth connection with a discovered peripheral
     /// before throwing a ConnectionManagerError.connectionTimeout error
     public static let defaultConnectionTimeout: RxTimeInterval = 45
 }
 
 public enum ConnectionManagerError: Error {
+    case bluetoothDisabled
     case alreadyScanning
     case scanTimeout
     case connectionTimeout
+    case connectionFailed
 }

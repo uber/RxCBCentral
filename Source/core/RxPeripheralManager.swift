@@ -18,13 +18,13 @@ import CoreBluetooth
 import RxCocoa
 import RxSwift
 
-open class GattManager: GattManagerType {
+open class RxPeripheralManager: RxPeripheralManagerType {
     
     public init() {}
     
-    public var gattIO: GattIO? {
+    public weak var rxPeripheral: RxPeripheral? {
         didSet {
-            _gattRelay.accept(gattIO)
+            _peripheralRelay.accept(rxPeripheral)
             
             synchronized(_queueSync) {
                 executeNext()
@@ -33,9 +33,9 @@ open class GattManager: GattManagerType {
     }
     
     public var isConnected: Observable<Bool> {
-        return _gattRelay
+        return _peripheralRelay
             .flatMapLatest { $0?.isConnected ?? Observable.just(false) }
-            .startWith(false)
+            .distinctUntilChanged()
     }
     
     public func queue<O: GattOperation>(operation: O) -> Single<O.Element> {
@@ -58,19 +58,19 @@ open class GattManager: GattManagerType {
     }
     
     public func receiveNotifications(for characteristic: CBUUID) -> Observable<Data> {
-        return _gattRelay
+        return _peripheralRelay
             .filterNil()
-            .flatMapLatest { (gattIO: GattIO) -> Observable<Data> in
-                return gattIO.notificationData(for: characteristic)
-            }
+            .flatMapLatest { (peripheral: RxPeripheral) -> Observable<Data> in
+                return peripheral.notificationData(for: characteristic)
+        }
     }
     
     /// If the queue isn't empty and we're not already running an operation, queue an operation and execute it
     private func executeNext() {
-        guard let gattIO = _gattRelay.value, _currentOperation == nil else { return }
+        guard let peripheral = _peripheralRelay.value, _currentOperation == nil else { return }
         
         _currentOperation = _operationQueue.dequeue()
-        _currentOperation?.execute(gattIO: gattIO)
+        _currentOperation?.execute(with: peripheral)
     }
     
     // TODO: add to a helper class
@@ -82,7 +82,7 @@ open class GattManager: GattManagerType {
         closure()
     }
     
-    private let _gattRelay = BehaviorRelay<GattIO?>(value: nil)
+    private let _peripheralRelay = BehaviorRelay<RxPeripheral?>(value: nil)
     private let _queueSync: NSObject = NSObject()
     private var _currentOperation: GattOperationExecutable?
     private var _operationQueue = GattQueue()

@@ -19,26 +19,26 @@ import RxSwift
 
 /// Register for characteristic notifications.
 public class RegisterNotification: GattOperation {
-
+    
     public let result: Single<()>
     
     public convenience init(service: CBUUID, characteristic: CBUUID) {
         self.init(service: service, characteristic: characteristic, timeoutSeconds: GattConstants.defaultOperationTimeout, preprocessor: nil)
     }
     
-    public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval, preprocessor: Preprocessor? = nil, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
-        let gattSubject: BehaviorSubject<GattIO?> = BehaviorSubject(value: nil)
-        self._gattSubject = gattSubject
+    public init(service: CBUUID, characteristic: CBUUID, timeoutSeconds: RxTimeInterval = GattConstants.defaultOperationTimeout, preprocessor: Preprocessor? = nil, scheduler: SchedulerType = SerialDispatchQueueScheduler(qos: .utility)) {
+        let _peripheralSubject: BehaviorSubject<RxPeripheral?> = BehaviorSubject(value: nil)
+        self._peripheralSubject = _peripheralSubject
         
-        result = _gattSubject
+        result = _peripheralSubject
             .filterNil()
             .take(1)
             .asSingle()
-            .do(onSuccess: { gattIO in
-                gattSubject.onNext(nil)
+            .do(onSuccess: { _ in
+                _peripheralSubject.onNext(nil)
             })
-            .flatMap { (gattIO: GattIO) -> Single<()> in
-                gattIO.registerForNotification(service: service, characteristic: characteristic, preprocessor: preprocessor)
+            .flatMap { (rxPeripheral: RxPeripheral) -> Single<()> in
+                rxPeripheral.registerForNotification(service: service, characteristic: characteristic, preprocessor: preprocessor)
                     .andThen(Single.just(()))
             }
             .asObservable()
@@ -48,9 +48,9 @@ public class RegisterNotification: GattOperation {
             .timeout(timeoutSeconds, scheduler: scheduler)
     }
     
-    public func execute(gattIO: GattIO) {
-        _gattSubject.onNext(gattIO)
+    public func execute(with peripheral: RxPeripheral) {
+        _peripheralSubject.onNext(peripheral)
     }
     
-    private let _gattSubject: BehaviorSubject<GattIO?>
+    private let _peripheralSubject: BehaviorSubject<RxPeripheral?>
 }

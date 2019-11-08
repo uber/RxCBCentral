@@ -58,6 +58,8 @@ public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManage
         case .unsupported:
             _enabledSubject.onNext(false)
             _capabilitySubject.onNext(.unsupported)
+        @unknown default:
+            RxCBLogger.sharedInstance.log("BluetoothDetector: Unknown CBCentralManager state.")
         }
     }
     

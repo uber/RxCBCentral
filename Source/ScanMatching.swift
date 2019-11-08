@@ -17,13 +17,15 @@
 import CoreBluetooth
 import RxSwift
 
-// Provides the capability to specify means to identify discovered peripheral matches.
+/// Provides a protocol to collect discovered scan data, including peripherals, and emit matches.
+/// This is used for the `CollectionManagerType`'s convenience functions to allow consumers
+/// to scan and connect to a specific peripheral in very few lines of code.
 public protocol ScanMatching {
-    /// Pass `ScanData` into the ScanMatcher, which includes a peripheral, advertisementData and RSSI.
-    /// This function is used to determine if this discovered peripheral is a match against
-    /// parameters and logic needed for your use case.
+    /// Pass `ScanData` into this object to determine if the discovered data matches what you are looking for.
+    /// Build your own `ScanMatching` implementation to accept `ScanData` and emit into `match`.
     func accept(_ scanData: ScanData)
     
-    /// A sequence of scan data, including a peripheral, that matches the requirements of our ScanMatcher implementation
+    /// A sequence of `ScanData`, including a peripheral, that matches the requirements of our `ScanMatching` implementation.
+    /// - important: `ConnectionManagerType.connectToPeripheral(services:scanMatcher:)` uses the first emission of `match` by default to initiation peripheral connection.
     var match: Observable<ScanData> { get }
 }
