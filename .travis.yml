@@ -1,0 +1,14 @@
+language: swift
+osx_image: xcode11.2
+xcode_workspace: ExampleApp.xcworkspace
+xcode_scheme: ExampleApp
+xcode_destination: platform=iOS Simulator,OS=12.2,name=iPhone X
+install: carthage update --platform ios
+
+matrix:
+include:
+    - name: "RxCBCentralTests"
+      script: xcodebuild test -project RxCBCentralTests.xcodeproj -scheme RxCBCentralTests
+    - name: "RxCBCentral"
+      script: xcodebuild -project RxCBCentral.xcodeproj -scheme RxCBCentral
+
