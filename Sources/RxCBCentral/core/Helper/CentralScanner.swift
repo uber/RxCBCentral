@@ -80,5 +80,5 @@ public struct ScanOptions {
 
 public struct ScanDefaults {
     /// Number of seconds to scan before throwing a ConnectionManagerError.scanTimeout error
-    public static let defaultScanTimeout: RxTimeInterval = 20
+    public static let defaultScanTimeout: RxTimeInterval = .seconds(20)
 }

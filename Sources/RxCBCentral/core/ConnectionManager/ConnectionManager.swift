@@ -213,7 +213,7 @@ public class ConnectionManager: NSObject, ConnectionManagerType, CBCentralManage
     private let options: ConnectionManagerOptions?
     
     // small interval to wait for BLE to become enabled to support lazy instantiation of this class
-    private let bluetoothEnabledTimeout: RxTimeInterval = 0.1
+    private let bluetoothEnabledTimeout: RxTimeInterval = .milliseconds(100)
     private let bluetoothEnabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)
     
     private let didDiscoverPeripheralSubject: PublishSubject<ScanData> = PublishSubject()

@@ -96,19 +96,3 @@ public protocol Preprocessor {
     ///     aggregated data does not yet represent a complete demarcated packet.
     func process(data: Data) -> Data?
 }
-
-public extension ObservableType where E == RxPeripheral {
-    /// Convenience function to provide a one-off read operation without queueing capabilities. Not recommended, but succient.
-    func read(service: CBUUID, characteristic: CBUUID) -> Observable<Data?> {
-        return flatMap { (element: E) -> Single<Data?> in
-            element.read(service: service, characteristic: characteristic)
-        }
-    }
-    
-    /// Convenience function to provide a one-off write operation without queueing capabilities. Not recommended, but succient.
-    func write(service: CBUUID, characteristic: CBUUID, data: Data) -> Completable {
-        return flatMap { (element: E) -> Completable in
-            element.write(service: service, characteristic: characteristic, data: data)
-            }.asCompletable()
-    }
-}
