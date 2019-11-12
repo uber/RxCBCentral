@@ -34,5 +34,5 @@ public protocol GattOperation: GattOperationExecutable {
 
 public struct GattConstants {
     /// Number of seconds to attempt a GATT operation before throwing a generic Rx timeout error
-    public static let defaultOperationTimeout: RxTimeInterval = 30
+    public static let defaultOperationTimeout: RxTimeInterval = .seconds(30)
 }

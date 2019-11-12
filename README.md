@@ -1,4 +1,5 @@
 # RxCBCentral
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
 ## Overview
 
@@ -10,9 +11,6 @@ Similar to the RxSwift and RxJava, RxCBCentral and [Android's RxCentralBle](http
 
 Check out our detailed [Wiki](https://github.com/uber/RxCBCentral/wiki) for designs and examples for all the capabilities of RxCBCentral.
 
-## Integration steps
-
-// TODO : Add Carthage details
 
 ## Usage
 
@@ -93,6 +91,42 @@ peripheralManager
     .disposed(by: disposeBag)
 ```
 
+## Integration steps
+
+## [Carthage](https://github.com/Carthage/Carthage)
+
+Carthage a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+To integrate RxCBCentral into your Xcode project using Carthage, specify it in your `Cartfile`:
+```swift
+github "uber/RxCBCentral ~> 1.0"
+```
+```bash
+$ carthage update
+```
+
+## [Swift Package Manager](https://github.com/apple/swift-package-manager)
+Create a `Package.swift` file. If one already exists, add a new RxCBCentral `package` to your dependencies.
+
+```swift
+// swift-tools-version:5.1
+
+import PackageDescription
+
+let package = Package(
+  name: "RxCBCentralProject",
+  dependencies: [
+    .package(url: "https://github.com/uber/RxCBCentral", from: "1.0.0")
+  ],
+  targets: [
+    .target(name: "RxCBCentralProject", dependencies: ["RxCBCentral"])
+  ]
+)
+```
+
+```bash
+$ swift build
+```
+
 ## Sample App
 
-See the Example app in this repo for additional usages of the library, and visualize low level BLE operations happening in realtime (scanning, discovery events, connecting, etc.).
+See the [ExampleApp](https://github.com/uber/RxCBCentral/tree/master/ExampleApp) in this repo for example usages of the library, and visualize low level BLE operations happening in realtime (scanning, discovery events, connecting, etc.).

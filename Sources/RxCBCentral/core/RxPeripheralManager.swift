@@ -107,7 +107,7 @@ fileprivate struct GattQueue {
 }
 
 extension ObservableType {
-    func doFinally(_ finally: @escaping () -> ()) -> Observable<E> {
+    func doFinally(_ finally: @escaping () -> ()) -> Observable<Element> {
         return `do`(onError: { _ in finally() },
                     onCompleted: finally,
                     onDispose: finally)

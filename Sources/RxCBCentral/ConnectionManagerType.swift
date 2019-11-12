@@ -48,7 +48,7 @@ public typealias ScanData = (peripheral: CBPeripheralType, advertisementData: Ad
 public struct ConnectionDefaults {
     /// Number of seconds to attempt Bluetooth connection with a discovered peripheral
     /// before throwing a ConnectionManagerError.connectionTimeout error
-    public static let defaultConnectionTimeout: RxTimeInterval = 45
+    public static let defaultConnectionTimeout: RxTimeInterval = .seconds(45)
 }
 
 public enum ConnectionManagerError: Error {
