@@ -130,3 +130,7 @@ $ swift build
 ## Sample App
 
 See the [ExampleApp](https://github.com/uber/RxCBCentral/tree/master/ExampleApp) in this repo for example usages of the library, and visualize low level BLE operations happening in realtime (scanning, discovery events, connecting, etc.).
+
+## License 
+
+Apache 2.0 license. See the [LICENSE](https://github.com/uber/RxCBCentral/blob/master/LICENSE.txt) file for details.
