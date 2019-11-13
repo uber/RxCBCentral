@@ -1,0 +1,4 @@
+github "ReactiveX/RxSwift" ~> 5.0
+github "RxSwiftCommunity/RxOptional" ~> 4.1
+github "uber/RxCBCentral" ~> 0.1.0
+github "SnapKit/SnapKit" ~> 4.0
