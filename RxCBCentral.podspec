@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 
   s.frameworks = 'UIKit', 'Foundation', 'CoreBluetooth'
   s.dependency 'RxSwift', '~> 5.0'
-  s.dependency 'RxOptional', '~> 3.1.3'
+  s.dependency 'RxOptional', '~> 4.1'
   s.swift_versions = [5]
 end

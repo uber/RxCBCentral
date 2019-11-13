@@ -1,0 +1,39 @@
+{
+  "name": "RxCBCentral",
+  "version": "0.1.0",
+  "summary": "A reactive, interface-driven central role Bluetooth LE library for iOS",
+  "description": "A reactive, interface-driven central role Bluetooth LE library for iOS.",
+  "homepage": "https://github.com/uber/RxCBCentral",
+  "license": {
+    "type": "Apache 2.0",
+    "file": "LICENSE.txt"
+  },
+  "authors": {
+    "jpsoultanis": "jsoultanis@uber.com"
+  },
+  "source": {
+    "git": "https://github.com/uber/RxCBCentral.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "Sources/**/*.swift",
+  "frameworks": [
+    "UIKit",
+    "Foundation",
+    "CoreBluetooth"
+  ],
+  "dependencies": {
+    "RxSwift": [
+      "~> 5.0"
+    ],
+    "RxOptional": [
+      "~> 3.1.3"
+    ]
+  },
+  "swift_versions": [
+    5
+  ],
+  "swift_version": "5"
+}
