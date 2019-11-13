@@ -1,6 +1,0 @@
-framework module RxCBCentral {
-  umbrella header "RxCBCentral-umbrella.h"
-
-  export *
-  module * { export * }
-}
