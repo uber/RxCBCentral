@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "RxCBCentral",
     platforms: [
-        SupportedPlatform.iOS(.v8),
+        SupportedPlatform.iOS(.v9),
         SupportedPlatform.macOS("10.13")
     ],
     products: [
@@ -25,8 +25,10 @@ let package = Package(
             ],
             path: ".",
             exclude: [
+                "Example",
                 "ExampleApp",
-                "Tests"
+                "Tests",
+                "Carthage"
             ]
         ),
         .testTarget(
