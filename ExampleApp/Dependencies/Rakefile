@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'xcodeproj'
+
+task :dependencies do
+
+  system "swift package update"
+  system "swift package generate-xcodeproj"
+
+  project = Xcodeproj::Project.open('Dependencies.xcodeproj')
+
+  project.targets.each do |target|
+    module_map_file = "Dependencies.xcodeproj/GeneratedModuleMap/#{target.name}/module.modulemap"
+
+    project.build_configurations.each { |config|
+      config.build_settings["SDKROOT"] = "iphoneos"
+      config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = 10.0
+      config.build_settings["LD_RUNPATH_SEARCH_PATHS"] = "$(inherited) @executable_path/Frameworks"
+      config.build_settings.delete("MACOSX_DEPLOYMENT_TARGET")
+      config.build_settings.delete("SUPPORTED_PLATFORMS")
+    }
+
+    target.build_configurations.each do |config|
+      config.build_settings['DEFINES_MODULE'] = 'YES'
+      if File.exist? module_map_file
+        config.build_settings['MODULEMAP_FILE'] = "${SRCROOT}/#{module_map_file}"
+      end
+    end
+  end
+
+  project.save
+
+end

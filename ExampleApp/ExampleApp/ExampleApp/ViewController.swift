@@ -107,7 +107,7 @@ class ViewController: UIViewController {
     
     @IBAction func didTapGAPButton(_ sender: Any) {
         // create a read operation
-        let read = Read(service: GattUUIDs.GAP_SVC_UUID, characteristic: GattUUIDs.GAP_DEVICE_NAME_UUID, timeoutSeconds: 30)
+        let read = Read(service: GattUUIDs.GAP_SVC_UUID, characteristic: GattUUIDs.GAP_DEVICE_NAME_UUID, timeoutSeconds: .seconds(30))
         
         // queue the operation on the gattManager
         peripheralManager
@@ -122,7 +122,7 @@ class ViewController: UIViewController {
     
     @IBAction func didTapBatteryButton(_ sender: Any) {
         peripheralManager
-            .queue(operation: Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: 30))
+            .queue(operation: Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: .seconds(30)))
             .subscribe(onSuccess: { _ in
                 // read successful
             }, onError: { (error) in
@@ -133,7 +133,7 @@ class ViewController: UIViewController {
     
     @IBAction func didTapDISButton(_ sender: Any) {
         peripheralManager
-            .queue(operation: Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: 30))
+            .queue(operation: Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: .seconds(30)))
             .subscribe(onSuccess: { _ in
                 // read successful
             }, onError: { (error) in
