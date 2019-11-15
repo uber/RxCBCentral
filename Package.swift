@@ -23,17 +23,13 @@ let package = Package(
                 "RxSwift",
                 "RxOptional",
             ],
-            path: ".",
-            exclude: [
-                "Example",
-                "ExampleApp",
-                "Tests",
-                "Carthage"
-            ]
+            path: "Sources"
         ),
         .testTarget(
             name: "RxCBCentralTests",
-            dependencies: ["RxCBCentral"]),
+            dependencies: ["RxCBCentral"],
+            path: "Tests"
+        )
     ],
     swiftLanguageVersions: [.v5]
 )
