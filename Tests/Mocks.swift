@@ -246,13 +246,131 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
 public class CBPeripheralTypeMock: CBPeripheralType {
 
     private var _doneInit = false
-    
-    public init() {
-
+        public init() { _doneInit = true }
+    public init(identifier: UUID = UUID(), state: CBPeripheralState) {
+        self.identifier = identifier
+        self.state = state
         _doneInit = true
     }
+        
+    public var delegateSetCallCount = 0
+    var underlyingDelegate: CBPeripheralDelegate? = nil
+    public var delegate: CBPeripheralDelegate? {
+        get { return underlyingDelegate }
+        set {
+            underlyingDelegate = newValue
+            if _doneInit { delegateSetCallCount += 1 }
+        }
+    }
     
+    public var nameSetCallCount = 0
+    var underlyingName: String? = nil
+    public var name: String? {
+        get { return underlyingName }
+        set {
+            underlyingName = newValue
+            if _doneInit { nameSetCallCount += 1 }
+        }
+    }
+    
+    public var identifierSetCallCount = 0
+    var underlyingIdentifier: UUID = UUID()
+    public var identifier: UUID {
+        get { return underlyingIdentifier }
+        set {
+            underlyingIdentifier = newValue
+            if _doneInit { identifierSetCallCount += 1 }
+        }
+    }
+    
+    public var stateSetCallCount = 0
+    var underlyingState: CBPeripheralState!
+    public var state: CBPeripheralState {
+        get { return underlyingState }
+        set {
+            underlyingState = newValue
+            if _doneInit { stateSetCallCount += 1 }
+        }
+    }
+    
+    public var readRSSICallCount = 0
+    public var readRSSIHandler: (() -> ())?
+    public func readRSSI()  {
+        readRSSICallCount += 1
+    
+        if let readRSSIHandler = readRSSIHandler {
+            readRSSIHandler()
+        }
+        
+    }
+    
+    public var maximumWriteValueLengthCallCount = 0
+    public var maximumWriteValueLengthHandler: ((CBCharacteristicWriteType) -> (Int))?
+    public func maximumWriteValueLength(for type: CBCharacteristicWriteType) -> Int {
+        maximumWriteValueLengthCallCount += 1
+    
+        if let maximumWriteValueLengthHandler = maximumWriteValueLengthHandler {
+            return maximumWriteValueLengthHandler(type)
+        }
+        return 0
+    }
+    
+    public var discoverServicesCallCount = 0
+    public var discoverServicesHandler: (([CBUUID]?) -> ())?
+    public func discoverServices(_ serviceUUIDs: [CBUUID]?)  {
+        discoverServicesCallCount += 1
+    
+        if let discoverServicesHandler = discoverServicesHandler {
+            discoverServicesHandler(serviceUUIDs)
+        }
+        
+    }
+    
+    public var discoverCharacteristicsCallCount = 0
+    public var discoverCharacteristicsHandler: (([CBUUID]?, CBService) -> ())?
+    public func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService)  {
+        discoverCharacteristicsCallCount += 1
+    
+        if let discoverCharacteristicsHandler = discoverCharacteristicsHandler {
+            discoverCharacteristicsHandler(characteristicUUIDs, service)
+        }
+        
+    }
+    
+    public var readValueCallCount = 0
+    public var readValueHandler: ((CBCharacteristic) -> ())?
+    public func readValue(for characteristic: CBCharacteristic)  {
+        readValueCallCount += 1
+    
+        if let readValueHandler = readValueHandler {
+            readValueHandler(characteristic)
+        }
+        
+    }
+    
+    public var writeValueCallCount = 0
+    public var writeValueHandler: ((Data, CBCharacteristic, CBCharacteristicWriteType) -> ())?
+    public func writeValue(_ data: Data, for characteristic: CBCharacteristic, type: CBCharacteristicWriteType)  {
+        writeValueCallCount += 1
+    
+        if let writeValueHandler = writeValueHandler {
+            writeValueHandler(data, characteristic, type)
+        }
+        
+    }
+    
+    public var setNotifyValueCallCount = 0
+    public var setNotifyValueHandler: ((Bool, CBCharacteristic) -> ())?
+    public func setNotifyValue(_ enabled: Bool, for characteristic: CBCharacteristic)  {
+        setNotifyValueCallCount += 1
+    
+        if let setNotifyValueHandler = setNotifyValueHandler {
+            setNotifyValueHandler(enabled, characteristic)
+        }
+        
+    }
 }
+
 
 public class RxPeripheralManagerTypeMock: RxPeripheralManagerType {
 
