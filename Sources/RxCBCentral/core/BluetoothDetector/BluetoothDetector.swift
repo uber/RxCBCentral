@@ -26,7 +26,7 @@ public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManage
         _centralManager = CBCentralManager(delegate: self, queue: nil, options: _options?.asDictionary)
     }
     
-    public var capability: Observable<Capability> {
+    public var capability: Observable<BluetoothCapability> {
         return _capabilitySubject.asObservable()
     }
     
@@ -69,7 +69,7 @@ public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManage
     
     private var _centralManager: CBCentralManager!
     
-    private let _capabilitySubject = ReplaySubject<Capability>.create(bufferSize: 1)
+    private let _capabilitySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1)
     private let _enabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)
 }
 

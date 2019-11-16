@@ -66,18 +66,18 @@ public class ConnectionManagerTypeMock: ConnectionManagerType {
 
     private var _doneInit = false
         public init() { _doneInit = true }
-    public init(connectionState: Observable<ConnectionManagerState> = PublishSubject()) {
+    public init(connectionState: Observable<ConnectionState> = PublishSubject()) {
         self.connectionState = connectionState
         _doneInit = true
     }
         
     private var connectionStateSubjectKind = 0
     public var connectionStateSubjectSetCallCount = 0
-    public var connectionStateSubject = PublishSubject<ConnectionManagerState>() { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
-    public var connectionStateReplaySubject = ReplaySubject<ConnectionManagerState>.create(bufferSize: 1) { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
-    public var connectionStateBehaviorSubject: BehaviorSubject<ConnectionManagerState>! { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
-    public var connectionStateRxSubject: Observable<ConnectionManagerState>! { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
-    public var connectionState: Observable<ConnectionManagerState> {
+    public var connectionStateSubject = PublishSubject<ConnectionState>() { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
+    public var connectionStateReplaySubject = ReplaySubject<ConnectionState>.create(bufferSize: 1) { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
+    public var connectionStateBehaviorSubject: BehaviorSubject<ConnectionState>! { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
+    public var connectionStateRxSubject: Observable<ConnectionState>! { didSet { if _doneInit { connectionStateSubjectSetCallCount += 1 } } }
+    public var connectionState: Observable<ConnectionState> {
         get {
             if connectionStateSubjectKind == 0 {
                 return connectionStateSubject
@@ -90,13 +90,13 @@ public class ConnectionManagerTypeMock: ConnectionManagerType {
             }
         }
         set {
-            if let val = newValue as? PublishSubject<ConnectionManagerState> {
+            if let val = newValue as? PublishSubject<ConnectionState> {
                 connectionStateSubject = val
                 connectionStateSubjectKind = 0
-            } else if let val = newValue as? BehaviorSubject<ConnectionManagerState> {
+            } else if let val = newValue as? BehaviorSubject<ConnectionState> {
                 connectionStateBehaviorSubject = val
                 connectionStateSubjectKind = 1
-            } else if let val = newValue as? ReplaySubject<ConnectionManagerState> {
+            } else if let val = newValue as? ReplaySubject<ConnectionState> {
                 connectionStateReplaySubject = val
                 connectionStateSubjectKind = 2
             } else {
@@ -166,7 +166,7 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
 
     private var _doneInit = false
         public init() { _doneInit = true }
-    public init(capability: Observable<Capability> = PublishSubject(), enabled: Observable<Bool> = PublishSubject()) {
+    public init(capability: Observable<BluetoothCapability> = PublishSubject(), enabled: Observable<Bool> = PublishSubject()) {
         self.capability = capability
         self.enabled = enabled
         _doneInit = true
@@ -174,11 +174,11 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
         
     private var capabilitySubjectKind = 0
     public var capabilitySubjectSetCallCount = 0
-    public var capabilitySubject = PublishSubject<Capability>() { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityReplaySubject = ReplaySubject<Capability>.create(bufferSize: 1) { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityBehaviorSubject: BehaviorSubject<Capability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityRxSubject: Observable<Capability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capability: Observable<Capability> {
+    public var capabilitySubject = PublishSubject<BluetoothCapability>() { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
+    public var capabilityReplaySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1) { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
+    public var capabilityBehaviorSubject: BehaviorSubject<BluetoothCapability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
+    public var capabilityRxSubject: Observable<BluetoothCapability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
+    public var capability: Observable<BluetoothCapability> {
         get {
             if capabilitySubjectKind == 0 {
                 return capabilitySubject
@@ -191,13 +191,13 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
             }
         }
         set {
-            if let val = newValue as? PublishSubject<Capability> {
+            if let val = newValue as? PublishSubject<BluetoothCapability> {
                 capabilitySubject = val
                 capabilitySubjectKind = 0
-            } else if let val = newValue as? BehaviorSubject<Capability> {
+            } else if let val = newValue as? BehaviorSubject<BluetoothCapability> {
                 capabilityBehaviorSubject = val
                 capabilitySubjectKind = 1
-            } else if let val = newValue as? ReplaySubject<Capability> {
+            } else if let val = newValue as? ReplaySubject<BluetoothCapability> {
                 capabilityReplaySubject = val
                 capabilitySubjectKind = 2
             } else {

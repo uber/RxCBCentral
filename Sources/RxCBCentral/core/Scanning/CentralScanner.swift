@@ -32,9 +32,6 @@ public protocol CentralScanner: AnyObject {
     /// Uses the `scanTimeout` provided
     /// Returns: A sequence of `ScanData` that we've found while scanning that matches the requested services and `scanMatcher` filtering
     func scan(for services: [CBUUID]?, scanMatcher: ScanMatching?, options: ScanOptions?, scanTimeout: RxTimeInterval) -> Observable<ScanData>
-    
-    /// Aborts the current scan for this `CentralScanner`, if one is taking place.
-    func stopScan()
 }
 
 public struct ScanOptions {
