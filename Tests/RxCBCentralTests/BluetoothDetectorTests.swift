@@ -18,7 +18,11 @@
 import XCTest
 
 final class BluetoothDetectorTests: XCTestCase {
+    
+    private var bluetoothDetector: BluetoothDetector!
     override func setUp() {
         super.setUp()
+        
+        bluetoothDetector = BluetoothDetector(options: BluetoothDetectorOptions(showPowerAlert: false))
     }
 }

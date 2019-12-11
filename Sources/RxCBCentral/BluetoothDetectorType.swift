@@ -19,7 +19,7 @@ import RxSwift
 /// Provides the ability to observe Bluetooth LE capability and enabled states.
 public protocol BluetoothDetectorType: AnyObject {
     /// Observe Bluetooth capability. If Bluetooth LE is unsupported, that will be the only emission.
-    var capability: Observable<BluetoothCapability> { get }
+    var bluetoothCapability: Observable<BluetoothCapability> { get }
 
     /// Observe Bluetooth enabled/disabled state.
     /// If Bluetooth LE is unsupported, a false value will be the only emission.

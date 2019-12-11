@@ -17,60 +17,37 @@
 import CoreBluetooth
 import RxSwift
 
-public class BluetoothDetector: NSObject, BluetoothDetectorType, CBCentralManagerDelegate {
+public class BluetoothDetector: NSObject, BluetoothDetectorType {
     
-    public init(options: BluetoothDetectorOptions?) {
-        self._options = options
-        super.init()
-        
-        _centralManager = CBCentralManager(delegate: self, queue: nil, options: _options?.asDictionary)
+    init(centralManager: CBCentralManagerType, delegate: CentralDelegate, options: BluetoothDetectorOptions?) {
+        _centralManager = centralManager
+        _delegate = delegate
+        _options = options
     }
     
-    public var capability: Observable<BluetoothCapability> {
-        return _capabilitySubject.asObservable()
+    public convenience init(options: BluetoothDetectorOptions?) {
+        let delegate = CentralDelegate()
+        let centralManager = CBCentralManager(delegate: delegate, queue: nil, options: options?.asDictionary)
+        
+        self.init(centralManager: centralManager, delegate: delegate, options: options)
+    }
+    
+    public var bluetoothCapability: Observable<BluetoothCapability> {
+        return _delegate.bluetoothCapability
     }
     
     public var enabled: Observable<Bool> {
-        return _enabledSubject.asObservable()
-    }
-    
-    // MARK: - CBCentralManagerDelegate
-    
-    public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .poweredOff:
-            RxCBLogger.sharedInstance.log("Bluetooth powered off.")
-            _enabledSubject.onNext(false)
-            _capabilitySubject.onNext(.disabled)
-        case .poweredOn:
-            RxCBLogger.sharedInstance.log("Bluetooth powered on.")
-            _enabledSubject.onNext(true)
-            _capabilitySubject.onNext(.enabled)
-        case .resetting:
-            _enabledSubject.onNext(false)
-            _capabilitySubject.onNext(.disabled)
-        case .unauthorized:
-            _enabledSubject.onNext(false)
-            _capabilitySubject.onNext(.unsupported)
-        case .unknown:
-            _enabledSubject.onNext(false)
-            _capabilitySubject.onNext(.unsupported)
-        case .unsupported:
-            _enabledSubject.onNext(false)
-            _capabilitySubject.onNext(.unsupported)
-        @unknown default:
-            RxCBLogger.sharedInstance.log("BluetoothDetector: Unknown CBCentralManager state.")
-        }
+        return _delegate.bluetoothCapability
+            .map { $0 == .enabled }
+            .distinctUntilChanged()
     }
     
     // MARK: - Private
     
     private let _options: BluetoothDetectorOptions?
+    private let _delegate: CentralDelegate
     
-    private var _centralManager: CBCentralManager!
-    
-    private let _capabilitySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1)
-    private let _enabledSubject = ReplaySubject<Bool>.create(bufferSize: 1)
+    private let _centralManager: CBCentralManagerType
 }
 
 extension BluetoothError: LocalizedError {

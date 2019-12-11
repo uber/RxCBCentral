@@ -166,43 +166,43 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
 
     private var _doneInit = false
         public init() { _doneInit = true }
-    public init(capability: Observable<BluetoothCapability> = PublishSubject(), enabled: Observable<Bool> = PublishSubject()) {
-        self.capability = capability
+    public init(bluetoothCapability: Observable<BluetoothCapability> = PublishSubject(), enabled: Observable<Bool> = PublishSubject()) {
+        self.bluetoothCapability = bluetoothCapability
         self.enabled = enabled
         _doneInit = true
     }
         
-    private var capabilitySubjectKind = 0
-    public var capabilitySubjectSetCallCount = 0
-    public var capabilitySubject = PublishSubject<BluetoothCapability>() { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityReplaySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1) { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityBehaviorSubject: BehaviorSubject<BluetoothCapability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capabilityRxSubject: Observable<BluetoothCapability>! { didSet { if _doneInit { capabilitySubjectSetCallCount += 1 } } }
-    public var capability: Observable<BluetoothCapability> {
+    private var bluetoothCapabilitySubjectKind = 0
+    public var bluetoothCapabilitySubjectSetCallCount = 0
+    public var bluetoothCapabilitySubject = PublishSubject<BluetoothCapability>() { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    public var bluetoothCapabilityReplaySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1) { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    public var bluetoothCapabilityBehaviorSubject: BehaviorSubject<BluetoothCapability>! { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    public var bluetoothCapabilityRxSubject: Observable<BluetoothCapability>! { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    public var bluetoothCapability: Observable<BluetoothCapability> {
         get {
-            if capabilitySubjectKind == 0 {
-                return capabilitySubject
-            } else if capabilitySubjectKind == 1 {
-                return capabilityBehaviorSubject
-            } else if capabilitySubjectKind == 2 {
-                return capabilityReplaySubject
+            if bluetoothCapabilitySubjectKind == 0 {
+                return bluetoothCapabilitySubject
+            } else if bluetoothCapabilitySubjectKind == 1 {
+                return bluetoothCapabilityBehaviorSubject
+            } else if bluetoothCapabilitySubjectKind == 2 {
+                return bluetoothCapabilityReplaySubject
             } else {
-                return capabilityRxSubject
+                return bluetoothCapabilityRxSubject
             }
         }
         set {
             if let val = newValue as? PublishSubject<BluetoothCapability> {
-                capabilitySubject = val
-                capabilitySubjectKind = 0
+                bluetoothCapabilitySubject = val
+                bluetoothCapabilitySubjectKind = 0
             } else if let val = newValue as? BehaviorSubject<BluetoothCapability> {
-                capabilityBehaviorSubject = val
-                capabilitySubjectKind = 1
+                bluetoothCapabilityBehaviorSubject = val
+                bluetoothCapabilitySubjectKind = 1
             } else if let val = newValue as? ReplaySubject<BluetoothCapability> {
-                capabilityReplaySubject = val
-                capabilitySubjectKind = 2
+                bluetoothCapabilityReplaySubject = val
+                bluetoothCapabilitySubjectKind = 2
             } else {
-                capabilityRxSubject = newValue
-                capabilitySubjectKind = 3
+                bluetoothCapabilityRxSubject = newValue
+                bluetoothCapabilitySubjectKind = 3
             }
         }
     }
