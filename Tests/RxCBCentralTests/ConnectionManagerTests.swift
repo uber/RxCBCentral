@@ -15,10 +15,27 @@
 //
 
 @testable import RxCBCentral
+import RxSwift
 import XCTest
 
-final class ConnectionManagerTests: XCTestCase {
+private final class ConnectionManagerTests: XCTestCase {
+    
+    private let peripheralGattManager = RxPeripheralManagerTypeMock()
+    private let centralManager = CBCentralManagerTypeMock()
+    private let delegate = CentralDelegateMock()
+    
+    private var connectionManager: ConnectionManager!
+    
     override func setUp() {
         super.setUp()
+        
+        connectionManager = ConnectionManager(peripheralGattManager: peripheralGattManager,
+                                              centralManager: centralManager,
+                                              delegate: delegate,
+                                              options: ConnectionManagerOptions(showPowerAlert: false))
+    }
+    
+    func test_scan_serviceUUID() {
+        
     }
 }

@@ -569,3 +569,89 @@ public class RxPeripheralMock: RxPeripheral {
         return Observable.empty()
     }
 }
+
+class CBCentralManagerTypeMock: CBCentralManagerType {
+
+    private var _doneInit = false
+        init() { _doneInit = true }
+    init(delegate: CBCentralManagerDelegate? = nil, isScanning: Bool = false, state: CBManagerState) {
+        self.delegate = delegate
+        self.isScanning = isScanning
+        self.state = state
+        _doneInit = true
+    }
+        
+    var delegateSetCallCount = 0
+    var underlyingDelegate: CBCentralManagerDelegate? = nil
+    var delegate: CBCentralManagerDelegate? {
+        get { return underlyingDelegate }
+        set {
+            underlyingDelegate = newValue
+            if _doneInit { delegateSetCallCount += 1 }
+        }
+    }
+    
+    var isScanningSetCallCount = 0
+    var underlyingIsScanning: Bool = false
+    var isScanning: Bool {
+        get { return underlyingIsScanning }
+        set {
+            underlyingIsScanning = newValue
+            if _doneInit { isScanningSetCallCount += 1 }
+        }
+    }
+    
+    var stateSetCallCount = 0
+    var underlyingState: CBManagerState!
+    var state: CBManagerState {
+        get { return underlyingState }
+        set {
+            underlyingState = newValue
+            if _doneInit { stateSetCallCount += 1 }
+        }
+    }
+    
+    var scanForPeripheralsCallCount = 0
+    var scanForPeripheralsHandler: (([CBUUID]?, [String : Any]?) -> ())?
+    func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?)  {
+        scanForPeripheralsCallCount += 1
+    
+        if let scanForPeripheralsHandler = scanForPeripheralsHandler {
+            scanForPeripheralsHandler(serviceUUIDs, options)
+        }
+        
+    }
+    
+    var stopScanCallCount = 0
+    var stopScanHandler: (() -> ())?
+    func stopScan()  {
+        stopScanCallCount += 1
+    
+        if let stopScanHandler = stopScanHandler {
+            stopScanHandler()
+        }
+        
+    }
+    
+    var connectCallCount = 0
+    var connectHandler: ((CBPeripheralType, ConnectionManagerOptions?) -> ())?
+    func connect(_ peripheral: CBPeripheralType, options: ConnectionManagerOptions?)  {
+        connectCallCount += 1
+    
+        if let connectHandler = connectHandler {
+            connectHandler(peripheral, options)
+        }
+        
+    }
+    
+    var cancelPeripheralConnectionCallCount = 0
+    var cancelPeripheralConnectionHandler: ((CBPeripheralType) -> ())?
+    func cancelPeripheralConnection(_ peripheral: CBPeripheralType)  {
+        cancelPeripheralConnectionCallCount += 1
+    
+        if let cancelPeripheralConnectionHandler = cancelPeripheralConnectionHandler {
+            cancelPeripheralConnectionHandler(peripheral)
+        }
+        
+    }
+}

@@ -17,7 +17,9 @@
 import CoreBluetooth
 import RxSwift
 
-class CentralDelegate: NSObject, CBCentralManagerDelegate {
+protocol CentralDelegateType: CBCentralManagerDelegate {}
+
+class CentralDelegate: NSObject, CentralDelegateType {
     
     var bluetoothCapability: Observable<BluetoothCapability> {
         return bluetoothCapabilitySubject.asObservable()
