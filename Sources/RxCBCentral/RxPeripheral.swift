@@ -18,12 +18,6 @@ import CoreBluetooth
 import Foundation
 import RxSwift
 
-public enum GattError: Error {
-    case serviceNotFound
-    case characteristicNotFound
-    case notConnected
-}
-
 /// Reactive interface into the underlying platform-level peripheral Bluetooth GATT operators.
 public protocol RxPeripheral: AnyObject {
     /// The connection state of the peripheral. Emits wheven connection state changes.
@@ -95,4 +89,11 @@ public protocol Preprocessor {
     /// - returns: Optional of the aggregated, processed data, or else nil if the
     ///     aggregated data does not yet represent a complete demarcated packet.
     func process(data: Data) -> Data?
+}
+
+
+public enum GattError: Error {
+    case serviceNotFound
+    case characteristicNotFound
+    case notConnected
 }

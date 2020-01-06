@@ -22,7 +22,7 @@ private final class ConnectionManagerTests: XCTestCase {
     
     private let peripheralGattManager = RxPeripheralManagerTypeMock()
     private let centralManager = CBCentralManagerTypeMock()
-    private let delegate = CentralDelegateMock()
+    private let delegate = RxCentralDelegateMock()
     
     private var connectionManager: ConnectionManager!
     

@@ -17,7 +17,6 @@
 import CoreBluetooth
 import Foundation
 import RxSwift
-import RxCBCentral
 
 public class CentralScannerMock: CentralScanner {
 
@@ -651,6 +650,207 @@ class CBCentralManagerTypeMock: CBCentralManagerType {
     
         if let cancelPeripheralConnectionHandler = cancelPeripheralConnectionHandler {
             cancelPeripheralConnectionHandler(peripheral)
+        }
+        
+    }
+}
+
+class RxCentralDelegateMock: NSObject, RxCentralDelegate {
+
+    private var _doneInit = false
+        override init() { _doneInit = true }
+    init(bluetoothCapability: Observable<BluetoothCapability> = PublishSubject(), didDiscoverPeripheral: Observable<ScanData> = PublishSubject(), didConnectToPeripheral: Observable<CBPeripheral> = PublishSubject(), didFailToConnect: Observable<(CBPeripheral, Error?)> = PublishSubject(), didDisconnectPeripheral: Observable<(CBPeripheral, Error?)> = PublishSubject()) {
+        super.init()
+        self.bluetoothCapability = bluetoothCapability
+        self.didDiscoverPeripheral = didDiscoverPeripheral
+        self.didConnectToPeripheral = didConnectToPeripheral
+        self.didFailToConnect = didFailToConnect
+        self.didDisconnectPeripheral = didDisconnectPeripheral
+        _doneInit = true
+    }
+        
+    private var bluetoothCapabilitySubjectKind = 0
+    var bluetoothCapabilitySubjectSetCallCount = 0
+    var bluetoothCapabilitySubject = PublishSubject<BluetoothCapability>() { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    var bluetoothCapabilityReplaySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1) { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    var bluetoothCapabilityBehaviorSubject: BehaviorSubject<BluetoothCapability>! { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    var bluetoothCapabilityRxSubject: Observable<BluetoothCapability>! { didSet { if _doneInit { bluetoothCapabilitySubjectSetCallCount += 1 } } }
+    var bluetoothCapability: Observable<BluetoothCapability> {
+        get {
+            if bluetoothCapabilitySubjectKind == 0 {
+                return bluetoothCapabilitySubject
+            } else if bluetoothCapabilitySubjectKind == 1 {
+                return bluetoothCapabilityBehaviorSubject
+            } else if bluetoothCapabilitySubjectKind == 2 {
+                return bluetoothCapabilityReplaySubject
+            } else {
+                return bluetoothCapabilityRxSubject
+            }
+        }
+        set {
+            if let val = newValue as? PublishSubject<BluetoothCapability> {
+                bluetoothCapabilitySubject = val
+                bluetoothCapabilitySubjectKind = 0
+            } else if let val = newValue as? BehaviorSubject<BluetoothCapability> {
+                bluetoothCapabilityBehaviorSubject = val
+                bluetoothCapabilitySubjectKind = 1
+            } else if let val = newValue as? ReplaySubject<BluetoothCapability> {
+                bluetoothCapabilityReplaySubject = val
+                bluetoothCapabilitySubjectKind = 2
+            } else {
+                bluetoothCapabilityRxSubject = newValue
+                bluetoothCapabilitySubjectKind = 3
+            }
+        }
+    }
+    
+    private var didDiscoverPeripheralSubjectKind = 0
+    var didDiscoverPeripheralSubjectSetCallCount = 0
+    var didDiscoverPeripheralSubject = PublishSubject<ScanData>() { didSet { if _doneInit { didDiscoverPeripheralSubjectSetCallCount += 1 } } }
+    var didDiscoverPeripheralReplaySubject = ReplaySubject<ScanData>.create(bufferSize: 1) { didSet { if _doneInit { didDiscoverPeripheralSubjectSetCallCount += 1 } } }
+    var didDiscoverPeripheralBehaviorSubject: BehaviorSubject<ScanData>! { didSet { if _doneInit { didDiscoverPeripheralSubjectSetCallCount += 1 } } }
+    var didDiscoverPeripheralRxSubject: Observable<ScanData>! { didSet { if _doneInit { didDiscoverPeripheralSubjectSetCallCount += 1 } } }
+    var didDiscoverPeripheral: Observable<ScanData> {
+        get {
+            if didDiscoverPeripheralSubjectKind == 0 {
+                return didDiscoverPeripheralSubject
+            } else if didDiscoverPeripheralSubjectKind == 1 {
+                return didDiscoverPeripheralBehaviorSubject
+            } else if didDiscoverPeripheralSubjectKind == 2 {
+                return didDiscoverPeripheralReplaySubject
+            } else {
+                return didDiscoverPeripheralRxSubject
+            }
+        }
+        set {
+            if let val = newValue as? PublishSubject<ScanData> {
+                didDiscoverPeripheralSubject = val
+                didDiscoverPeripheralSubjectKind = 0
+            } else if let val = newValue as? BehaviorSubject<ScanData> {
+                didDiscoverPeripheralBehaviorSubject = val
+                didDiscoverPeripheralSubjectKind = 1
+            } else if let val = newValue as? ReplaySubject<ScanData> {
+                didDiscoverPeripheralReplaySubject = val
+                didDiscoverPeripheralSubjectKind = 2
+            } else {
+                didDiscoverPeripheralRxSubject = newValue
+                didDiscoverPeripheralSubjectKind = 3
+            }
+        }
+    }
+    
+    private var didConnectToPeripheralSubjectKind = 0
+    var didConnectToPeripheralSubjectSetCallCount = 0
+    var didConnectToPeripheralSubject = PublishSubject<CBPeripheral>() { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralReplaySubject = ReplaySubject<CBPeripheral>.create(bufferSize: 1) { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralBehaviorSubject: BehaviorSubject<CBPeripheral>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralRxSubject: Observable<CBPeripheral>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheral: Observable<CBPeripheral> {
+        get {
+            if didConnectToPeripheralSubjectKind == 0 {
+                return didConnectToPeripheralSubject
+            } else if didConnectToPeripheralSubjectKind == 1 {
+                return didConnectToPeripheralBehaviorSubject
+            } else if didConnectToPeripheralSubjectKind == 2 {
+                return didConnectToPeripheralReplaySubject
+            } else {
+                return didConnectToPeripheralRxSubject
+            }
+        }
+        set {
+            if let val = newValue as? PublishSubject<CBPeripheral> {
+                didConnectToPeripheralSubject = val
+                didConnectToPeripheralSubjectKind = 0
+            } else if let val = newValue as? BehaviorSubject<CBPeripheral> {
+                didConnectToPeripheralBehaviorSubject = val
+                didConnectToPeripheralSubjectKind = 1
+            } else if let val = newValue as? ReplaySubject<CBPeripheral> {
+                didConnectToPeripheralReplaySubject = val
+                didConnectToPeripheralSubjectKind = 2
+            } else {
+                didConnectToPeripheralRxSubject = newValue
+                didConnectToPeripheralSubjectKind = 3
+            }
+        }
+    }
+    
+    private var didFailToConnectSubjectKind = 0
+    var didFailToConnectSubjectSetCallCount = 0
+    var didFailToConnectSubject = PublishSubject<(CBPeripheral, Error?)>() { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectReplaySubject = ReplaySubject<(CBPeripheral, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectBehaviorSubject: BehaviorSubject<(CBPeripheral, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectRxSubject: Observable<(CBPeripheral, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnect: Observable<(CBPeripheral, Error?)> {
+        get {
+            if didFailToConnectSubjectKind == 0 {
+                return didFailToConnectSubject
+            } else if didFailToConnectSubjectKind == 1 {
+                return didFailToConnectBehaviorSubject
+            } else if didFailToConnectSubjectKind == 2 {
+                return didFailToConnectReplaySubject
+            } else {
+                return didFailToConnectRxSubject
+            }
+        }
+        set {
+            if let val = newValue as? PublishSubject<(CBPeripheral, Error?)> {
+                didFailToConnectSubject = val
+                didFailToConnectSubjectKind = 0
+            } else if let val = newValue as? BehaviorSubject<(CBPeripheral, Error?)> {
+                didFailToConnectBehaviorSubject = val
+                didFailToConnectSubjectKind = 1
+            } else if let val = newValue as? ReplaySubject<(CBPeripheral, Error?)> {
+                didFailToConnectReplaySubject = val
+                didFailToConnectSubjectKind = 2
+            } else {
+                didFailToConnectRxSubject = newValue
+                didFailToConnectSubjectKind = 3
+            }
+        }
+    }
+    
+    private var didDisconnectPeripheralSubjectKind = 0
+    var didDisconnectPeripheralSubjectSetCallCount = 0
+    var didDisconnectPeripheralSubject = PublishSubject<(CBPeripheral, Error?)>() { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralReplaySubject = ReplaySubject<(CBPeripheral, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralBehaviorSubject: BehaviorSubject<(CBPeripheral, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralRxSubject: Observable<(CBPeripheral, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheral: Observable<(CBPeripheral, Error?)> {
+        get {
+            if didDisconnectPeripheralSubjectKind == 0 {
+                return didDisconnectPeripheralSubject
+            } else if didDisconnectPeripheralSubjectKind == 1 {
+                return didDisconnectPeripheralBehaviorSubject
+            } else if didDisconnectPeripheralSubjectKind == 2 {
+                return didDisconnectPeripheralReplaySubject
+            } else {
+                return didDisconnectPeripheralRxSubject
+            }
+        }
+        set {
+            if let val = newValue as? PublishSubject<(CBPeripheral, Error?)> {
+                didDisconnectPeripheralSubject = val
+                didDisconnectPeripheralSubjectKind = 0
+            } else if let val = newValue as? BehaviorSubject<(CBPeripheral, Error?)> {
+                didDisconnectPeripheralBehaviorSubject = val
+                didDisconnectPeripheralSubjectKind = 1
+            } else if let val = newValue as? ReplaySubject<(CBPeripheral, Error?)> {
+                didDisconnectPeripheralReplaySubject = val
+                didDisconnectPeripheralSubjectKind = 2
+            } else {
+                didDisconnectPeripheralRxSubject = newValue
+                didDisconnectPeripheralSubjectKind = 3
+            }
+        }
+    }
+    
+    var centralManagerDidUpdateStateCallCount = 0
+    var centralManagerDidUpdateStateHandler: ((CBCentralManager) -> ())?
+    func centralManagerDidUpdateState(_ central: CBCentralManager)  {
+        centralManagerDidUpdateStateCallCount += 1
+    
+        if let centralManagerDidUpdateStateHandler = centralManagerDidUpdateStateHandler {
+            centralManagerDidUpdateStateHandler(central)
         }
         
     }

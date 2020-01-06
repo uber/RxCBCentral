@@ -19,14 +19,14 @@ import RxSwift
 
 public class BluetoothDetector: NSObject, BluetoothDetectorType {
     
-    init(centralManager: CBCentralManagerType, delegate: CentralDelegate, options: BluetoothDetectorOptions?) {
+    init(centralManager: CBCentralManagerType, delegate: RxCentralDelegate, options: BluetoothDetectorOptions?) {
         _centralManager = centralManager
         _delegate = delegate
         _options = options
     }
     
     public convenience init(options: BluetoothDetectorOptions?) {
-        let delegate = CentralDelegate()
+        let delegate = RxCentralDelegateImpl()
         let centralManager = CBCentralManager(delegate: delegate, queue: nil, options: options?.asDictionary)
         
         self.init(centralManager: centralManager, delegate: delegate, options: options)
@@ -45,7 +45,7 @@ public class BluetoothDetector: NSObject, BluetoothDetectorType {
     // MARK: - Private
     
     private let _options: BluetoothDetectorOptions?
-    private let _delegate: CentralDelegate
+    private let _delegate: RxCentralDelegate
     
     private let _centralManager: CBCentralManagerType
 }

@@ -22,7 +22,7 @@ public class ConnectionManager: ConnectionManagerType {
     
     init(peripheralGattManager: RxPeripheralManagerType,
          centralManager: CBCentralManagerType,
-         delegate: CentralDelegate,
+         delegate: RxCentralDelegate,
          options: ConnectionManagerOptions?) {
         self.peripheralGattManager = peripheralGattManager
         self.centralManager = centralManager
@@ -35,7 +35,7 @@ public class ConnectionManager: ConnectionManagerType {
                             queue: DispatchQueue? = nil,
                             options: ConnectionManagerOptions? = nil) {
         
-        let delegate = CentralDelegate()
+        let delegate = RxCentralDelegateImpl()
         let centralManager = CBCentralManager(delegate: delegate, queue: queue, options: options?.asDictionary)
         
         self.init(peripheralGattManager: peripheralGattManager, centralManager: centralManager, delegate: delegate, options: options)
@@ -179,7 +179,7 @@ public class ConnectionManager: ConnectionManagerType {
     
     private let centralManager: CBCentralManagerType
     private let peripheralGattManager: RxPeripheralManagerType
-    private let centralDelegate: CentralDelegate
+    private let centralDelegate: RxCentralDelegate
     private let options: ConnectionManagerOptions?
     
     private let connectionStateSubject = ReplaySubject<ConnectionState>.create(bufferSize: 1)

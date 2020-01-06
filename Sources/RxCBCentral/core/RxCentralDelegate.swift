@@ -17,9 +17,19 @@
 import CoreBluetooth
 import RxSwift
 
-protocol CentralDelegateType: CBCentralManagerDelegate {}
+/// @CreateMock
+protocol RxCentralDelegate: CBCentralManagerDelegate, AnyObject {
+    var bluetoothCapability: Observable<BluetoothCapability> { get }
+    
+    var didDiscoverPeripheral: Observable<ScanData> { get }
+    var didConnectToPeripheral: Observable<CBPeripheral> { get }
+    var didFailToConnect: Observable<(CBPeripheral, Error?)> { get }
+    var didDisconnectPeripheral: Observable<(CBPeripheral, Error?)>  { get }
+    
+    func centralManagerDidUpdateState(_ central: CBCentralManager)
+}
 
-class CentralDelegate: NSObject, CentralDelegateType {
+class RxCentralDelegateImpl: NSObject, RxCentralDelegate {
     
     var bluetoothCapability: Observable<BluetoothCapability> {
         return bluetoothCapabilitySubject.asObservable()
