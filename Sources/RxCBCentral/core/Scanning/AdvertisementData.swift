@@ -65,3 +65,16 @@ public struct AdvertisementData {
         solicitedServiceUUIDs = dict[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID]
     }
 }
+
+extension AdvertisementData: Equatable {
+    public static func == (lhs: AdvertisementData, rhs: AdvertisementData) -> Bool {
+        return lhs.localName == rhs.localName &&
+            lhs.txPowerLevel == rhs.txPowerLevel &&
+            lhs.serviceUUIDs == rhs.serviceUUIDs &&
+            lhs.serviceData == rhs.serviceData &&
+            lhs.manufacturerData == rhs.manufacturerData &&
+            lhs.overflowServiceUUIDs == rhs.overflowServiceUUIDs &&
+            lhs.isConnectable == rhs.isConnectable &&
+            lhs.solicitedServiceUUIDs == rhs.solicitedServiceUUIDs
+    }
+}

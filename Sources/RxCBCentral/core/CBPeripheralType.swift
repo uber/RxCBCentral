@@ -40,4 +40,3 @@ public protocol CBPeripheralType: AnyObject {
 /// Wrap CBPeripheral in a protocol to be able to mock it for unit testing
 extension CBPeripheral: CBPeripheralType {}
 
-

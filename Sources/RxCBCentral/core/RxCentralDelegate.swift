@@ -22,9 +22,9 @@ protocol RxCentralDelegate: CBCentralManagerDelegate, AnyObject {
     var bluetoothCapability: Observable<BluetoothCapability> { get }
     
     var didDiscoverPeripheral: Observable<ScanData> { get }
-    var didConnectToPeripheral: Observable<CBPeripheral> { get }
-    var didFailToConnect: Observable<(CBPeripheral, Error?)> { get }
-    var didDisconnectPeripheral: Observable<(CBPeripheral, Error?)>  { get }
+    var didConnectToPeripheral: Observable<CBPeripheralType> { get }
+    var didFailToConnect: Observable<(CBPeripheralType, Error?)> { get }
+    var didDisconnectPeripheral: Observable<(CBPeripheralType, Error?)>  { get }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager)
 }
@@ -39,15 +39,15 @@ class RxCentralDelegateImpl: NSObject, RxCentralDelegate {
         return didDiscoverPeripheralSubject.asObservable()
     }
     
-    var didConnectToPeripheral: Observable<CBPeripheral> {
+    var didConnectToPeripheral: Observable<CBPeripheralType> {
         return didConnectToPeripheralSubject.asObservable()
     }
     
-    var didFailToConnect: Observable<(CBPeripheral, Error?)> {
+    var didFailToConnect: Observable<(CBPeripheralType, Error?)> {
         return didFailToConnectSubject.asObservable()
     }
     
-    var didDisconnectPeripheral: Observable<(CBPeripheral, Error?)> {
+    var didDisconnectPeripheral: Observable<(CBPeripheralType, Error?)> {
         return didDisconnectPeripheralSubject.asObservable()
     }
         
@@ -115,7 +115,7 @@ class RxCentralDelegateImpl: NSObject, RxCentralDelegate {
     private let bluetoothCapabilitySubject = ReplaySubject<BluetoothCapability>.create(bufferSize: 1)
     
     private let didDiscoverPeripheralSubject = PublishSubject<ScanData>()
-    private let didConnectToPeripheralSubject = PublishSubject<CBPeripheral>()
-    private let didFailToConnectSubject = PublishSubject<(CBPeripheral, Error?)>()
-    private let didDisconnectPeripheralSubject = PublishSubject<(CBPeripheral, Error?)>()
+    private let didConnectToPeripheralSubject = PublishSubject<CBPeripheralType>()
+    private let didFailToConnectSubject = PublishSubject<(CBPeripheralType, Error?)>()
+    private let didDisconnectPeripheralSubject = PublishSubject<(CBPeripheralType, Error?)>()
 }

@@ -245,8 +245,7 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
 public class CBPeripheralTypeMock: CBPeripheralType {
 
     private var _doneInit = false
-        public init() { _doneInit = true }
-    public init(identifier: UUID = UUID(), state: CBPeripheralState) {
+    public init(identifier: UUID = UUID(), state: CBPeripheralState = .disconnected) {
         self.identifier = identifier
         self.state = state
         _doneInit = true
@@ -572,8 +571,7 @@ public class RxPeripheralMock: RxPeripheral {
 class CBCentralManagerTypeMock: CBCentralManagerType {
 
     private var _doneInit = false
-        init() { _doneInit = true }
-    init(delegate: CBCentralManagerDelegate? = nil, isScanning: Bool = false, state: CBManagerState) {
+    init(delegate: CBCentralManagerDelegate? = nil, isScanning: Bool = false, state: CBManagerState = .unknown) {
         self.delegate = delegate
         self.isScanning = isScanning
         self.state = state
@@ -659,7 +657,7 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
 
     private var _doneInit = false
         override init() { _doneInit = true }
-    init(bluetoothCapability: Observable<BluetoothCapability> = PublishSubject(), didDiscoverPeripheral: Observable<ScanData> = PublishSubject(), didConnectToPeripheral: Observable<CBPeripheral> = PublishSubject(), didFailToConnect: Observable<(CBPeripheral, Error?)> = PublishSubject(), didDisconnectPeripheral: Observable<(CBPeripheral, Error?)> = PublishSubject()) {
+    init(bluetoothCapability: Observable<BluetoothCapability> = PublishSubject(), didDiscoverPeripheral: Observable<ScanData> = PublishSubject(), didConnectToPeripheral: Observable<CBPeripheralType> = PublishSubject(), didFailToConnect: Observable<(CBPeripheralType, Error?)> = PublishSubject(), didDisconnectPeripheral: Observable<(CBPeripheralType, Error?)> = PublishSubject()) {
         super.init()
         self.bluetoothCapability = bluetoothCapability
         self.didDiscoverPeripheral = didDiscoverPeripheral
@@ -741,11 +739,11 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
     
     private var didConnectToPeripheralSubjectKind = 0
     var didConnectToPeripheralSubjectSetCallCount = 0
-    var didConnectToPeripheralSubject = PublishSubject<CBPeripheral>() { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
-    var didConnectToPeripheralReplaySubject = ReplaySubject<CBPeripheral>.create(bufferSize: 1) { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
-    var didConnectToPeripheralBehaviorSubject: BehaviorSubject<CBPeripheral>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
-    var didConnectToPeripheralRxSubject: Observable<CBPeripheral>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
-    var didConnectToPeripheral: Observable<CBPeripheral> {
+    var didConnectToPeripheralSubject = PublishSubject<CBPeripheralType>() { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralReplaySubject = ReplaySubject<CBPeripheralType>.create(bufferSize: 1) { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralBehaviorSubject: BehaviorSubject<CBPeripheralType>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheralRxSubject: Observable<CBPeripheralType>! { didSet { if _doneInit { didConnectToPeripheralSubjectSetCallCount += 1 } } }
+    var didConnectToPeripheral: Observable<CBPeripheralType> {
         get {
             if didConnectToPeripheralSubjectKind == 0 {
                 return didConnectToPeripheralSubject
@@ -758,13 +756,13 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
             }
         }
         set {
-            if let val = newValue as? PublishSubject<CBPeripheral> {
+            if let val = newValue as? PublishSubject<CBPeripheralType> {
                 didConnectToPeripheralSubject = val
                 didConnectToPeripheralSubjectKind = 0
-            } else if let val = newValue as? BehaviorSubject<CBPeripheral> {
+            } else if let val = newValue as? BehaviorSubject<CBPeripheralType> {
                 didConnectToPeripheralBehaviorSubject = val
                 didConnectToPeripheralSubjectKind = 1
-            } else if let val = newValue as? ReplaySubject<CBPeripheral> {
+            } else if let val = newValue as? ReplaySubject<CBPeripheralType> {
                 didConnectToPeripheralReplaySubject = val
                 didConnectToPeripheralSubjectKind = 2
             } else {
@@ -776,11 +774,11 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
     
     private var didFailToConnectSubjectKind = 0
     var didFailToConnectSubjectSetCallCount = 0
-    var didFailToConnectSubject = PublishSubject<(CBPeripheral, Error?)>() { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
-    var didFailToConnectReplaySubject = ReplaySubject<(CBPeripheral, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
-    var didFailToConnectBehaviorSubject: BehaviorSubject<(CBPeripheral, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
-    var didFailToConnectRxSubject: Observable<(CBPeripheral, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
-    var didFailToConnect: Observable<(CBPeripheral, Error?)> {
+    var didFailToConnectSubject = PublishSubject<(CBPeripheralType, Error?)>() { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectReplaySubject = ReplaySubject<(CBPeripheralType, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectBehaviorSubject: BehaviorSubject<(CBPeripheralType, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnectRxSubject: Observable<(CBPeripheralType, Error?)>! { didSet { if _doneInit { didFailToConnectSubjectSetCallCount += 1 } } }
+    var didFailToConnect: Observable<(CBPeripheralType, Error?)> {
         get {
             if didFailToConnectSubjectKind == 0 {
                 return didFailToConnectSubject
@@ -793,13 +791,13 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
             }
         }
         set {
-            if let val = newValue as? PublishSubject<(CBPeripheral, Error?)> {
+            if let val = newValue as? PublishSubject<(CBPeripheralType, Error?)> {
                 didFailToConnectSubject = val
                 didFailToConnectSubjectKind = 0
-            } else if let val = newValue as? BehaviorSubject<(CBPeripheral, Error?)> {
+            } else if let val = newValue as? BehaviorSubject<(CBPeripheralType, Error?)> {
                 didFailToConnectBehaviorSubject = val
                 didFailToConnectSubjectKind = 1
-            } else if let val = newValue as? ReplaySubject<(CBPeripheral, Error?)> {
+            } else if let val = newValue as? ReplaySubject<(CBPeripheralType, Error?)> {
                 didFailToConnectReplaySubject = val
                 didFailToConnectSubjectKind = 2
             } else {
@@ -811,11 +809,11 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
     
     private var didDisconnectPeripheralSubjectKind = 0
     var didDisconnectPeripheralSubjectSetCallCount = 0
-    var didDisconnectPeripheralSubject = PublishSubject<(CBPeripheral, Error?)>() { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
-    var didDisconnectPeripheralReplaySubject = ReplaySubject<(CBPeripheral, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
-    var didDisconnectPeripheralBehaviorSubject: BehaviorSubject<(CBPeripheral, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
-    var didDisconnectPeripheralRxSubject: Observable<(CBPeripheral, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
-    var didDisconnectPeripheral: Observable<(CBPeripheral, Error?)> {
+    var didDisconnectPeripheralSubject = PublishSubject<(CBPeripheralType, Error?)>() { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralReplaySubject = ReplaySubject<(CBPeripheralType, Error?)>.create(bufferSize: 1) { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralBehaviorSubject: BehaviorSubject<(CBPeripheralType, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheralRxSubject: Observable<(CBPeripheralType, Error?)>! { didSet { if _doneInit { didDisconnectPeripheralSubjectSetCallCount += 1 } } }
+    var didDisconnectPeripheral: Observable<(CBPeripheralType, Error?)> {
         get {
             if didDisconnectPeripheralSubjectKind == 0 {
                 return didDisconnectPeripheralSubject
@@ -828,13 +826,13 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
             }
         }
         set {
-            if let val = newValue as? PublishSubject<(CBPeripheral, Error?)> {
+            if let val = newValue as? PublishSubject<(CBPeripheralType, Error?)> {
                 didDisconnectPeripheralSubject = val
                 didDisconnectPeripheralSubjectKind = 0
-            } else if let val = newValue as? BehaviorSubject<(CBPeripheral, Error?)> {
+            } else if let val = newValue as? BehaviorSubject<(CBPeripheralType, Error?)> {
                 didDisconnectPeripheralBehaviorSubject = val
                 didDisconnectPeripheralSubjectKind = 1
-            } else if let val = newValue as? ReplaySubject<(CBPeripheral, Error?)> {
+            } else if let val = newValue as? ReplaySubject<(CBPeripheralType, Error?)> {
                 didDisconnectPeripheralReplaySubject = val
                 didDisconnectPeripheralSubjectKind = 2
             } else {
@@ -851,6 +849,59 @@ class RxCentralDelegateMock: NSObject, RxCentralDelegate {
     
         if let centralManagerDidUpdateStateHandler = centralManagerDidUpdateStateHandler {
             centralManagerDidUpdateStateHandler(central)
+        }
+        
+    }
+}
+
+public class GattOperationMock: GattOperation {
+
+    private var _doneInit = false
+        public init() { _doneInit = true }
+    public init(result: Single<Element>) {
+        self.result = result
+        _doneInit = true
+    }
+        
+    public var executeCallCount = 0
+    public var executeHandler: ((RxPeripheral) -> ())?
+    public func execute(with peripheral: RxPeripheral)  {
+        executeCallCount += 1
+    
+        if let executeHandler = executeHandler {
+            executeHandler(peripheral)
+        }
+        
+    }
+    public typealias Element = Any
+    
+    public var resultSetCallCount = 0
+    var underlyingResult: Single<Element>!
+    public var result: Single<Element> {
+        get { return underlyingResult }
+        set {
+            underlyingResult = newValue
+            if _doneInit { resultSetCallCount += 1 }
+        }
+    }
+}
+
+public class GattOperationExecutableMock: GattOperationExecutable {
+
+    private var _doneInit = false
+    
+    public init() {
+
+        _doneInit = true
+    }
+        
+    public var executeCallCount = 0
+    public var executeHandler: ((RxPeripheral) -> ())?
+    public func execute(with peripheral: RxPeripheral)  {
+        executeCallCount += 1
+    
+        if let executeHandler = executeHandler {
+            executeHandler(peripheral)
         }
         
     }

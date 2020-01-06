@@ -23,11 +23,12 @@ public class BluetoothDetector: NSObject, BluetoothDetectorType {
         _centralManager = centralManager
         _delegate = delegate
         _options = options
+        _centralManager.delegate = delegate
     }
     
     public convenience init(options: BluetoothDetectorOptions?) {
         let delegate = RxCentralDelegateImpl()
-        let centralManager = CBCentralManager(delegate: delegate, queue: nil, options: options?.asDictionary)
+        let centralManager = CBCentralManager(delegate: nil, queue: nil, options: options?.asDictionary)
         
         self.init(centralManager: centralManager, delegate: delegate, options: options)
     }

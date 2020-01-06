@@ -23,22 +23,25 @@ public class ConnectionManager: ConnectionManagerType {
     init(peripheralGattManager: RxPeripheralManagerType,
          centralManager: CBCentralManagerType,
          delegate: RxCentralDelegate,
-         options: ConnectionManagerOptions?) {
+         options: ConnectionManagerOptions?,
+         scheduler: SchedulerType = MainScheduler.instance) {
         self.peripheralGattManager = peripheralGattManager
         self.centralManager = centralManager
         self.centralDelegate = delegate
         self.options = options
+        self.scheduler = scheduler
         centralManager.delegate = delegate
+        
+        setupDelegate()
     }
     
     public convenience init(peripheralGattManager: RxPeripheralManagerType,
                             queue: DispatchQueue? = nil,
                             options: ConnectionManagerOptions? = nil) {
         
-        let delegate = RxCentralDelegateImpl()
-        let centralManager = CBCentralManager(delegate: delegate, queue: queue, options: options?.asDictionary)
+        let centralManager = CBCentralManager(delegate: nil, queue: queue, options: options?.asDictionary)
         
-        self.init(peripheralGattManager: peripheralGattManager, centralManager: centralManager, delegate: delegate, options: options)
+        self.init(peripheralGattManager: peripheralGattManager, centralManager: centralManager, delegate: RxCentralDelegateImpl(), options: options)
     }
     
     public func scan(for services: [CBUUID]?,
@@ -61,7 +64,7 @@ public class ConnectionManager: ConnectionManagerType {
             .take(1)
             .timeout(bluetoothEnabledTimeout,
                      other: Observable.error(ConnectionManagerError.bluetoothDisabled),
-                     scheduler: MainScheduler.instance)
+                     scheduler: scheduler)
             .flatMapLatest { _ -> Observable<BluetoothCapability> in
                 return self.centralDelegate.bluetoothCapability
             }
@@ -79,7 +82,7 @@ public class ConnectionManager: ConnectionManagerType {
             }
             .timeout(scanTimeout,
                      other: Observable.error(ConnectionManagerError.scanTimeout),
-                     scheduler: MainScheduler.instance)
+                     scheduler: scheduler)
             .do(onError: { error in
                 if let error = error as? ConnectionManagerError {
                     switch error {
@@ -112,12 +115,12 @@ public class ConnectionManager: ConnectionManagerType {
         }
         
         let peripheralConnection =
-            scan(for: services, scanMatcher: scanMatcher, options: options)
+            scan(for: services, scanMatcher: scanMatcher, options: options, scanTimeout: scanTimeout)
             .take(1)
             .map { (scanData: ScanData) -> CBPeripheralType in
                 return scanData.peripheral
             }
-            .flatMapLatest { (matchingPeripheral: CBPeripheralType) -> Observable<CBPeripheral> in
+            .flatMapLatest { (matchingPeripheral: CBPeripheralType) -> Observable<CBPeripheralType> in
                 // match found, stop scanning
                 self.centralManager.stopScan()
                 
@@ -132,13 +135,9 @@ public class ConnectionManager: ConnectionManagerType {
             .do(onError: { error in
                 RxCBLogger.sharedInstance.log("Connection error: \(error.localizedDescription)")
                 self.peripheralGattManager.rxPeripheral = nil
-                if let error = error as? ConnectionManagerError {
-                    switch error {
-                    case .connectionFailed, .connectionTimeout:
-                        self.connectionStateSubject.onNext(.disconnected(error))
-                    case .alreadyScanning, .bluetoothDisabled, .scanTimeout:
-                        break
-                    }
+                
+                if let error = error as? ConnectionManagerError, error == .connectionTimeout {
+                    self.connectionStateSubject.onNext(.disconnected(error))
                 }
             }, onDispose: {
                 RxCBLogger.sharedInstance.log("Peripheral connection subscription disposed")
@@ -181,6 +180,8 @@ public class ConnectionManager: ConnectionManagerType {
     private let peripheralGattManager: RxPeripheralManagerType
     private let centralDelegate: RxCentralDelegate
     private let options: ConnectionManagerOptions?
+    private let scheduler: SchedulerType
+    private let disposeBag = DisposeBag()
     
     private let connectionStateSubject = ReplaySubject<ConnectionState>.create(bufferSize: 1)
     
@@ -224,6 +225,31 @@ public class ConnectionManager: ConnectionManagerType {
             .flatMapLatest { (scanData: ScanData) -> Observable<ScanData> in
                 return scanMatcher.match
         }
+    }
+    
+    private func setupDelegate() {
+        centralDelegate.didConnectToPeripheral
+            .subscribe(onNext: { [weak self] peripheral in
+                guard let self = self else { return }
+                self.connectionStateSubject.onNext(.connected(peripheral))
+            })
+            .disposed(by: disposeBag)
+        
+        centralDelegate.didFailToConnect
+            .subscribe(onNext: { [weak self] (_, error) in
+                guard let self = self else { return }
+                let disconnectedState: ConnectionState = error == nil ? .disconnected(nil) : .disconnected(ConnectionManagerError.connectionFailed)
+                self.connectionStateSubject.onNext(disconnectedState)
+            })
+            .disposed(by: disposeBag)
+        
+        centralDelegate.didDisconnectPeripheral
+            .subscribe(onNext: { [weak self] (_, error) in
+                guard let self = self else { return }
+                let disconnectedState: ConnectionState = error == nil ? .disconnected(nil) : .disconnected(ConnectionManagerError.connectionFailed)
+                self.connectionStateSubject.onNext(disconnectedState)
+            })
+            .disposed(by: disposeBag)
     }
 }
 

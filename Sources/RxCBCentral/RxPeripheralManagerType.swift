@@ -18,13 +18,13 @@ import CoreBluetooth
 import RxSwift
 
 /// Responsible for queueing, listening for notifications,  and handling GattOperations using the underlying RxPeripheral for BLE communication.
-public protocol RxPeripheralManagerType: class {
+public protocol RxPeripheralManagerType: AnyObject {
     /// The peripheral we communicate with using this manager.
     /// May be set multiple times as connection cycles occur.
     var rxPeripheral: RxPeripheral? { get set }
     
     /// The connection state of the `rxPeripheral`  peripheral.
-    /// Emits whenever the connection status changes.
+    /// Emits whenever the connection status changes. Duplicate emissions are suppressed.
     var isConnected: Observable<Bool> { get }
     
     /// A function to queue GATT operations (BLE reads, writes, etc.)

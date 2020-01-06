@@ -14,15 +14,96 @@
 //  limitations under the License.
 //
 
+import CoreBluetooth
 @testable import RxCBCentral
+import RxSwift
+import RxTest
 import XCTest
 
 final class BluetoothDetectorTests: XCTestCase {
     
+    private var testScheduler: TestScheduler!
+    private var disposeBag: DisposeBag!
+    
+    private var centralDelegate: RxCentralDelegateMock!
     private var bluetoothDetector: BluetoothDetector!
+    
     override func setUp() {
         super.setUp()
+        testScheduler = TestScheduler(initialClock: 0)
+        disposeBag = DisposeBag()
         
-        bluetoothDetector = BluetoothDetector(options: BluetoothDetectorOptions(showPowerAlert: false))
+        centralDelegate = RxCentralDelegateMock()
+        bluetoothDetector = BluetoothDetector(centralManager: CBCentralManagerTypeMock(),
+                                              delegate: centralDelegate,
+                                              options: BluetoothDetectorOptions(showPowerAlert: false))
+    }
+    
+    func test_bluetoothCapabilities() {
+        let bluetoothObserver = testScheduler.createObserver(BluetoothCapability.self)
+        
+        bluetoothDetector.bluetoothCapability
+            .bind(to: bluetoothObserver)
+            .disposed(by: disposeBag)
+        
+        let bluetoothEvents: [Recorded<Event<BluetoothCapability>>] = [
+            .next(10, .enabled),
+            .next(15, .disabled),
+            .next(20, .unsupported),
+            .next(25, .unauthorized),
+            .next(30, .unknown),
+            .next(35, .enabled),
+            .next(40, .enabled)
+        ]
+        
+        testScheduler.createColdObservable(bluetoothEvents)
+            .bind(to: centralDelegate.bluetoothCapabilitySubject)
+            .disposed(by: disposeBag)
+        
+        let expected: [Recorded<Event<BluetoothCapability>>] = [
+            .next(10, .enabled),
+            .next(15, .disabled),
+            .next(20, .unsupported),
+            .next(25, .unauthorized),
+            .next(30, .unknown),
+            .next(35, .enabled),
+            .next(40, .enabled)
+        ]
+        
+        testScheduler.start()
+        
+        XCTAssertEqual(bluetoothObserver.events, expected)
+    }
+    
+    func test_bluetoothEnabled() {
+        let bluetoothObserver = testScheduler.createObserver(Bool.self)
+        
+        bluetoothDetector.enabled
+            .bind(to: bluetoothObserver)
+            .disposed(by: disposeBag)
+        
+        let bluetoothEvents: [Recorded<Event<BluetoothCapability>>] = [
+            .next(10, .enabled),
+            .next(15, .disabled),
+            .next(20, .unsupported),
+            .next(25, .unauthorized),
+            .next(30, .unknown),
+            .next(35, .enabled),
+            .next(40, .enabled)
+        ]
+        
+        testScheduler.createColdObservable(bluetoothEvents)
+            .bind(to: centralDelegate.bluetoothCapabilitySubject)
+            .disposed(by: disposeBag)
+        
+        let expected: [Recorded<Event<Bool>>] = [
+            .next(10, true),
+            .next(15, false),
+            .next(35, true),
+        ]
+        
+        testScheduler.start()
+        
+        XCTAssertEqual(bluetoothObserver.events, expected)
     }
 }

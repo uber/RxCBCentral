@@ -22,6 +22,8 @@ let package = Package(
             dependencies: [
                 "RxSwift",
                 "RxOptional",
+                "RxTest",
+                "RxBlocking",
             ],
             path: "Sources"
         ),
