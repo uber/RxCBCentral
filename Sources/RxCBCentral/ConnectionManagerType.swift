@@ -21,7 +21,7 @@ import RxSwift
 /// A protocol that allows you to conveniently scan and connect to a peripheral.
 public protocol ConnectionManagerType: CentralScanner {
     /// An Observable that emits the current ConnectionManagerState of the manager
-    var connectionState: Observable<ConnectionManagerState> { get }
+    var connectionState: Observable<ConnectionState> { get }
     
     /// Convenience function to scan and connect to a peripheral with specified services.
     /// Note: only one scan operation per `ConnectionManagerType` is supported at a time.
@@ -36,7 +36,7 @@ public protocol ConnectionManagerType: CentralScanner {
 }
 
 /// State of the ConnectionManager.
-public enum ConnectionManagerState {
+public enum ConnectionState {
     case scanning
     case connecting(CBPeripheralType)
     case connected(CBPeripheralType)

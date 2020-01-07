@@ -20,7 +20,7 @@ import RxSwift
 
 class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     
-    public init(peripheral: CBPeripheral, connectionState: Observable<ConnectionManagerState>) {
+    public init(peripheral: CBPeripheralType, connectionState: Observable<ConnectionState>) {
         self.connectionState = connectionState
         self.peripheral = peripheral
         super.init()
@@ -29,10 +29,9 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     
     public var isConnected: Observable<Bool> {
         return connectionState
-            .map { (state: ConnectionManagerState) -> Bool in
+            .map { (state: ConnectionState) -> Bool in
                 if case let .connected(peripheral) = state {
-                    let cbPeripheral = peripheral as? CBPeripheral
-                    return self.peripheral.identifier == cbPeripheral?.identifier && self.peripheral.state == .connected
+                    return self.peripheral.identifier == peripheral.identifier && self.peripheral.state == .connected
                 }
                 return false
             }
@@ -62,7 +61,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     public func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?> {
         
         return connectionState
-            .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
+            .flatMapLatest { (state: ConnectionState) -> Observable<([CBService], Error?)> in
                 guard case let .connected(peripheral) = state,
                     let cbPeripheral = peripheral as? CBPeripheral,
                     cbPeripheral.identifier == self.peripheral.identifier else { return Observable.error(GattError.notConnected) }
@@ -130,7 +129,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
         
         // TODO: invesigate handling .writeWithResponse
         return connectionState
-            .flatMapLatest { (state: ConnectionManagerState) -> Observable<([CBService], Error?)> in
+            .flatMapLatest { (state: ConnectionState) -> Observable<([CBService], Error?)> in
                 guard case let .connected(peripheral) = state,
                     let cbPeripheral = peripheral as? CBPeripheral,
                     cbPeripheral.identifier == self.peripheral.identifier else { return Observable.error(GattError.notConnected) }
@@ -315,8 +314,8 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
         closure()
     }
     
-    let peripheral: CBPeripheral
-    private let connectionState: Observable<ConnectionManagerState>
+    private let peripheral: CBPeripheralType
+    private let connectionState: Observable<ConnectionState>
     private let processSync = NSObject()
     
     // Registered preprocessors mapped to their characteristic's CBUUID

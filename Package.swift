@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "RxCBCentral",
     platforms: [
-        SupportedPlatform.iOS(.v9),
+        SupportedPlatform.iOS(.v10),
         SupportedPlatform.macOS("10.13")
     ],
     products: [
@@ -22,6 +22,8 @@ let package = Package(
             dependencies: [
                 "RxSwift",
                 "RxOptional",
+                "RxTest",
+                "RxBlocking",
             ],
             path: "Sources"
         ),
