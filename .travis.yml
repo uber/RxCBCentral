@@ -11,4 +11,3 @@ include:
       script: xcodebuild test -project RxCBCentralTests.xcodeproj -scheme RxCBCentralTests
     - name: "RxCBCentral"
       script: xcodebuild -project RxCBCentral.xcodeproj -scheme RxCBCentral
-
