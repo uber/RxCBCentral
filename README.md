@@ -8,7 +8,7 @@ Since iOS 5 and Android 4.3 first introduced Bluetooth LE compatibility, the sam
 
 For those tired of writing eerily similar, yet subtly different code for every Bluetooth LE peripheral, RxCBCentral provides a standardized, simple paradigm for connecting to and communicating with peripherals from the central role in a completely reactive manner, leveraging RxSwift around Apple's CoreBluetooth.
 
-Similar to the RxSwift and RxJava, RxCBCentral and [Android's RxCentralBle](https://github.com/uber/RxCentralBle/) allow mobile engineers who work on different platforms to use similar protocols and speak the same language to accomplish a similar goal, enabling increased developer efficiency and simplifying the process of creaing BLE implementations with platform parity.
+Similar to the RxSwift and RxJava, RxCBCentral and [Android's RxCentralBle](https://github.com/uber/RxCentralBle/) allow mobile engineers who work on different platforms to use similar protocols and speak the same language to accomplish similar goals, enabling increased developer efficiency and simplifying the process of creaing BLE implementations with platform parity.
 
 Check out our detailed [Wiki](https://github.com/uber/RxCBCentral/wiki) for designs and examples for all the capabilities of RxCBCentral.
 
