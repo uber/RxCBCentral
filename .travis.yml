@@ -1,7 +1,7 @@
 language: swift
 osx_image: xcode11.2
 xcode_destination: platform=iOS Simulator,OS=12.2,name=iPhone X
-install: carthage update --platform ios
+install: swift package update
 script:
-    - xcodebuild -project RxCBCentral.xcodeproj -scheme RxCBCentral-Package -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
-    - xcodebuild test -project RxCBCentral.xcodeproj -scheme RxCBCentral-Package -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+    - swift build
+    - swift test
