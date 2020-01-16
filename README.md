@@ -99,7 +99,7 @@ peripheralManager
 Carthage a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
 To integrate RxCBCentral into your Xcode project using Carthage, specify it in your `Cartfile`:
 ```swift
-github "uber/RxCBCentral ~> 1.0"
+github "uber/RxCBCentral ~> 0.1"
 ```
 ```bash
 $ carthage update
