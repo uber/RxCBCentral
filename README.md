@@ -114,12 +114,12 @@ Create a `Package.swift` file. If one already exists, add a new RxCBCentral `pac
 import PackageDescription
 
 let package = Package(
-  name: "RxCBCentralProject",
+  name: "YourProject",
   dependencies: [
-    .package(url: "https://github.com/uber/RxCBCentral", from: "1.0.0")
+    .package(url: "https://github.com/uber/RxCBCentral", from: "0.1.0")
   ],
   targets: [
-    .target(name: "RxCBCentralProject", dependencies: ["RxCBCentral"])
+    .target(name: "YourProjectTarget", dependencies: ["RxCBCentral"])
   ]
 )
 ```
