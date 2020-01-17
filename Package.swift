@@ -22,14 +22,15 @@ let package = Package(
             dependencies: [
                 "RxSwift",
                 "RxOptional",
-                "RxTest",
-                "RxBlocking",
             ],
             path: "Sources"
         ),
         .testTarget(
             name: "RxCBCentralTests",
-            dependencies: ["RxCBCentral"],
+            dependencies: ["RxCBCentral",
+                           "RxTest",
+                           "RxBlocking",
+            ],
             path: "Tests"
         )
     ],
