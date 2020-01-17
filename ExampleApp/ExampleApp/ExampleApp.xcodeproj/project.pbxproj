@@ -3,10 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD386E9723D12C5600D77002 /* RxCBCentral in Frameworks */ = {isa = PBXBuildFile; productRef = CD386E9623D12C5600D77002 /* RxCBCentral */; };
+		CD386E9C23D12CF100D77002 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CD386E9B23D12CF100D77002 /* RxSwift */; };
+		CD386E9E23D12CF100D77002 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = CD386E9D23D12CF100D77002 /* RxCocoa */; };
+		CD386EA023D12F9F00D77002 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = CD386E9F23D12F9F00D77002 /* RxRelay */; };
 		CDB523EB237DE55E00933555 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB523EA237DE55E00933555 /* AppDelegate.swift */; };
 		CDB523EF237DE55E00933555 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB523EE237DE55E00933555 /* ViewController.swift */; };
 		CDB523F2237DE55E00933555 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDB523F0237DE55E00933555 /* Main.storyboard */; };
@@ -14,41 +18,7 @@
 		CDB523F7237DE55F00933555 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDB523F5237DE55F00933555 /* LaunchScreen.storyboard */; };
 		CDB524A0237DF0D700933555 /* GattUUIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB5249F237DF0D700933555 /* GattUUIDs.swift */; };
 		CDB524C2237DF20100933555 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB524C1237DF20100933555 /* SceneDelegate.swift */; };
-		CDB524E0237DF48F00933555 /* Dependencies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DA237DF48F00933555 /* Dependencies.framework */; };
-		CDB524E1237DF48F00933555 /* Dependencies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DA237DF48F00933555 /* Dependencies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524E2237DF48F00933555 /* RxCBCentral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524C4237DF3E700933555 /* RxCBCentral.framework */; };
-		CDB524E3237DF48F00933555 /* RxCBCentral.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524C4237DF3E700933555 /* RxCBCentral.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524E4237DF48F00933555 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DB237DF48F00933555 /* RxCocoa.framework */; };
-		CDB524E5237DF48F00933555 /* RxCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DB237DF48F00933555 /* RxCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524E6237DF48F00933555 /* RxCocoaRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DC237DF48F00933555 /* RxCocoaRuntime.framework */; };
-		CDB524E7237DF48F00933555 /* RxCocoaRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DC237DF48F00933555 /* RxCocoaRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524E8237DF48F00933555 /* RxOptional.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DD237DF48F00933555 /* RxOptional.framework */; };
-		CDB524E9237DF48F00933555 /* RxOptional.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DD237DF48F00933555 /* RxOptional.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524EA237DF48F00933555 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DE237DF48F00933555 /* RxRelay.framework */; };
-		CDB524EB237DF48F00933555 /* RxRelay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DE237DF48F00933555 /* RxRelay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CDB524EC237DF48F00933555 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DF237DF48F00933555 /* RxSwift.framework */; };
-		CDB524ED237DF48F00933555 /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDB524DF237DF48F00933555 /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		CDB524EE237DF49000933555 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				CDB524E9237DF48F00933555 /* RxOptional.framework in Embed Frameworks */,
-				CDB524E5237DF48F00933555 /* RxCocoa.framework in Embed Frameworks */,
-				CDB524ED237DF48F00933555 /* RxSwift.framework in Embed Frameworks */,
-				CDB524EB237DF48F00933555 /* RxRelay.framework in Embed Frameworks */,
-				CDB524E1237DF48F00933555 /* Dependencies.framework in Embed Frameworks */,
-				CDB524E3237DF48F00933555 /* RxCBCentral.framework in Embed Frameworks */,
-				CDB524E7237DF48F00933555 /* RxCocoaRuntime.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CDB523E7237DE55E00933555 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,13 +44,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDB524E8237DF48F00933555 /* RxOptional.framework in Frameworks */,
-				CDB524E4237DF48F00933555 /* RxCocoa.framework in Frameworks */,
-				CDB524EC237DF48F00933555 /* RxSwift.framework in Frameworks */,
-				CDB524EA237DF48F00933555 /* RxRelay.framework in Frameworks */,
-				CDB524E0237DF48F00933555 /* Dependencies.framework in Frameworks */,
-				CDB524E2237DF48F00933555 /* RxCBCentral.framework in Frameworks */,
-				CDB524E6237DF48F00933555 /* RxCocoaRuntime.framework in Frameworks */,
+				CD386E9C23D12CF100D77002 /* RxSwift in Frameworks */,
+				CD386E9E23D12CF100D77002 /* RxCocoa in Frameworks */,
+				CD386EA023D12F9F00D77002 /* RxRelay in Frameworks */,
+				CD386E9723D12C5600D77002 /* RxCBCentral in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,13 +110,18 @@
 				CDB523E3237DE55E00933555 /* Sources */,
 				CDB523E4237DE55E00933555 /* Frameworks */,
 				CDB523E5237DE55E00933555 /* Resources */,
-				CDB524EE237DF49000933555 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ExampleApp;
+			packageProductDependencies = (
+				CD386E9623D12C5600D77002 /* RxCBCentral */,
+				CD386E9B23D12CF100D77002 /* RxSwift */,
+				CD386E9D23D12CF100D77002 /* RxCocoa */,
+				CD386E9F23D12F9F00D77002 /* RxRelay */,
+			);
 			productName = ExampleApp;
 			productReference = CDB523E7237DE55E00933555 /* ExampleApp.app */;
 			productType = "com.apple.product-type.application";
@@ -178,6 +150,9 @@
 				Base,
 			);
 			mainGroup = CDB523DE237DE55E00933555;
+			packageReferences = (
+				CD386E9823D12CF100D77002 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = CDB523E8237DE55E00933555 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -353,6 +328,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 5F83KRY2FH;
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -371,6 +347,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 5F83KRY2FH;
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -406,6 +383,39 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CD386E9823D12CF100D77002 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CD386E9623D12C5600D77002 /* RxCBCentral */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RxCBCentral;
+		};
+		CD386E9B23D12CF100D77002 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD386E9823D12CF100D77002 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		CD386E9D23D12CF100D77002 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD386E9823D12CF100D77002 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		CD386E9F23D12F9F00D77002 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD386E9823D12CF100D77002 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CDB523DF237DE55E00933555 /* Project object */;
 }

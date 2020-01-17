@@ -59,7 +59,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         bluetoothDetector = BluetoothDetector(options: BluetoothDetectorOptions(showPowerAlert: false))
         peripheralManager = RxPeripheralManager()
-        connectionManager = ConnectionManager(rxPeripheralManager: peripheralManager)
+        connectionManager = ConnectionManager(peripheralGattManager: peripheralManager)
         
         subscribeToRxCBLogger()
         
