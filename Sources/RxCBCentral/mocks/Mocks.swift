@@ -243,6 +243,10 @@ public class BluetoothDetectorTypeMock: BluetoothDetectorType {
 }
 
 public class CBPeripheralTypeMock: CBPeripheralType {
+    public func discoverDescriptors(for characteristic: CBCharacteristic) {
+        print("ok")
+    }
+    
 
     private var _doneInit = false
     public init(identifier: UUID = UUID(), state: CBPeripheralState = .disconnected) {
@@ -565,6 +569,9 @@ public class RxPeripheralMock: RxPeripheral {
             return notificationDataHandler(characteristic)
         }
         return Observable.empty()
+    }
+    public func hasService(service: CBUUID) -> Observable<Bool>{
+        return Observable.just(true)
     }
 }
 
