@@ -573,6 +573,9 @@ public class RxPeripheralMock: RxPeripheral {
     public func hasService(service: CBUUID) -> Observable<Bool>{
         return Observable.just(true)
     }
+    public func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID) -> Observable<Bool>{
+        return Observable.just(true)
+    }
 }
 
 class CBCentralManagerTypeMock: CBCentralManagerType {

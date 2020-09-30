@@ -84,6 +84,8 @@ public protocol RxPeripheral: AnyObject {
     /// Validate if service exist
     func hasService(service: CBUUID) -> Observable<Bool>
     
+    func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID) -> Observable<Bool>
+    
 }
 
 /// Aggregates Data for the purpose of demarcation.
