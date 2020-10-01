@@ -573,7 +573,7 @@ public class RxPeripheralMock: RxPeripheral {
     public func hasService(service: CBUUID) -> Observable<Bool>{
         return Observable.just(true)
     }
-    public func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID) -> Observable<Bool>{
+    public func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor? = nil) -> Observable<Bool>{
         return Observable.just(true)
     }
 }
