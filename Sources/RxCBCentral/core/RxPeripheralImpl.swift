@@ -60,8 +60,8 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     
     public func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?> {
         print("READ RxPeripheralImpl")
-        
         return connectionState
+         
             .flatMapLatest { (state: ConnectionState) -> Observable<([CBService], Error?)> in
                 guard case let .connected(peripheral) = state,
                     let cbPeripheral = peripheral as? CBPeripheral,
@@ -71,6 +71,12 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                 self.peripheral.discoverServices([service])
                 
                 return self.didDiscoverServicesSubject.asObservable()
+            }.filter{
+                if $0.0.count == 0  {
+                    return false
+                } else {
+                    return true
+                }
             }
             .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                 // check that given service exists on the peripheral
@@ -309,6 +315,21 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     public func hasService(service: CBUUID) -> Observable<Bool> {
             return
                 didDiscoverServicesSubject
+                .filter
+                {
+                    if $0.0.count == 0  {
+                        return false
+                    } else {
+                        return true
+                    }
+//                    for c in $0{
+//                        print(c.uuid.uuidString, service.uuidString)
+//                        if(c.uuid.uuidString == service.uuidString){
+//                            return true
+//                        }
+//                    }
+//                    return false
+                }
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                     print("RFN ",services.count, services)
                     print("RFN ",services.first?.uuid.uuidString, service.uuidString)
@@ -327,7 +348,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                         RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
                         return Observable.just(false)
                     }
-                    
+                    print("Entro")
                     return Observable.just(true)
                 }.do(onSubscribe: {
                     self.peripheral.discoverServices([service])
