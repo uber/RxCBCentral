@@ -477,8 +477,8 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         let valueData = (characteristic, error)
         if characteristic.value != nil {
-            let value = characteristic.value?.subdata(in: Range(1...2)).withUnsafeBytes {$0.load(as: UInt8.self)}
-            print("WDJR didUpdateValueFor Characteristic", characteristic, " value:", value ?? "No data 324")
+            let cmd = [UInt8](characteristic.value ?? Data(_:[0x00]))
+            print("didUpdateValueFor UINT8: ",cmd)
         }
         didUpdateValueForCharacteristicSubject.onNext(valueData)
     }
