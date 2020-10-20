@@ -27,11 +27,13 @@ final class RxPeripheralTests: XCTestCase {
     let disposeBag = DisposeBag()
 
     lazy var connectionStateMock = PublishSubject<ConnectionState>()
+    lazy var didUpdateValueForCharacteristicSubject = PublishSubject<(CBCharacteristic, Error?)>()
     lazy var peripheralTypeMock = CBPeripheralTypeMock()
     private var testScheduler = TestScheduler(initialClock: 0)
 
     lazy var peripheral = RxPeripheralImpl(peripheral: peripheralTypeMock,
-                                      connectionState: connectionStateMock.asObservable())
+                                           connectionState: connectionStateMock.asObservable(),
+                                           didUpdateValueForCharacteristicSubject: didUpdateValueForCharacteristicSubject)
 
     override func setUp() {
         super.setUp()
@@ -50,7 +52,7 @@ final class RxPeripheralTests: XCTestCase {
                                            value: Data(base64Encoded: "aGFja3RvYmVyZmVzdA=="),
                                            permissions: CBAttributePermissions.readable)
 
-        peripheral.didUpdateValueForCharacteristicSubject.onNext((characteristic, nil))
+        didUpdateValueForCharacteristicSubject.onNext((characteristic, nil))
 
         let expected: [Recorded<Event<Data?>>] = [ .next(0, Data(base64Encoded: "aGFja3RvYmVyZmVzdA==")) ]
 

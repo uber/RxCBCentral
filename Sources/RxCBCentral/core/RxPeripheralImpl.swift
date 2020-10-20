@@ -20,7 +20,16 @@ import RxSwift
 
 class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     
-    public init(peripheral: CBPeripheralType, connectionState: Observable<ConnectionState>) {
+    public convenience init(peripheral: CBPeripheralType, connectionState: Observable<ConnectionState>) {
+        self.init(peripheral: peripheral,
+                  connectionState: connectionState,
+                  didUpdateValueForCharacteristicSubject: PublishSubject<(CBCharacteristic, Error?)>())
+    }
+    
+    init(peripheral: CBPeripheralType,
+         connectionState: Observable<ConnectionState>,
+         didUpdateValueForCharacteristicSubject: PublishSubject<(CBCharacteristic, Error?)>) {
+        self.didUpdateValueForCharacteristicSubject = didUpdateValueForCharacteristicSubject
         self.connectionState = connectionState
         self.peripheral = peripheral
         super.init()
@@ -328,7 +337,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     private let didReadRSSISubject = PublishSubject<Int>()
     private let didDiscoverServicesSubject = PublishSubject<([CBService], Error?)>()
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
-    internal let didUpdateValueForCharacteristicSubject = PublishSubject<(CBCharacteristic, Error?)>()
+    private let didUpdateValueForCharacteristicSubject: PublishSubject<(CBCharacteristic, Error?)>
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
 
