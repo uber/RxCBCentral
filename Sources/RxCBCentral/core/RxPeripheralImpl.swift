@@ -266,6 +266,8 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                 self.synchronized(self.processSync) {
                     if let preprocessor = self.preprocessorDict[characteristic] {
                         processedData = preprocessor.process(data: data)
+                    } else {
+                        processedData = data
                     }
                 }
                 
