@@ -328,7 +328,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     private let didReadRSSISubject = PublishSubject<Int>()
     private let didDiscoverServicesSubject = PublishSubject<([CBService], Error?)>()
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
-    private let didUpdateValueForCharacteristicSubject = PublishSubject<(CBCharacteristic, Error?)>()
+    internal let didUpdateValueForCharacteristicSubject = PublishSubject<(CBCharacteristic, Error?)>()
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
 }
 
