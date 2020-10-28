@@ -67,7 +67,7 @@ class ViewController: UIViewController {
         
         peripheralManager.isConnected
             .subscribe(onNext: { (connected: Bool) in
-                print(connected)
+                print("isConnected: \(connected)")
             })
             .disposed(by: disposeBag)
     }
@@ -92,16 +92,16 @@ class ViewController: UIViewController {
         connectionDisposable =
             connectionManager
             .connectToPeripheral(with: nil, scanMatcher: scanMatcher, options: nil)
-            .subscribe(onNext: { (peripheral: RxPeripheral) in
+            .subscribe(onNext: { [weak self] (peripheral: RxPeripheral) in
                 // successfully connected, custom logic
-                self.isConnected = true
-                self.deviceNameTextView.text = peripheral.deviceName ?? "N/A"
+                self?.isConnected = true
+                self?.deviceNameTextView.text = peripheral.deviceName ?? "N/A"
                 
                 // IMPORTANT, MUST DO
-                self.peripheralManager.rxPeripheral = peripheral
-            }, onError: { (error: Error) in
+                self?.peripheralManager.rxPeripheral = peripheral
+            }, onError: { [weak self] (error: Error) in
                 // connection lost
-                self.isConnected = false
+                self?.isConnected = false
             })
     }
     
@@ -114,8 +114,8 @@ class ViewController: UIViewController {
             .queue(operation: read)
             .subscribe(onSuccess: { _ in
                 // read successful
-            }, onError: { (error) in
-                self.consoleLog("Error: \(error.localizedDescription)")
+            }, onError: { [weak self] (error) in
+                self?.consoleLog("Error: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
     }
@@ -125,8 +125,8 @@ class ViewController: UIViewController {
             .queue(operation: Read(service: GattUUIDs.BATTERY_SVC_UUID, characteristic: GattUUIDs.BATTERY_LEVEL_UUID, timeoutSeconds: .seconds(30)))
             .subscribe(onSuccess: { _ in
                 // read successful
-            }, onError: { (error) in
-                self.consoleLog("Error: \(error.localizedDescription)")
+            }, onError: { [weak self] (error) in
+                self?.consoleLog("Error: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
     }
@@ -136,8 +136,8 @@ class ViewController: UIViewController {
             .queue(operation: Read(service: GattUUIDs.DIS_SVC_UUID, characteristic: GattUUIDs.DIS_MFG_NAME_UUID, timeoutSeconds: .seconds(30)))
             .subscribe(onSuccess: { _ in
                 // read successful
-            }, onError: { (error) in
-                self.consoleLog("Error: \(error.localizedDescription)")
+            }, onError: { [weak self] (error) in
+                self?.consoleLog("Error: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
     }
@@ -154,8 +154,8 @@ class ViewController: UIViewController {
     private func subscribeToRxCBLogger() {
         RxCBLogger.sharedInstance
             .read()
-            .subscribe(onNext: { (log: RxCBLog) in
-                self.consoleLog(log.message)
+            .subscribe(onNext: { [weak self] (log: RxCBLog) in
+                self?.consoleLog(log.message)
             })
             .disposed(by: disposeBag)
     }
