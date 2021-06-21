@@ -82,6 +82,11 @@ let peripheralManager = RxPeripheralManager()
 peripheralManager
     .isConnected
     .filter { $0 } // wait until we're connected before performing BLE operations
+    .flatMapLatest{ _ -> Observable<()>
+        // register to listen to pheripheral notifications
+        let operation = RegisterNotification(service: serviceUUID, characteristic: characteristicUUID)
+        return self.peripheralManager.queue(operation: operation)
+    }
     .flatMapLatest { _ -> Observable<Data> in
         // listen for Heart Rate Measurement events
         return self.peripheralManager.receiveNotifications(for: CBUUID(string: "2A37"))
