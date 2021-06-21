@@ -83,7 +83,7 @@ peripheralManager
     .isConnected
     .filter { $0 } // wait until we're connected before performing BLE operations
     .flatMapLatest{ _ -> Observable<()>
-        // register to listen to pheripheral notifications
+        // register to listen to peripheral notifications
         let operation = RegisterNotification(service: serviceUUID, characteristic: characteristicUUID)
         return self.peripheralManager.queue(operation: operation)
     }
