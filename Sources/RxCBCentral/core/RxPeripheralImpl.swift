@@ -68,8 +68,9 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     }
     
     public func read(service: CBUUID, characteristic: CBUUID) -> Single<Data?> {
-        
+        print("READ RxPeripheralImpl")
         return connectionState
+         
             .flatMapLatest { (state: ConnectionState) -> Observable<([CBService], Error?)> in
                 guard case let .connected(peripheral) = state,
                     let cbPeripheral = peripheral as? CBPeripheral,
@@ -79,6 +80,12 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                 self.peripheral.discoverServices([service])
                 
                 return self.didDiscoverServicesSubject.asObservable()
+            }.filter { (services: [CBService], error: Error?) -> Bool in
+                if (services.count == 0){
+                    return false
+                } else {
+                    return true
+                }
             }
             .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
                 // check that given service exists on the peripheral
@@ -103,8 +110,10 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
             }
             .take(1)
             .map { (characteristics: [CBCharacteristic], error: Error?) -> (CBCharacteristic?, Error?) in
+                print("READ \(#line) ",characteristics.first?.uuid.uuidString,characteristic.uuidString)
                  // check that given characteristic exists on the peripheral
                 let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
+                print("READ after \(#line) ",characteristic)
                 return (characteristic, error)
             }
             .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?) -> Observable<(CBCharacteristic, Error?)> in
@@ -198,11 +207,14 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
             return
                 didDiscoverServicesSubject
                 .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
+                    print("RFN ",services.count, services)
+                    print("RFN ",services.first?.uuid.uuidString, service.uuidString)
                     let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
                     return (matchingService, error)
                 }
                 .take(1)
                 .flatMapLatest { (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
+                    print("MATCHINGSERVICE :",matchingService)
                     guard let matchingService = matchingService else {
                         RxCBLogger.sharedInstance.log("Error: service not found")
                         return Observable.error(GattError.serviceNotFound)
@@ -213,14 +225,34 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                         return Observable.error(error)
                     }
                     
+                    print("CHARACTERISTIC TO SEARCH: ",characteristic)
                     self.peripheral.discoverCharacteristics([characteristic], for: matchingService)
                     
                     return self.didDiscoverCharacteristicsSubject.asObservable()
                 }
+                .filter { (characteristics: [CBCharacteristic], error: Error?) -> Bool in
+                    for c in characteristics{
+                        print(c.uuid.uuidString, characteristic.uuidString)
+                        if(c.uuid.uuidString == characteristic.uuidString){
+                            return true
+                        }
+                    }
+                    return false
+                }
                 .take(1)
                 .map { (characteristics: [CBCharacteristic], error: Error?) -> (CBCharacteristic?, Error?) in
-                    let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
-                    return (characteristic, error)
+                    print("RFN characteristics ",characteristics.count, characteristics)
+                    for c in characteristics {
+                        print(c.uuid.uuidString, characteristic.uuidString)
+                        if(c.uuid.uuidString == characteristic.uuidString){
+                            return (c, error)
+                        }
+                    }
+                    print("not found , what to do, raise an error")
+                    return (characteristics.first,GattError.characteristicNotFound)
+//                    print("RFN ",characteristics.first?.uuid.uuidString , characteristic.uuidString)
+//                    let characteristic = characteristics.first { $0.uuid.uuidString == characteristic.uuidString }
+//                    return (characteristic, error)
                 }
                 .do(onNext: { [weak self] (_, error: Error?) in
                     if let self = self, error == nil {
@@ -233,6 +265,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                     }
                 })
                 .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(CBCharacteristic, Error?)> in
+                    print("RFN \(#line)")
                     guard let matchingCharacteristic = matchingCharacteristic else {
                         RxCBLogger.sharedInstance.log("Error: characteristic not found")
                         return Observable.error(GattError.characteristicNotFound)
@@ -244,7 +277,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                     }
                     // let CB give an error if property isn't notify-able
                     self.peripheral.setNotifyValue(true, for: matchingCharacteristic)
-                    
+                    print("RFN \(#line)")
                     return self.didUpdateValueForCharacteristicSubject.asObservable()
                 }
                 .take(1)
@@ -252,6 +285,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                     if let error = error {
                         return Observable.error(error).asCompletable()
                     }
+                    print("RFN completed")
                     return Observable.empty().asCompletable()
                 }
                 .take(1)
@@ -262,16 +296,18 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     }
     
     public func notificationData(for characteristic: CBUUID) -> Observable<Data> {
+        print("notificationData Enabled for: ",characteristic.uuidString)
         return didUpdateValueForCharacteristicSubject
             .filter { (arg: (CBCharacteristic, Error?)) -> Bool in
                 let (notifyCharacteristic, error) = arg
+                print("notificationData \(#line): ",notifyCharacteristic.uuid.uuidString, " match char: ",characteristic.uuidString, " error: ",error)
                 return characteristic.uuidString == notifyCharacteristic.uuid.uuidString && error == nil
             }
             .flatMap { [weak self] (notifyCharacteristic: CBCharacteristic, _) -> Observable<Data?> in
                 var processedData: Data? = nil
-                
+                print("notificationData \(#line): ",notifyCharacteristic)
                 guard let `self` = self, let data = notifyCharacteristic.value else { return Observable.just(nil) }
-                
+                print("notificationData Data\(#line): ",data)
                 self.synchronized(self.processSync) {
                     if let preprocessor = self.preprocessorDict[characteristic] {
                         processedData = preprocessor.process(data: data)
@@ -279,11 +315,152 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
                         processedData = data
                     }
                 }
-                
+                print("notificationData processedData\(#line): ",processedData)
                 return Observable.just(processedData)
             }
             .filterNil()
     }
+    
+    public func hasService(service: CBUUID) -> Observable<Bool> {
+            return
+                didDiscoverServicesSubject
+                .filter { (services: [CBService], error: Error?) -> Bool in
+                    if (services.count == 0){
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
+                    print("RFN ",services.count, services)
+                    print("RFN ",services.first?.uuid.uuidString, service.uuidString)
+                    let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
+                    return (matchingService, error)
+                }
+                .take(1)
+                .flatMapLatest { (matchingService: CBService?, error: Error?) -> Observable<Bool> in
+                    print("MATCHINGSERVICE :",matchingService)
+                    guard let matchingService = matchingService else {
+                        RxCBLogger.sharedInstance.log("Error: service not found")
+                        return Observable.just(false)
+                    }
+                    
+                    if let error = error {
+                        RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                        return Observable.just(false)
+                    }
+                    
+                    return Observable.just(true)
+                }.do(onSubscribe: {
+                    self.peripheral.discoverServices([service])
+                })
+                
+    }
+    
+    public func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor? = nil) -> Observable<Bool>{
+        print("setIndicateDescriptor")
+        return
+            didDiscoverServicesSubject
+            .map { (services: [CBService], error: Error?) -> (CBService?, Error?) in
+                let matchingService = services.first { $0.uuid.uuidString == service.uuidString }
+                return (matchingService, error)
+            }
+            .take(1)
+            .flatMapLatest { (matchingService: CBService?, error: Error?) -> Observable<([CBCharacteristic], Error?)> in
+                print("MATCHINGSERVICE SID :",matchingService)
+                guard let matchingService = matchingService else {
+                    RxCBLogger.sharedInstance.log("Error: service not found")
+                    return Observable.error(GattError.serviceNotFound)
+                }
+                
+                if let error = error {
+                    RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                    return Observable.error(error)
+                }
+                
+                print("CHARACTERISTIC TO SEARCH: ",characteristic)
+                self.peripheral.discoverCharacteristics([characteristic], for: matchingService)
+                
+                return self.didDiscoverCharacteristicsSubject.asObservable()
+            }
+            .filter
+            {
+                print($0,$1)
+                for c in $0{
+                    print(c.uuid.uuidString, characteristic.uuidString)
+                    if(c.uuid.uuidString == characteristic.uuidString){
+                        return true
+                    }
+                }
+                return false
+            }
+            .take(1)
+            .map {(characteristics: [CBCharacteristic], error: Error?) -> (CBCharacteristic?, Error?) in
+                print("RFN characteristics ",characteristics.count, characteristics)
+                for c in characteristics {
+                    print(c.uuid.uuidString, characteristic.uuidString)
+                    if(c.uuid.uuidString == characteristic.uuidString){
+                        return (c, error)
+                    }
+                }
+                print("not found , what to do, raise an error")
+                return (characteristics.first,GattError.characteristicNotFound)
+            }
+            .do(onNext: { [weak self] (_, error: Error?) in
+                if let self = self, error == nil {
+                    // if given a preprocessor, track it with the char UUID
+                    if let preprocessor = preprocessor {
+                        self.synchronized(self.processSync) {
+                            self.preprocessorDict[characteristic] = preprocessor
+                        }
+                    }
+                }
+            })
+            .flatMapLatest { (matchingCharacteristic: CBCharacteristic?, error: Error?)  -> Observable<(CBCharacteristic, [CBDescriptor], Error?)> in
+                print("RFN \(#line)")
+                guard let matchingCharacteristic = matchingCharacteristic else {
+                    RxCBLogger.sharedInstance.log("Error: characteristic not found")
+                    return Observable.error(GattError.characteristicNotFound)
+                }
+                
+                if let error = error {
+                    RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                    return Observable.error(error)
+                }
+                // let CB give an error if property isn't notify-able
+                self.peripheral.discoverDescriptors(for: matchingCharacteristic)
+                print("DiscoverDiscriptors \(#line)")
+                return self.didDiscoverDescriptorsForSubject.asObservable()
+            }
+            .take(1)
+            .flatMapLatest { (characteristic: CBCharacteristic?, descriptors: [CBDescriptor], error: Error?)  -> Observable<Bool> in
+                
+                guard let matchingCharacteristic = characteristic else {
+                    RxCBLogger.sharedInstance.log("Error: characteristic not found")
+                    return Observable.error(GattError.characteristicNotFound)
+                }
+                
+                if let error = error {
+                    RxCBLogger.sharedInstance.log("Error: \(error.localizedDescription)")
+                    return Observable.error(error)
+                }
+                
+                print("DescriptorsForChar: ",matchingCharacteristic.uuid.uuidString, descriptors)
+                print("PropertiesForChat: ",matchingCharacteristic.properties)
+                
+                for descriptor in descriptors{
+                    print(descriptor)
+//                    self.peripheral.writeValue(Data(_:[UInt8(0x20)]), for: descriptor)
+                }
+                self.peripheral.setNotifyValue(true, for: matchingCharacteristic)
+                
+                return Observable.just(true)
+            }
+            .do(onSubscribe: {
+                self.peripheral.discoverServices([service])
+            })
+    }
+    
     
     // MARK: - CBPeripheralDelegate
     
@@ -305,9 +482,26 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
         didDiscoverCharacteristicsSubject.onNext(characteristicsData)
     }
     
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
+        let discoveredDescriptors = characteristic.descriptors ?? []
+        let descriptorsData = (characteristic, discoveredDescriptors, error)
+        for des in discoveredDescriptors {
+            print("SET INDICATE FOR:SPAKA DESCRIPTOR========>\(des)")
+//            peripheral.writeValue(Data(_:[0x20]), for: des) //RAISE ERROR
+            // 'NSInternalInconsistencyException', reason: 'Client Characteristic Configuration descriptors must be configured using setNotifyValue:forCharacteristic:'
+            
+        }
+        didDiscoverDescriptorsForSubject.onNext(descriptorsData)
+        
+    }
+    
     /// Invoked when you retrieve a characteristic’s value, or when the peripheral notifies you the value has changed
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         let valueData = (characteristic, error)
+        if characteristic.value != nil {
+            let cmd = [UInt8](characteristic.value ?? Data(_:[0x00]))
+            print("didUpdateValueFor UINT8: ",cmd)
+        }
         didUpdateValueForCharacteristicSubject.onNext(valueData)
     }
     
@@ -339,6 +533,7 @@ class RxPeripheralImpl: NSObject, RxPeripheral, CBPeripheralDelegate {
     private let didDiscoverCharacteristicsSubject = PublishSubject<([CBCharacteristic], Error?)>()
     private let didUpdateValueForCharacteristicSubject: PublishSubject<(CBCharacteristic, Error?)>
     private let didWriteToCharacteristicSubject = PublishSubject<Error?>()
+    private let didDiscoverDescriptorsForSubject = PublishSubject<(CBCharacteristic, [CBDescriptor], Error?)>()
 }
 
 extension GattError: LocalizedError {

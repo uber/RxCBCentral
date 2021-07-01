@@ -27,6 +27,7 @@ public protocol CBPeripheralType: AnyObject {
     func maximumWriteValueLength(for type: CBCharacteristicWriteType) -> Int
     
     func discoverServices(_ serviceUUIDs: [CBUUID]?)
+    func discoverDescriptors(for characteristic: CBCharacteristic)
     func discoverCharacteristics(_ characteristicUUIDs: [CBUUID]?, for service: CBService)
     
     func readValue(for characteristic: CBCharacteristic)

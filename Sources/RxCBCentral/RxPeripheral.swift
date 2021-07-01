@@ -80,6 +80,12 @@ public protocol RxPeripheral: AnyObject {
     /// The data returned will be processed by the `Preprocessor` given when registering
     /// for notifications for this `characteristic`, if one was provided.
     func notificationData(for characteristic: CBUUID) -> Observable<Data>
+    
+    /// Validate if service exist
+    func hasService(service: CBUUID) -> Observable<Bool>
+    
+    func setIndicateDescriptor(service: CBUUID, characteristic: CBUUID, preprocessor: Preprocessor?) -> Observable<Bool>
+    
 }
 
 /// Aggregates Data for the purpose of demarcation.
