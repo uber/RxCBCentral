@@ -4,7 +4,7 @@
 
 ## Overview
 
-RxCBCentral provides a simple reactive paradigm for connecting to and communicating with Bluetooth LE peripherals from the central role. It is ideal for all applications - in particular those that require multiple concurrent Bluetooth LE integrations.
+RxCBCentral provides a simple reactive paradigm for connecting to and communicating with Bluetooth LE peripherals from the central role. It is ideal for applications that heavily rely on Reactive communication or require multiple concurrent Bluetooth LE integrations.
 
 Similar to the RxSwift and RxJava libraries, RxCBCentral and [Android's RxCentralBle](https://github.com/uber/RxCentralBle/) allow mobile engineers who work on different platforms to use similar protocols for BLE communication, enabling increased developer efficiency and simplifying the ability to achieve architectural platform-parity.
 
